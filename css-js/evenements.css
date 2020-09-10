@@ -1,0 +1,246 @@
+.search-evenement{
+    position: fixed;
+    width: 90.6%;
+    left: 51.5%;
+    transform: translateX(-51.3%);
+    top: 70px;
+    height: 55px;
+    margin-top: 0;
+    background: var(--primary-color);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+    z-index: 5;
+}
+.search-bar-evenement input{
+    border: var(--primary-color);
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    width: 200px;
+    outline: none;
+}
+.search-bar-evenement button{
+    margin-left: -5px;
+    padding: 8px 25px;
+    border: none;
+    border: 2px rgb(255, 255, 255) solid;
+    background:var(--primary-color);
+    border-radius: 0 4px 4px 0;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+}
+.search-bar-evenement button:hover{
+    transition: border 0.4s, background 0.4s, color 0.4s;
+    border: 2px var(--primary-color) solid;
+    background:rgb(255, 255, 255);
+    color: var(--primary-color);
+}
+.filter-date input{
+    border: var(--primary-color);
+    padding: 8px;
+    border-radius: 4px;
+    width: 200px;
+    outline: none;
+}
+.evenement-presentation{
+    margin-top: 75px;
+    width: 100%;
+    height: 100px;
+    position: relative;
+    z-index: -1;
+    text-align: center;
+}
+.evenement-presentation img{
+    width: 100%;
+    height: 100%;
+}
+.evenement-presentation p{
+    position: absolute;
+    top:10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    color: coral;
+}
+.evenements-list{
+    width: 90%;
+    margin: 95px auto 10px;
+    display: grid;
+    grid-template-columns: repeat(4,24.4%);
+    grid-gap: 1%;
+}
+.evenement-information{
+    height: 330px;
+    box-shadow: 0px 0px 3px -1px var(--primary-color);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    background: #ffffff;
+}
+.evenement-information img{
+    width: 50%;
+}
+.evenement-information h5{
+    background: var(--primary-color);
+    text-align: center;
+    padding: 15px;
+    color: #fff;
+    margin: 5px 0;
+    box-sizing: border-box;
+}
+.evenement-information h3{
+    text-align: left;
+    padding: 0 20px 0;
+    margin: 5px 0;
+    font-size: 1rem;
+}
+.evenement-information h4{
+    text-align: left;
+    padding: 0 20px 0;
+    margin: 10px 0;
+    color: var(--primary-color);
+}
+.evenement-information p{
+    text-align: left;
+    color: rgb(49, 49, 49);
+    line-height: 8px;
+    font-weight: 400;
+    padding: 0 20px 0;
+    margin: 5px 0;
+}
+.evenement-information input{
+    position: absolute;
+    top: 88%;
+    right: 5px;
+    padding: 10px 20px;
+    border: none;
+    background: var(--primary-color);
+    color: #fff;
+    cursor: pointer;
+}
+.evenement-tout-details{
+    width: 95%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-gap: 3%;
+}
+.evenement-left-description{
+    text-align: center;
+}
+.evenement-left-description img{
+    padding: 20px 10px;
+    border: 2px var(--primary-color) solid;
+}
+.evenement-left-description p{
+    width: 100%;
+    background:var(--primary-color);
+    padding: 10px 0;
+    color: #fff;
+}
+.evenement-middle-description h4{
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+.middle-description-images{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4,22%);
+    grid-gap: 2%;
+}
+.middle-description-images img{
+    margin-top: 110px;
+    width: 100%;
+    border: 1px var(--primary-color) solid;
+    padding: 5px;
+}
+.evenement-right-description img{
+    width: 50%;
+    border-radius: 50%;
+   }
+.evenement-right-description{
+    background: var(--primary-color);
+    text-align: center;
+}
+
+@media only screen and (max-width: 768px) {
+    .search-evenement{
+        position: fixed;
+        width: 100%;
+        height: 85px;
+        top: 80px;
+        grid-template-columns: 100%;
+        z-index: 5;
+        margin-top: 0px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    .search-bar-evenement input{
+        border: var(--primary-color);
+        padding: 8px;
+        border-radius: 4px 0 0 4px;
+        width: 250px;
+        outline: none;
+        box-sizing: border-box;
+    }
+    .search-bar-evenement button{
+        margin-left: -5px;
+        padding: 6px 20px;
+        box-sizing: border-box;
+        outline: none;
+    }
+    .filter-date{
+        width: 100%;
+        text-align: center;
+    }
+    .filter-date input{
+        border: var(--primary-color);
+        padding: 6px;
+        border-radius: 4px;
+        width: 43%;
+        outline: none;
+        box-sizing: border-box;
+        outline: none;
+    }
+    .evenement-presentation p{
+        top:30%;
+        left: 50%;
+        width: 100%;
+        font-size: 1rem;
+    }
+    .evenements-list{
+        width: 95%;
+        grid-template-columns: repeat(2,48%);
+        grid-gap: 2% 4%;
+    }
+    .evenement-information{
+        height: 270px;
+    }
+    .evenement-information img{
+        width: 100px;
+    }
+    .evenement-information h5{
+        padding: 5px;
+    }
+    .evenement-information h3{
+        font-size: .8rem;
+        padding: 0 5px;
+    }
+    .evenement-information h4{
+        font-size: .9rem;
+        padding: 0 5px;
+    }
+    .evenement-information p{
+        font-size: .9rem;
+        padding: 0 5px;
+    }
+    .evenement-information input{
+        position: absolute;
+        top: 86%;
+        right: 5px;
+        padding: 7.5px 15px;
+        outline: none;
+    }
+}

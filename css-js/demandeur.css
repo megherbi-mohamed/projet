@@ -1,0 +1,179 @@
+.demande-emploie-left{
+    width: 40%;
+    position: fixed;
+    left: 10%;
+    top: 80px;
+}
+.liste-demande-emploie{
+    width: 80%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #ffffff;
+}
+.liste-demande-emploie h4{
+    margin: 0 auto 10px;
+}
+.update-mobile-demandeur{
+    margin-top: 20px;
+    width: 80%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background: #ffffff;
+}
+.update-mobile-demandeur h4{
+    margin: 0 auto 10px;
+}
+.update-mobile-demandeur input[type='text']{
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border: 2px solid rgb(137, 218, 238);
+    border-radius: 4px;
+    width: 250px;
+    outline: none;
+}
+.update-mobile-demandeur input[type='submit'],
+.update-mobile-demandeur button{
+    margin-top: 10px;
+    padding: 7px 15px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 4px;
+    background: rgb(137, 218, 238);
+    color: #fff;
+    cursor: pointer;
+    outline: none;
+}
+.update-mobile-demandeur form{
+    margin-bottom: 20px;
+}
+.update-mobile-demandeur input[type='submit']:hover,
+.update-mobile-demandeur button:hover{
+    background: coral;
+}
+.demande-emploie-right{
+    width: 40%;
+    height: calc(100vh - 60px);
+    position: fixed;
+    right: 10%;
+    top: 60px;
+    overflow-y: auto;
+}
+.demande-emploie-right::-webkit-scrollbar{
+    display: none;
+}
+.demande-emploie-information h3{
+    text-align: center;
+    font-size: 1.1rem;
+    color: rgb(137, 218, 238);
+    font-weight: 600;
+    margin: 10px auto;
+}
+.demande-emploie-information{
+    width: 98%;
+    padding: 10px;
+    margin: 20px auto;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    background: #fff;   
+    border-radius: 8px;
+}
+.demande-emploie-information div{
+    width: 90%;
+    padding: 5px;
+    margin: auto;
+    box-sizing: border-box;
+    margin-bottom: 5px;
+}
+.demande-emploie-information div label{
+    font-size: .9rem;
+    font-weight: bold;
+}
+.demande-emploie-information div input,
+.demande-emploie-information div select{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    border: 2px solid rgb(137, 218, 238);
+    border-radius: 4px;
+    outline: none;
+}
+.demande-emploie-information div select{
+    background: #ffffff;
+}
+.demande-emploie-information div button{
+    margin-top: 5px;
+    border: none;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: coral;
+    font-size: .8rem;
+    color: #fff;
+    cursor: pointer;
+}
+.autre_profession{
+    display: none;
+}
+.demande-emploie-information div:last-child{
+    margin-top: 20px;
+}
+.demande-emploie-information input[type="submit"]{
+    width: auto;
+    border: none;
+    padding: 10px 20px;
+    background: rgb(137, 218, 238);
+    color: #fff;
+    margin: auto;
+    cursor: pointer;
+}
+.demande-emploie-information input[type="submit"]:hover{
+    background: coral;
+}
+
+@media only screen and (max-width: 768px) {
+    .demande-emploie-left{
+        width: 100%;
+        height: auto;
+        position: initial;
+        transform: initial;
+        box-sizing: border-box;
+    }
+    .liste-demande-emploie{
+        width: 100%;
+        border-radius: 0px;
+    }
+    .update-mobile-demandeur{
+        margin-top: 10px;
+        width: 100%;
+        padding: 10px;
+        border-radius: 0px;
+    }
+    .demande-emploie-right{
+        width: 100%;
+        height: auto;
+        position: initial;
+        overflow-y: none;
+        margin-top: 10px;
+    }
+    .demande-emploie-information{
+        width: 100%;
+        margin: 0;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none; 
+        border-radius: 0;
+    }
+    .demande-emploie-information div{
+        width: 100%;
+    }
+    .demande-emploie-information div:last-child{
+        margin-bottom: 10px;
+    }
+}
+

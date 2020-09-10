@@ -1,0 +1,110 @@
+.categories-container{
+    width: 100%;
+}
+.categories-left{
+    position: fixed;
+    left: 0;
+    width: 25%;
+    top: 40px;
+    background: #ffffff;
+    overflow: auto;
+    height: calc(100vh - 40px);
+}
+.categories-left::-webkit-scrollbar{
+	display: none;
+}
+.categories-left div{
+    text-align: center;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+    border-bottom: .5px solid #ecedee;
+}
+.categories-left div:last-child{
+    margin-bottom: 55px;
+}
+.categories-left div img{
+    width: 40px;
+}
+.categories-left div p{
+    margin: 0px;
+    font-size: .9rem;
+}
+.categories-right{
+    margin-left: 25%;
+    width: 75%;
+    padding: 10px;
+    box-sizing: border-box;
+    display: none;
+}
+.categories-right-top h4{
+    margin: 0 0 10px;
+}
+.categories-right-top div{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-gap: 10px 5px;
+}
+.categories-right-top div img{
+    width: 100%;
+}
+.categories-right-bottom a{
+    text-decoration: none;
+    color: rgb(12, 12, 12);
+}
+.categories-right-bottom li{
+    list-style: none;
+    padding: 5px;
+    box-sizing: border-box;
+    font-size: .95rem;
+    text-transform: lowercase;
+    border-bottom: 0.1px solid rgb(137, 218, 238);
+}
+.categories-right-active{
+    margin-left: 25%;
+    width: 75%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.categories-right-active h4{
+    margin: 0 0 10px;
+}
+.random-boutiques-profile{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5px;
+}
+.random-profile{
+    background: #ffffff;
+    overflow: hidden;
+    border-radius: 4px 4px 0 0;
+    position: relative;
+}
+.random-profile img:first-of-type{
+    width: 100%;
+}
+.random-profile img:last-of-type{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ecedee;
+    position: absolute;
+    top: 62%;
+    left: 50%;
+    transform: translateX(-50%);
+    -webkit-box-shadow: 0px 0px 0px 3px #ffffff;
+    -moz-box-shadow: 0px 0px 0px 3px #ffffff;
+    box-shadow: 0px 0px 0px 3px #ffffff;
+}
+.random-profile div{
+    position: relative;
+    text-align: center;
+    text-align: center;
+}
+.random-profile div p{
+    margin: 20px auto 10px;
+    font-size: .9rem;
+    text-transform: lowercase;
+    /* text-transform: capitalize; */
+}

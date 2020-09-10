@@ -1,0 +1,384 @@
+.recrutements{
+    width: 90%;
+    margin: 20px auto;
+}
+#reintialise_form{
+    display: none;
+}
+.search-recrutement{
+    width: calc(90% - 400px);
+    background: var(--primary-color);
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    z-index: 5;
+    box-sizing: border-box;
+}
+.search-recrutement input{
+    border: var(--primary-color);
+    padding: 10px;
+    border-radius: 4px 0 0 4px;
+    width: 80%;
+    outline: none;
+    box-sizing: border-box;
+}
+.search-recrutement button{
+    margin-left: -5px;
+    padding: 8px 25px;
+    border: none;
+    border: 2px rgb(255, 255, 255) solid;
+    background:var(--primary-color);
+    border-radius: 0 4px 4px 0;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+    box-sizing: border-box;
+}
+.filtre-result-recrutement{
+    width: 100%;
+    height: 100%;
+    margin-top: 32px;
+}
+.filtre-recrutement{
+    position: fixed;
+    width: 380px;
+    box-shadow: 0px 0px 3px 0px var(--primary-color);
+    padding: 10px;
+    box-sizing: border-box;
+    height: 87vh;
+    background: #ffffff;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+}
+.filtre-recrutement-titre{
+    position: relative;
+}
+.filtre-recrutement-titre h4{
+    margin-top: 3px;
+    font-size: .95rem;
+}
+.filtre-recrutement-titre button{
+    right: 0;
+    top: -6px;
+    position: absolute;
+    border: none;
+    background: var(--primary-color);
+    padding: 10px 15px;
+    cursor: pointer;
+    color: #fff;
+    outline: none;
+}
+.filtre-recrutement-titre button:hover{
+    background: coral;
+}
+.filtre-recrutement p{
+    border-top: 1.5px var(--primary-color) solid;
+    padding: 9px 0;
+    margin: 0;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: .95rem;
+}
+.filtre-recrutement p:last-child{
+    border-bottom: 2px var(--primary-color) solid;
+    padding-bottom: 15px !important;
+}
+.filtre-recrutement i{
+    padding: 0 10px;
+    font-size: 0.8rem;
+}
+.filtre-list{
+    display: none;
+}
+.active-filtre-list{
+    display: block !important;
+}
+.filtre-list-ville{
+    height: 155px;
+    overflow: auto;
+}
+.filtre-list-ville::-webkit-scrollbar-track{
+	background-color: var(--primary-color);
+}
+.filtre-list-ville::-webkit-scrollbar{
+	width: 5px;
+}
+.filtre-list-ville::-webkit-scrollbar-thumb{
+    background-color: coral;
+    width: 2px;
+}
+.filtre-list h6{
+    margin: 0;
+}
+.filtre-tout-result{
+    margin-left: 390px;
+    width: calc(100% - 390px);
+}
+.clear-result{
+    box-sizing: border-box;
+    width: 99%;
+}
+.filtre-recrutement div:last-child{
+    width: 100%;
+    text-align: center;
+}
+.filtre-recrutement button[type="submit"]{
+    margin-top: 10px;
+    padding: 10px 30px;
+    color: #fff;
+    background: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+.filtre-recrutement button[type="submit"]:hover{
+    background: coral;
+}
+.filtre-result-titre{
+    position: relative;
+    padding-bottom: 14px;
+    margin-bottom: 10px;
+    border-bottom: 2px var(--primary-color) solid;
+}
+.filtre-result-titre p{
+    display: inline;
+    font-size: .95rem;
+}
+.filtre-result-titre div{
+    position: absolute;
+    right: 0px;
+    top: -5px;
+}
+.filtre-result-titre div select{
+    border: 2px var(--primary-color) solid;
+    padding: 5px;
+}
+.filtre-result{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    box-shadow: 0px 0px 3px 0px var(--primary-color);
+    margin-bottom: 10px;
+    position: relative;
+    top: 65px;
+    border-radius: 4px;
+    background: #ffffff;
+}
+filtre-result-top{
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    align-items: center;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.filtre-result-top img{
+    width: 70px;
+    height: 70px;
+    border-radius: 35px;
+    justify-self: center;
+}
+.filtre-result-top div{
+    padding: 0 30px;
+    box-sizing: border-box;
+}
+.filtre-result-top div h4{
+    text-transform: uppercase;
+    margin: 5px;
+    font-size: 0.95rem;
+}
+.filtre-result-top div p{
+    font-size: .9rem;
+    margin: 10px 0 5px 10px;
+}
+.offre-information{
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    position: relative;
+    background: rgb(137, 218, 238);
+    justify-self: center;
+    align-self: center;
+    cursor: pointer;
+}
+.offre-information:hover{
+    background: coral;
+}
+.offre-information i:first-child{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #000;
+    font-size: 1.3rem;
+}
+.offre-information i:last-child{
+    position: absolute;
+    top: 70%;
+    right: 0;
+    color: #000;
+}
+.filtre-result-top a:hover{
+    background: coral;
+}
+.filtre-result-bottom{
+    display: flex;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+.filtre-result-bottom p{
+    margin: 10px;
+    padding: 0 10px;
+    font-size: .9rem;
+    box-sizing: border-box;
+}
+.filtre-result-bottom i{
+    padding: 0 5px;
+    color: var(--primary-color);
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 768px) {
+    .recrutements{
+        margin: 0px auto;
+        width: 98%;
+    }
+    .filtre-result-recrutement{
+        height: calc(100vh - 100px) !important;
+        overflow: auto;
+        margin: 0;
+    }
+    .filtre-recrutement{
+        width: 70%;
+        position: fixed;
+        bottom: 0;
+        height: calc(100vh - 60px);
+        left: 0;
+        transform: translateX(-105%);
+        transition: ease-in-out 0.5s;
+        z-index: 20;
+        border-radius: 0;
+        -webkit-box-shadow: 2px 0px 5px -2px rgba(14, 180, 231, 0.699);
+        -moz-box-shadow: 2px 0px 5px -2px  rgba(14, 180, 231, 0.699);
+        box-shadow: 2px 0px 5px -2px  rgba(14, 180, 231, 0.699);
+    }
+    .filtre-tout-result{
+        width: 100%;
+        position: fixed;
+        margin: auto;
+        height: calc(100vh - 100px);
+        padding: 0;
+        margin-left: -4px;
+    }
+    .search-recrutement{
+        width: 100%;
+        padding: 5px;
+        margin: -5px 0 0 0px;
+        display: grid;
+        grid-template-columns: 10% 90%;
+    }
+    .filtre-recrutement-titre h4{
+        font-size: .8rem;
+    }
+    .filtre-recrutement-titre button{
+        padding: 8px 10px;
+        box-sizing: border-box;
+    }
+    .filtre-recrutement p{
+        padding: 6px 0;
+        font-size: .85rem;
+    }
+    .filtre-recrutement button[type="submit"]{
+        padding: 8px 20px;
+    }
+    .search-recrutement input{
+        width: 75%;
+        padding: 8px;
+    }
+    .search-recrutement button{
+        margin-left: -5px;
+        padding: 6px 20px;
+    }
+    .search-recrutement .fa-filter{
+        display: block;
+        align-self: center;
+        justify-self: center;
+        color: #fff;
+        font-size: 0.9rem;
+        padding: 6px;
+        box-sizing: border-box;
+        border: 2px solid #fff;
+    }
+    .clear-result{
+        padding: 0 !important;
+        width: 95%;
+        height: calc(100vh - 100px);
+        overflow: auto;
+        margin:auto;
+        box-sizing: border-box;
+    }
+    .filtre-result{
+        top: 45px;
+        box-shadow: none;
+        border-bottom: 2px solid rgb(137, 218, 238);
+        border-radius: 0;
+        margin-bottom: 5px;
+    }
+    .filtre-result-top{
+        grid-template-columns: 70% 30%;
+        box-sizing: border-box;
+    }
+    .filtre-result-top div{
+        box-sizing: border-box;
+        padding: 0;
+    }
+    .filtre-result-top div h4{
+        font-size: 0.8rem;
+        width: 100%;
+    }
+    .filtre-result-top div p{
+        margin: 5px;
+    }
+    .filtre-result-top img{
+        display: none;
+    }
+    .offre-information{
+        width: 40px;
+        height: 40px;
+        border-radius: 20px;
+    }
+    .offre-information:hover{
+        background: coral;
+    }
+    .offre-information i:first-child{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        color: #000;
+        font-size: 1.1rem;
+    }
+    .offre-information i:last-child{
+        position: absolute;
+        top: 70%;
+        right: 0;
+        color: #000;
+    }
+    .filtre-result-bottom{
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        padding: 0;
+        text-align: center;
+    }
+    .filtre-result-bottom p{
+        padding: 0;
+        margin: 10px 0px;
+        justify-self: start;
+        width: 100%;
+    }
+    .filtre-result-bottom i{
+        box-sizing: border-box;
+    }
+}

@@ -1,0 +1,380 @@
+.admin-options{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 25% 75%;  
+}
+.admin-tab-bord{
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary-color);
+    justify-items: center;
+}
+.admin-tab-bord a{
+    text-decoration: none;
+}
+.admin-tab-bord h4{
+    color: #fff;
+    padding: 10px 0 0;
+    text-align: center;
+    font-size: 1.3rem;
+}
+.admin-options-affichage{
+    width: 100%;
+    height: 100%;
+}
+.admin-options-affichage h4{
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 10px 0 0;
+}
+.admin-tab-bord ul{
+    width: 100%;
+    margin-left: -40px;
+}
+.admin-tab-bord ul li{
+    box-sizing: border-box;
+    background: #ffffff;
+    padding: 20px 20px;
+    width: 100%;
+    color:var(--primary-color);
+    margin: 5px auto;
+    list-style: none;
+    border-right: 2px solid coral;
+    cursor: pointer;
+    font-weight: bold;
+}
+.admin-tab-bord .hide-more-utilisateurs{
+    height: 0;
+    display: none;
+}
+.show-more-utilisateurs{
+    margin: 10px 0;
+}
+.admin-tab-bord .show-more-utilisateurs li{
+    padding: 15px 20px;
+    width: 95%;
+    margin-left: 5%;
+}
+.admin-tab-bord li:hover{
+    background: coral;
+    border-right: 2px solid #fff;
+    color: #fff;
+}
+.admin-options-affichage .admin-options-aff{
+    width: 100%;
+    border-radius: 3px;
+    text-align: center;
+    display: none;
+    margin: 40px auto;
+}
+.admin-tab-bord .active-li-options{
+    background: coral;
+    border-right: 2px solid #fff;
+    color: #fff;
+}
+.admin-options-affichage .active-div-options{
+    display: block;
+}
+.admin-tab-bord .notifications{
+    position: relative;
+}
+.user-notifications table{
+    width: 100%;
+}
+.user-notifications table th{
+    padding: 10px;
+    background: var(--primary-color);
+}
+.user-notifications table td{
+    padding: 10px;
+    background: rgb(188, 234, 248);
+}
+.user-notifications table input[name ='accepter']{
+    border: none;
+    padding: 5px 20px;
+    background: rgb(1, 252, 1);
+    cursor: pointer;
+    margin: 0 10px;
+}
+.user-notifications table input[name ='refuser']{
+    border: none;
+    padding: 5px 20px;
+    background: rgb(255, 1, 1);
+    cursor: pointer;
+    margin: 0 10px;
+}
+.user-notifications table input[type ='submit']:hover{
+    transform: scale(1.1,1.1);
+}
+.sous-admin-gestions,
+.entreprises-gestions,
+.groupes-gestions,
+.individus-gestions{
+    width: 97.5%;
+    margin: auto;
+}
+a.sous-admin-gestion-button,
+a.entreprises-gestion-button,
+a.groupes-gestion-button,
+a.individus-gestion-button{
+    padding: 10px 20px;
+    border: none;
+    background: var(--primary-color);
+    margin: 0 30px;
+    color: #fff;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+a.sous-admin-gestion-button:hover,
+a.entreprises-gestion-button:hover,
+a.groupes-gestion-button:hover,
+a.individus-gestion-button:hover{
+    background: coral;
+    outline: 2px solid #ffffff;
+}
+a.sous-admin-gestion-button-active,
+a.entreprises-gestion-button-active,
+a.groupes-gestion-button-active,
+a.individus-gestion-button-active{
+    background: coral !important;
+    outline: 2px solid #ffffff;
+}
+.sous-admin-gestion-options,
+.entreprises-gestion-options,
+.groupes-gestion-options,
+.individus-gestion-options{
+    width: 100%;
+    height: 530px;
+    border: 2px solid var(--primary-color);
+    overflow: auto;
+    margin-top: 9px;
+}
+.sous-admin-gestion-option,
+.entreprises-gestion-option,
+.groupes-gestion-option,
+.individus-gestion-option{
+   display: none;
+   width: 100%;
+   padding: 0 auto 10px;
+}
+.sous-admin-gestion-option-active,
+.entreprises-gestion-option-active,
+.groupes-gestion-option-active,
+.individus-gestion-option-active{
+    display: block !important;
+}
+.sous-admin-gestion-option-ajouter{
+    width: 90%;
+    height: 400px;
+    margin: 10px auto;
+    background: linear-gradient(to bottom,  var(--primary-color) 0%,#ffffff 100%);
+    padding: 20px;
+}
+.sous-admin-gestion-option-ajouter input{
+    width: 300px;
+    margin: 8px auto;
+    padding: 13px;
+    border: var(--primary-color);
+    border-radius: 2px;
+    outline: none;
+}
+.sous-admin-gestion-option-ajouter input:focus{
+    background: rgb(199, 230, 240);
+    outline: 2px var(--primary-color) solid;
+}
+.sous-admin-autorisation{
+    width: 100%;
+    height: 280px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+}
+.sous-admin-autorisation p{
+    font-size: 0.9rem; 
+}
+.sous-admin-autorisation-ville,
+.sous-admin-autorisation-tbord{
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    text-align: start;
+    overflow: auto;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+.sous-admin-autorisation-ville div{
+    display: inline-block;
+    width: 130px;
+    height: 20px;
+    background: coral;
+    padding: 3px 0 13px;
+    margin: 2px 0 2px 3px;
+    color: #fff;
+    border-radius: 1px;
+    cursor: pointer;
+}
+.sous-admin-autorisation div input{
+    width: 20px;
+}
+.sous-admin-autorisation div p{
+    display: inline;
+}
+.sous-admin-autorisation-tbord div{
+    display: inline-block;
+    width: 98%;
+    height: 20px;
+    background: coral;
+    padding: 3px 0 13px;
+    margin: 2px 0 2px 3px;
+    color: #fff;
+    border-radius: 1px;
+    cursor: pointer;
+}
+.active-input{
+    background: var(--primary-color) !important;
+}
+input#creer_sous_admin{
+    background: var(--primary-color);
+    margin: 30px auto;
+    padding: 10px;
+    color: #fff;
+    border: 2px var(--primary-color) solid;
+    font-size: 1.1rem;
+    text-transform: capitalize;
+    width: 200px;
+    cursor: pointer;
+    outline: none;
+}
+input#creer_sous_admin:hover{
+    transition: background 0.4s, color 0.4s;
+    background: #ffffff;
+    color: var(--primary-color);
+}
+a.hide-option{
+    display: none !important;
+}
+.entreprises-informations,
+.groupes-informations,
+.individus-informations{
+    width: 99%;
+    margin: 3px auto;
+    height: 63px;
+    border: 2px solid var(--primary-color);
+    overflow: hidden;
+}
+.top-entreprises-informations,
+.top-groupes-informations,
+.top-individus-informations{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 27% 27% 27% 13%;
+    grid-gap: 2%;
+    padding: 5px 0;
+    align-items: center;
+    justify-content: center;
+}
+.top-entreprises-informations img,
+.top-groupes-informations img,
+.top-individus-informations img{
+    width: 50px;
+    justify-self: center;
+    align-self: start;
+}
+.top-entreprises-informations input,
+.top-entreprises-informations button,
+.top-groupes-informations input,
+.top-groupes-informations button,
+.top-individus-informations input,
+.top-individus-informations button{
+    width: 100px;
+    justify-self: center;
+    align-self: center;
+    padding: 5px 20px;
+    cursor: pointer;
+    margin: 0 10px;
+    border: none;
+    color: #fff;
+}
+.top-entreprises-informations input,
+.top-groupes-informations input,
+.top-individus-informations input{
+    background: red;
+}
+.top-entreprises-informations button,
+.top-groupes-informations button,
+.top-individus-informations button{
+    background: var(--primary-color);
+}
+.top-entreprises-informations input:hover,
+.top-entreprises-informations button:hover,
+.top-groupes-informations input:hover,
+.top-groupes-informations button:hover,
+.top-individus-informations input:hover,
+.top-individus-informations button:hover{
+    transform: scale(1.1,1.1);
+}
+.top-entreprises-informations h4,
+.top-groupes-informations h4,
+.top-individus-informations h4{
+    justify-self: center;
+    margin: auto;
+    padding: 0;
+    align-self: center;
+}
+.bottom-entreprises-informations form,
+.bottom-groupes-informations form,
+.bottom-individus-informations form{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 27% 27% 27% 13%;
+    margin-top: 0px;
+    grid-gap: 2%;
+}
+.bottom-entreprises-informations div,
+.bottom-groupes-informations div,
+.bottom-individus-informations div{
+    width: 100%;
+}
+.bottom-entreprises-informations div input,
+.bottom-groupes-informations div input,
+.bottom-individus-informations div input{
+    width: 180px;
+    margin: 5px auto;
+    padding: 5px 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: 2px;
+    outline: none;
+    background: rgb(223, 238, 243);
+}
+.bottom-entreprises-informations textarea,
+.bottom-groupes-informations textarea,
+.bottom-individus-informations textarea{
+    justify-self: center;
+    width: 210px;
+    height: 138px;
+    margin-top: 5px;
+    border: 2px solid var(--primary-color);
+    border-radius: 2px;
+    outline: none;
+    background: rgb(223, 238, 243)
+}
+.bottom-entreprises-informations input[type='submit'],
+.bottom-groupes-informations input[type='submit'],
+.bottom-individus-informations input[type='submit']{
+    height: 27px;
+    width: 100px;
+    justify-self: center;
+    align-self: center;
+    border: none;
+    color: #fff;
+    background: rgb(1, 252, 1);
+    cursor: pointer;
+}
+.bottom-entreprises-informations input[type='submit']:hover,
+.bottom-groupes-informations input[type='submit']:hover,
+.bottom-individus-informations input[type='submit']:hover{
+    transform: scale(1.1,1.1);
+}

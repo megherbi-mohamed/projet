@@ -1,0 +1,272 @@
+.offre-demande-container{
+    width: 85%;
+    margin: auto;
+}
+.offre-container,
+.demande-container{
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    padding: 50px 20px 0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 100%;
+    height: 87vh;
+    margin: 33px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+}
+.offre-container input[type='submit'],
+.demande-container input[type='submit']{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 30px;
+    background: var(--primary-color);
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+.offre-container input[type='submit']:hover,
+.demande-container input[type='submit']:hover{
+    background: coral;
+}
+.offre-demande-container form{
+    width: 100%;
+    margin: auto;
+}
+.offre-container h2,
+.demande-container h2{
+    font-size: 1rem;
+    color: #fff;
+    background: rgb(99, 255, 99);
+    padding: 30px 10px 10px;
+    box-sizing: border-box;
+    position: fixed;
+    margin: 0 auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 4px;
+    display: none;
+    width: 350px;
+    text-align: center;
+    z-index: 10;
+}
+.offre-container h2 a,
+.demande-container h2 a{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 0 10px;
+    box-sizing: border-box;
+    font-size: .9rem;
+    text-decoration: none;
+}
+.offre-container h2 i,
+.demande-container h2 i{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: #000;
+    cursor: pointer;
+}
+.offre-container h2 i:hover,
+.demande-container h2 i:hover{
+    color: #fff;
+}
+.offre-container h3,
+.demande-container h3{
+    position: absolute;
+    left: 20px;
+    color: var(--primary-color);
+}
+.offre-container h4{
+    position: absolute;
+    right: 20px;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+.offre-container h4:hover{
+    color: coral;
+}
+.offre-container h4 i{
+    font-size: 1.1rem;
+}
+.offre-left div,
+.offre-right div,
+.demande-left div,
+.demande-right div{
+    margin: 20px auto;
+}
+.offre-left div select,
+.offre-left div input,
+.offre-right div select,
+.offre-right div input,
+.demande-left div select,
+.demande-left div input,
+.demande-right div select,
+.demande-right div input{
+    display: block;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border: 2px solid var(--primary-color);
+    width: 300px;
+    border-radius: 5px;
+}
+.offre-left div label,
+.offre-right div label,
+.demande-left div label,
+.demande-right div label{
+    display: block;
+    margin: 5px auto;
+    font-size: .9rem;
+    font-weight: bold;
+}
+.offre-right div select,
+.offre-right div input,
+.demande-right div select,
+.demande-right div input{
+    width: 400px;
+}
+.offre-right div div,
+.demande-right div div{
+    position: relative;
+    margin: 10px 0;
+    display: none;
+}
+.more-missions-options{
+    display: block !important;
+}
+.more-qualites-options{
+    display: block !important;
+}
+.offre-right div div i,
+.demande-right div div i{
+    position: absolute;
+    top: 10px;
+    left: 410px;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+.offre-right div div i:hover,
+.demande-right div div i:hover{
+    color: coral;
+}
+
+.demande-container h3{
+    position: absolute;
+    right: 20px;
+    color: var(--primary-color);
+}
+.demande-container h4{
+    position: absolute;
+    left: 20px;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+.demande-container h4:hover{
+    color: coral;
+}
+.demande-container h4 i{
+    font-size: 1.1rem;
+}
+
+@media only screen and (max-width: 768px) {
+    .offre-demande-responsive{
+        height: calc(100vh - 100px);
+        width: 100%;
+        overflow-y: hidden;
+        display: grid;
+    }
+    .offre-demande-responsive > * {
+        grid-column: 2 / -2;
+    }
+    .offre-demande-container{
+        margin: 0;
+        display: grid;
+        grid-gap: 0%;
+        width: 100%;
+        grid-template-columns: repeat(2, 100%);
+        grid-template-rows: 100%;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+    }
+    .offre-demande-container form{
+        width: 100%;
+        margin: auto;  
+    }
+    .offre-container input[type='submit'],
+    .demande-container input[type='submit']{
+        position: initial;
+        transform: translateX(0);
+        padding: 10px 30px;
+        background: var(--primary-color);
+        box-sizing: border-box;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        width: 100px;
+        margin: 20px auto 30px;
+    }
+    .offre-demande-container form input,
+    .offre-demande-container form select{
+        background: #fff;  
+    }
+    .offre-container,
+    .demande-container{
+        scroll-snap-align: center;
+        height: calc(100vh - 100px);
+        margin: 0 auto;
+        width: 100%;
+        box-shadow: none;
+        grid-template-columns: 1fr;
+        overflow-y: scroll;
+    }
+    .offre-container h3{
+        left: 10px;
+        font-size: .9rem;
+        margin: 10px 0;
+    }
+    .offre-container h4{
+        right: 10px;
+        font-size: .9rem;
+        margin: 8px 0;
+    }
+    .offre-left div select,
+    .offre-left div input,
+    .offre-right div select,
+    .offre-right div input,
+    .demande-left div select,
+    .demande-left div input,
+    .demande-right div select,
+    .demande-right div input{
+        width: 100%;
+    }
+    .demande-right div input,
+    .offre-right div input{
+        width: 96%;
+    }
+    .offre-right div div i,
+    .demande-right div div i{
+        position: absolute;
+        top: 10px;
+        left: 98%;
+        color: var(--primary-color);
+        cursor: pointer;
+    }
+    .demande-container h3{
+        right: 10px;
+        font-size: .9rem;
+        margin: 10px 0;
+    }
+    .demande-container h4{
+        left: 10px;
+        font-size: .9rem;
+        margin: 8px 0;
+    }
+}

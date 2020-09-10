@@ -1,0 +1,65 @@
+.create-groupe-container{
+    width: 85%;
+    margin: auto;
+}
+.groupe-container{
+    -webkit-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px -2px rgba(0,0,0,0.75);
+    padding: 50px 20px 0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    width: 100%;
+    height: 87vh;
+    margin: 33px auto 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    position: relative;
+    background: #ffffff;
+}
+.groupe-container input[type='submit']{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 30px;
+    background: var(--primary-color);
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+.groupe-container input[type='submit']:hover{
+    background: coral;
+}
+.create-groupe-container form{
+    width: 100%;
+    margin: auto;
+}
+.groupe-container h2{
+    font-size: 1rem;
+    color: #fff;
+    background: rgb(99, 255, 99);
+    padding: 30px 10px 10px;
+    box-sizing: border-box;
+    position: fixed;
+    margin: 0 auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    border-radius: 4px;
+    display: none;
+    width: 350px;
+    text-align: center;
+    z-index: 10;
+}
+.groupe-container h3{
+    position: absolute;
+    left: 20px;
+    color: var(--primary-color);
+}
+
+@media only screen and (max-width: 768px) {
+    
+}

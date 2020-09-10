@@ -1,0 +1,488 @@
+.inscription-connexion-animation{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 100% 100% 100%;
+    overflow: hidden;
+}
+.inscription-connexion-responsive{
+    width: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+.inscription-connexion-container{
+    width: 100%;
+    height: 600px;
+    margin: 0 auto;
+    position: relative;
+}
+.inscription-connexion-container h3{
+    margin: 5px;
+    padding: 7px 5px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: .9rem;
+    border-radius: 4px;
+}
+.inscription-container,
+.connexion-container{
+    width: 50%;
+    height: 550px;
+    left: 25%;
+    position: absolute;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    background: #ffffff;
+    text-align: center;
+    transition: transform ease-in-out 1s,visibility ease-in-out 1s,opacity ease-in-out 1s;
+}
+.inscription-container{
+    transform: rotateY(-180deg);
+}
+.inscription, 
+.connexion{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.connexion h4,
+.inscription h4{
+    text-transform: uppercase;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.inscription h4{
+    margin: 0 auto 20px;
+}
+.connexion div,
+.inscription div{
+    position: relative;
+    width: 350px;
+    margin-bottom: 10px;
+}
+.connexion i,
+.inscription i{
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    background: #f4f4f4f4;
+    font-size: 1.1rem;
+    border: 2px solid #ecedee;
+    color: rgb(149, 224, 247);
+    width: 55px;
+    height: 49px;
+}
+.connexion input{
+    padding: 15px 10px 15px 60px;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    outline: none;
+    border: 2px solid #ecedee;
+}
+.inscription input,
+.inscription select{
+    padding: 12px 10px;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    outline: none;
+    border: 2px solid #ecedee;
+}
+.type-travaille{
+    display: none;
+}
+.connexion div p,
+.inscription div p{
+    font-size: .8rem;
+    color: red;
+    margin: 5px;
+    text-align: center;
+}
+.nom-user{
+    margin-top: 10px;
+}
+.connexion a{
+    font-size: .9rem;
+    text-decoration: none;
+    color: rgb(137, 218, 238);
+}
+.connexion a:hover{
+    color: coral;
+}
+.connexion input:last-child,
+.inscription input:last-child{
+    width: 150px;
+    display: block;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    cursor: pointer;
+    margin: 20px auto 0;
+    background: rgb(137, 218, 238);
+    border: none;
+}
+.connexion input:last-child:hover,
+.inscription input:last-child:hover{
+    background: coral;
+}
+.connexion h5{
+    margin: 40px auto 0;
+    padding: 30px 10px;
+    box-sizing: border-box;
+    color: #000;
+    border-top: 2px solid #ecedee;
+}
+.inscription h5{
+    margin: 20px auto 0;
+    padding: 10px 10px;
+    box-sizing: border-box;
+    color: #000;
+    border-top: 2px solid #ecedee;
+}
+.connexion button,
+.inscription button{
+    width: 100px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    background: rgb(137, 218, 238);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    margin-left: 10px;
+}
+.connexion button:hover,
+.inscription button:hover{
+    background: coral;
+}
+
+.mobile-email-confirmation-container{
+    width: 100%;
+    height: calc(100vh - 60px);
+    transition: transform 0.5s ease-in-out;
+    /* transform: translateX(-100%);  */
+    position: relative;
+    margin-top: 0px;
+}
+.mobile-email-confirmation{
+    width: 50%;
+    height: 400px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    background: #ffffff;
+    text-align: center;
+}
+.email-confirmation,
+.mobile-confirmation{
+    height: 100%;
+}
+.email-confirmation h4,
+.mobile-confirmation h4{
+    margin: 20px auto 0;
+    font-size: .9rem;
+    color: red;
+    font-weight: 500;
+}
+.email-confirmation h3,
+.mobile-confirmation h3{
+    color: rgb(137, 218, 238);
+    margin: 30px 0 0;
+    padding: 30px 10px 10px;
+    box-sizing: border-box;
+}
+.email-confirmation p,
+.mobile-confirmation p{
+    font-weight: 600;
+    line-height: 1.3rem;
+    font-size: .95rem;
+    width: 80%;
+    margin: 20px auto;
+}
+.email-confirmation span,
+.mobile-confirmation span{
+    color: coral;
+}
+.email-confirmation input[type='text'],
+.mobile-confirmation input[type='text']{
+    margin-top: 30px;
+    width: 50%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid rgb(137, 218, 238);
+    border-radius: 4px;
+    outline: none;
+}
+.email-confirmation input[type='submit'],
+.mobile-confirmation input[type='submit']{
+    margin: 50px auto;
+    display: block;
+    padding: 10px 30px;
+    box-sizing: border-box;
+    border: none;
+    background: rgb(137, 218, 238);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.email-confirmation input[type='submit']:hover,
+.mobile-confirmation input[type='submit']:hover{
+    background: coral;
+}
+
+.inscription-details-container{
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+    /* transform: translateX(-200%); */
+    z-index: 150;
+}
+.inscription-details-container-responsive{
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 45% 10% 45%;
+    margin-top: 20px;
+}
+.inscription-choice{
+    justify-self: center;
+    align-self: center;
+}
+.inscription-choice p{
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+.inscription-client-professionnel-final{
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 95%;
+    background: #ffffff;
+    border-radius: 5px;
+    display: none;
+    z-index: 150;
+}
+.close-final-inscription{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background: rgb(137, 218, 238);
+    cursor: pointer;
+}
+.close-final-inscription:hover{
+    background: coral;
+}
+.close-final-inscription i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    padding: 10px;
+}
+.inscription-final-details{
+    width: 95%;
+    margin: 70px auto 0px;
+    padding: 10px;
+    box-sizing: border-box;
+    border-top: 2px solid rgb(137, 218, 238);
+    border-bottom: 2px solid rgb(137, 218, 238);
+}
+.inscription-client-final-details,
+.inscription-professionnel-final-details{
+    width: 100%;
+    height: 390px;
+    overflow-y: auto;
+}
+.inscription-client-final-details::-webkit-scrollbar-track,
+.inscription-professionnel-final-details::-webkit-scrollbar-track{
+	background-color: var(--primary-color);
+}
+.inscription-client-final-details::-webkit-scrollbar,
+.inscription-professionnel-final-details::-webkit-scrollbar{
+	width: 5px;
+}
+.inscription-client-final-details::-webkit-scrollbar-thumb,
+.inscription-professionnel-final-details::-webkit-scrollbar-thumb{
+    background-color: coral;
+    width: 5px;
+}
+.inscription-client-final-details p,
+.inscription-professionnel-final-details p{
+    font-size: .95rem;
+}
+.inscription-client-professionnel-final input[type='submit']{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    color: #fff;
+    background: rgb(137, 218, 238);
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}.inscription-client-professionnel-final input[type='submit']:hover{
+    background: coral;
+}
+.client-inscription,
+.profession-inscription{
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    position: relative;
+}
+.inscription-client-details,
+.inscription-profession-details{
+    width: 400px;
+    height: 400px !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
+    overflow: hidden;
+}
+.inscription-avantages{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.inscription-avantages img{
+    width: 60%;
+    margin-top: 20px;
+}
+.inscription-client-details button,
+.inscription-profession-details button{
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    color: #fff;
+    border-radius: 3px;
+    background: rgb(137, 218, 238);
+    cursor: pointer;
+    font-weight: bold;
+}
+.inscription-client-details button:hover,
+.inscription-profession-details button:hover{
+    background: coral;
+}
+#delete_user_form{
+    display: none;
+}
+
+@media only screen and (max-width: 768px) {
+    .inscription-connexion-container{
+        width: 100%;
+        margin-top: -5px;
+    }
+    .inscription-container,
+    .connexion-container{
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border-radius: 0;
+    }
+    .inscription, 
+    .connexion{
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%,-30%);
+    }
+    .connexion div{
+        position: relative;
+        width: 320px;
+        margin-bottom: 10px;
+    }
+    .connexion button{
+        margin-top: 20px;
+    }
+    .inscription input,
+    .inscription select{
+        width: 90%;
+    }
+    .inscription h5{
+        margin: 20px auto 0;
+        padding: 10px;
+    }
+    .inscription button{
+        padding: 12px 0;
+        display: block;
+        margin: auto;
+        margin-top: 10px;
+    }
+    .inscription h4{
+        margin: 0 auto 10px;
+    }
+    .mobile-email-confirmation-container{
+        margin-top: 0px;
+        height: 100%;
+    }
+    .mobile-email-confirmation{
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+    .email-confirmation input[type='text'],
+    .mobile-confirmation input[type='text']{
+        width: 70%;
+    }
+
+    .inscription-details-container-responsive{
+        grid-template-columns: 1fr;
+        grid-template-rows: 47% 6% 47%;
+        grid-gap: 0%;
+        margin: auto;
+    }
+    .inscription-client-professionnel-final{
+        width: 95%;
+        height: 90%;
+    }
+    .inscription-client-details,
+    .inscription-profession-details{
+        width: 70%;
+        height: 85% !important;
+    }
+    .profession-inscription{
+        margin: 0 auto;
+    }
+    .inscription-final-details{
+        width: 95%;
+        margin: 60px auto 10px;
+        padding: 10px;
+    }
+    .inscription-final-details p{
+        line-height: 1.3rem;
+        font-size: .95rem;
+        margin: 0;
+    }
+}

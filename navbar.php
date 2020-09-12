@@ -424,10 +424,16 @@
                 <?php } ?>    
             </div>
             <div class="create-publication-description">
-                <textarea id="publication_description" placeholder="Exprimez vous ..."></textarea>
+                <textarea id="publication_description" placeholder="Exprimez vos activités, services ..."></textarea>
             </div>
-            <div class="publication-images-preview"></div>
-            <div class="publication-video-preview"></div>
+            <div class="publication-images-preview-container">
+                <div class="publication-images-preview"></div>
+                <div id="loader_pub_img" class="center"></div>
+            </div>
+            <div class="publication-video-preview-container">
+                <div class="publication-video-preview"></div>
+                <div id="loader_pub_img" class="center"></div>
+            </div>
             <div class="create-publication-options">
                 <P>Ajouter des photos ou vidéo</P>
                 <div id="add_publication_image">
@@ -630,8 +636,14 @@
             <div class="update-publication-description">
                 <textarea id="publication_description_updt" placeholder="Exprimez vous ..."></textarea>
             </div>
-            <div class="publication-update-images-preview"></div>
-            <div class="publication-update-video-preview"></div>
+            <div class="publication-update-images-preview-container">
+                <div class="publication-update-images-preview"></div>
+                <div id="loader_pub_img" class="center"></div>
+            </div>
+            <div class="publication-update-video-preview-container">
+                <div class="publication-update-video-preview"></div>
+                <div id="loader_pub_img" class="center"></div>
+            </div>
             <div class="update-publication-options">
                 <P>Ajouter des photos ou vidéo</P>
                 <div id="update_publication_image">

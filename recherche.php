@@ -690,13 +690,13 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
         //     $('.recherche-middle-content').load('recherche-professionnel.php?r=');
         // }
 
-        $(".recherche-middle-content").bind("ajaxStart", function(){
-            console.log('med');
-            $(this).show();
-        }).bind("ajaxStop", function(){
-            $(this).hide();
-            console.log('med1');
-        });
+        // $(".recherche-middle-content").bind("ajaxStart", function(){
+        //     console.log('med');
+        //     $(this).show();
+        // }).bind("ajaxStop", function(){
+        //     $(this).hide();
+        //     console.log('med1');
+        // });
     
     </script>
 </body>

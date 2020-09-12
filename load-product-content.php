@@ -1,6 +1,11 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
+$id_btq = htmlspecialchars($_POST['id_btq']);
+$btq_inf_query = "SELECT * FROM boutiques WHERE id_btq = $id_btq";
+$btq_inf_result = mysqli_query($conn, $btq_inf_query);
+$btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
+
 $id_prd = htmlspecialchars($_POST['id_prd']);
 $get_prd_query = "SELECT * FROM produit_boutique WHERE id_prd = '$id_prd'";
 $get_prd_result = mysqli_query($conn, $get_prd_query);
@@ -25,6 +30,12 @@ $image4 = mysqli_fetch_assoc($get_image4_result);
 ?>
 <div class="cancel-product-details" id="cancel_product_details">
     <i class="fas fa-times"></i>
+</div>
+<div class="cancel-product-details-resp" id="cancel_product_details_resp">
+    <div>
+        <i class="fas fa-arrow-left"></i>
+    </div>
+    <h4><?php echo $get_prd_row['nom_prd'] ?></h4>
 </div>
 <div class="product-details-top">
     <div class="product-details-images">
@@ -90,7 +101,7 @@ $image4 = mysqli_fetch_assoc($get_image4_result);
             <h4>Quantite : <span><?php echo $get_prd_row['quantite_prd'] ?> pcs</span></h4>
         </div>
         <div class="product-details-button">
-            <button>Commander</button>
+            <button><a href="tel:<?php echo $btq_inf_row['tlph_btq'] ?>">Appeler le <?php echo $btq_inf_row['tlph_btq'] ?></a></button>
             <button>Ajouter au panier</button>
         </div>
     </div>

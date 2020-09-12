@@ -613,14 +613,21 @@ $('#add_publication_image_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $("#loader_pub_img").show();
+        },
         success: function (response) {
             if (windowWidth > 768) {
                 $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
             }
             for(let i = 0; i < response.length; i++) {
+                console.log('add');
                 var src = response[i];
                 $('.publication-images-preview').append("<div class='image-preview' id='image_preview_"+i+"'><div id='delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
             }
+        },
+        complete: function(){
+            $("#loader_pub_img").hide();
         }
     });
 });
@@ -650,11 +657,17 @@ $('#add_publication_video_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $("#loader_pub_img").show();
+        },
         success: function (response) {
             if (windowWidth > 768) {
                 $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
             }
             $('.publication-video-preview').append("<div class='video-preview'><div id='delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            $("#loader_pub_img").hide();
         }
     });
 });
@@ -730,6 +743,9 @@ $('#update_publication_image_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $("#loader_pub_img").show();
+        },
         success: function (response) {
             console.log(response);
             if (windowWidth > 768) {
@@ -739,6 +755,9 @@ $('#update_publication_image_button').click(function(){
                 var src = response[i];
                 $('.publication-update-images-preview').append("<div class='image-preview' id='image_preview_"+i+"'><div id='delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
             }
+        },
+        complete: function(){
+            $("#loader_pub_img").hide();
         }
     });
 });
@@ -764,11 +783,17 @@ $('#update_publication_video_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $("#loader_pub_img").show();
+        },
         success: function (response) {
             if (windowWidth > 768) {
                 $('.update-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
             }
             $('.publication-update-video-preview').append("<div class='video-preview'><div id='delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            $("#loader_pub_img").hide();
         }
     });
 });

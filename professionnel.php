@@ -145,7 +145,7 @@
         </div>
         <div class="user-profile-publications">
             <?php 
-                $publication_query = "SELECT * FROM publications WHERE id_user = {$_SESSION['user']} AND masquer_pub = 0 ORDER BY id_pub DESC"; 
+                $publication_query = "SELECT * FROM publications WHERE id_user = {$_SESSION['user']} AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1"; 
                 $publication_result = mysqli_query($conn, $publication_query);
                 $i=0;
                 while($publication_row=mysqli_fetch_assoc($publication_result)){

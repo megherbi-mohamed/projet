@@ -274,6 +274,31 @@ $msg_result = mysqli_query($conn,$msg_query);
             history.pushState('boutique','','/projet/gerer-boutique.php?btq='+href);
         }
 
+        // add new publications when scroll bottom
+        var scrollBottom = 0;         
+        $(window).on("scroll", function () {
+            if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
+                scrollBottom++;
+                var fd = new FormData();
+                fd.append('offset', scrollBottom);
+                $.ajax({
+                url: 'load-user-publications.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        // console.log(response);
+                        $('.user-profile-publications').append(response);
+                    }else{
+                        // alert('err');
+                    }
+                },
+            });
+            }
+        });
+
         if ($('#active_notification').val() != 0) {
             var actvNtf = $('#active_notification').val();
             $('html, body').animate({

@@ -95,7 +95,7 @@ body::-webkit-scrollbar-thumb{
 .categorie-search-bar i,
 .categorie-search-bar-rspsv i{
     position: absolute;
-    left: 10px;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: rgb(126, 126, 126);
@@ -799,13 +799,31 @@ a.active{
     resize: none;
     outline: none;
     font-size: 1.6rem;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.publication-images-preview-container,
+.publication-update-images-preview-container{
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
 }
 .publication-images-preview,
 .publication-update-images-preview{
     width: 100%;
     display: flex;
     overflow: auto;
-    margin-bottom: 10px;
+}
+#loader_pub_img { 
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 3px solid #f3f3f3; 
+    border-radius: 50%; 
+    border-top: 3px solid rgb(137, 218, 238); 
+    width: 30px; 
+    height: 30px; 
+    animation: spin 1s linear infinite; 
 }
 .image-preview{
     height: 130px;
@@ -842,10 +860,15 @@ a.active{
 .image-preview img{
     height: 100%;
 }
+.publication-video-preview-container,
+.publication-update-video-preview-container{
+    width: 100%;
+    margin-bottom: 10px;
+    position: relative;
+}
 .publication-video-preview,
 .publication-update-video-preview{
     width: 100%;
-    margin-bottom: 10px;
 }
 .video-preview{
     width: 100%;
@@ -879,7 +902,7 @@ a.active{
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgb(137, 218, 238);
+    background: #ecedee;
     position: relative;
     cursor: pointer;
 }
@@ -901,13 +924,17 @@ a.active{
     border: none;
     padding: 10px;
     box-sizing: border-box;
-    background: #e0e0e0;
+    background: #000000dc;
     border-radius: 5px;
     margin-bottom: 10px;
     color: #fff;
     font-weight: bold;
-    font-size: 1.1rem;
     outline: none;
+    cursor: pointer;
+}
+.create-publication-bottom button:hover,
+.update-publication-bottom button:hover{
+    background: #000000;
 }
 
 /* creer boutique */

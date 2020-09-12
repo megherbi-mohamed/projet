@@ -13,6 +13,15 @@ if (!empty($_GET['btq'])) {
     $btq_inf_result = mysqli_query($conn, $btq_inf_query);
     $btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
     $id_createur = $btq_inf_row['id_createur'];
+    $id_btq = $btq_inf_row['id_btq'];
+
+    $num_btq_msg_query = "SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever";    
+    $num_btq_msg_result = mysqli_query($conn,$num_btq_msg_query);
+    $num_btq_msg_row = mysqli_num_rows($num_btq_msg_result);
+    $show_btq_message = '';
+    if ($num_btq_msg_row > 0) {
+        $show_btq_message = 'style="display:block"';
+    }
 }
 // if (!empty($_GET['msg'])) {
 //     header('lcoation: /projet/gerer-boutique.php?btq='.$btq_inf_row['id_btq'].'$msg=');
@@ -68,14 +77,24 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     <i class="fab fa-facebook-messenger"></i>
                 </div>
                 <p>Messages</p>
+                <div class="btq-new-msg">
+                    <div id="btq_new_msg" <?php echo $show_btq_message ?>>
+                        <span><?php echo $num_btq_msg_row; ?></span>
+                    </div>
+                </div>
             </div>
             <div class="gb-notifications" id="display_gb_notifications">
                 <div>
                     <i class="fas fa-bell"></i>
                 </div>
                 <p>Notifications</p>
+                <!-- <div class="btq-new-ntf">
+                    <div id="btq_new_ntf" <?php echo $show_btq_notification ?>>
+                        <span><?php echo $num_btq_ntf_row; ?></span>
+                    </div>
+                </div> -->
             </div>
-            <div class="gb-update" id="update_gb_informations">
+            <div class="gb-update" id="display_gb_informations">
                 <div>
                     <i class="fas fa-cog"></i>
                 </div>
@@ -280,21 +299,39 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             <div class="create-product-bottom">
                 <div class="product-input">
                     <input type="text" id="name_product" placeholder="nom du produit">
+                    <span>Nom *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="reference_product" placeholder="Reference">
+                    <span>Reference *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="categorie_product" placeholder="Categorie">
+                    <span>Categorie *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="description_product" placeholder="Description">
+                    <span>Description *</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="caractéristique_product" placeholder="Description">
+                    <span>Caractéristiques</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="fonctionnalite_product" placeholder="Description">
+                    <span>Fonctionnalités</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="avantage_product" placeholder="Description">
+                    <span>Avantages</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="quantity_product" placeholder="Quantité">
+                    <span>Quantite *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="price_product" placeholder="Prix">
+                    <span>Prix *</span>
                 </div>
                 <div class="product-images-preview"></div>
                 <div class="create-product-options">
@@ -328,21 +365,39 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <input type="hidden" id="product_tail_updt">
                 <div class="product-input">
                     <input type="text" id="updt_name_product" placeholder="Titre">
+                    <span>Nom *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="updt_refernce_product" placeholder="Categorie">
+                    <span>Reference *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="updt_categorie_product" placeholder="Categorie">
+                    <span>Categorie *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="updt_description_product" placeholder="Description">
+                    <span>Description *</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="updt_caracteristique_product" placeholder="Description">
+                    <span>Caractéristiques</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="updt_fonctionnalite_product" placeholder="Description">
+                    <span>Fonctionnalités</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="updt_avantage_product" placeholder="Description">
+                    <span>Avantages</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="updt_quantity_product" placeholder="Quantité">
+                    <span>Quantite *</span>
                 </div>
                 <div class="product-input">
                     <input type="text" id="updt_price_product" placeholder="Prix">
+                    <span>prix *</span>
                 </div>
                 <div class="product-update-images-preview"></div>
                 <div class="update-product-options">
@@ -375,6 +430,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="categorie-input">
                     <input type="text" id="nom_categorie_1" placeholder="Nom de catégorie">
                     <div id="add_categorie"><i class="fas fa-plus"></i></div>
+                    <span>Categorie</span>
                 </div>
                 <button id="create_categorie_button">Créer</button>
             </div>
@@ -396,6 +452,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="update-categorie-input">
                     <input type="hidden" id="update_id_categorie">
                     <input type="text" id="update_nom_categorie" placeholder="Nom de catégorie">
+                    <span>Categorie</span>
                 </div>
                 <button id="update_categorie_button">Modifier</button>
             </div>
@@ -641,6 +698,33 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     });
                 }, 0);
             }
+            if(history.state === 'informations'){
+                var fd = new FormData();
+                var idBtq = $('#id_boutique_product').val();
+                fd.append('id_btq',idBtq);
+                setTimeout(() => {
+                    $.ajax({
+                        url: 'load-boutique-informations.php',
+                        type: 'post',
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function(){
+                            $(".boutique-container").empty();
+                            $("#loader_gb_right").show();
+                        },
+                        success: function(response){
+                            if(response != 0){
+                                history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                                $('.boutique-container').append(response);
+                            }
+                        },
+                        complete: function(){
+                            $("#loader_gb_right").hide();
+                        }
+                    });
+                }, 0);
+            }
         })
 
         $(window).on('popstate',function(){
@@ -743,6 +827,33 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                                 history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
                                 $('.boutique-container').append(response);
                                 $('#id_boutique_product').val(idBtq);
+                            }
+                        },
+                        complete: function(){
+                            $("#loader_gb_right").hide();
+                        }
+                    });
+                }, 0);
+            }
+            if(history.state === 'informations'){
+                var fd = new FormData();
+                var idBtq = $('#id_boutique_product').val();
+                fd.append('id_btq',idBtq);
+                setTimeout(() => {
+                    $.ajax({
+                        url: 'load-boutique-informations.php',
+                        type: 'post',
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function(){
+                            $(".boutique-container").empty();
+                            $("#loader_gb_right").show();
+                        },
+                        success: function(response){
+                            if(response != 0){
+                                history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                                $('.boutique-container').append(response);
                             }
                         },
                         complete: function(){
@@ -1075,7 +1186,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         var ctg = 1;
         $('.create-categorie-bottom').on('click','[id^="add_categorie"]',function(e){
             ctg++;
-            $('#create_categorie_button').before('<div class="categorie-input categorie-plus"><input type="text" id="nom_categorie_'+ctg+'" placeholder="Nom de catégorie"><div id="add_categorie"><i class="fas fa-plus"></i></div></div>');
+            $('#create_categorie_button').before('<div class="categorie-input categorie-plus"><input type="text" id="nom_categorie_'+ctg+'" placeholder="Nom de catégorie"><div id="add_categorie"><i class="fas fa-plus"></i></div><span>Categorie</span></div>');
         })
 
         $('#create_categorie_button').click(function(){
@@ -1366,6 +1477,9 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             var referencePrd = $('#reference_product').val();
             var categoriePrd = $('#categorie_product').val();
             var descriptionPrd = $('#description_product').val();
+            var caracteristiquePrd = $('#caracteristique_product').val();
+            var fonctionnalitePrd = $('#fonctionnalite_product').val();
+            var avantagePrd = $('#avantage_product').val();
             var quantityPrd = $('#quantity_product').val();
             var pricePrd = $('#price_product').val();
 
@@ -1411,6 +1525,9 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 fd.append('reference_prd',referencePrd);
                 fd.append('categorie_prd',categoriePrd);
                 fd.append('description_prd',descriptionPrd);
+                fd.append('caracteristique_prd',caracteristiquePrd);
+                fd.append('fonctionnalite_prd',fonctionnalitePrd);
+                fd.append('avantage_prd',avantagePrd);
                 fd.append('quantity_prd',quantityPrd);
                 fd.append('price_prd',pricePrd);
                 $.ajax({
@@ -1664,6 +1781,12 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             fd.append('categorie_prd',categoriePrd);
             var descriptionPrd = $('#updt_description_product').val();
             fd.append('description_prd',descriptionPrd);
+            var caracteristiquePrd = $('#updt_caracteristique_product').val();
+            fd.append('caracteristique_prd',caracteristiquePrd);
+            var fonctionnalitePrd = $('#updt_fonctionnalite_product').val();
+            fd.append('fonctionnalite_prd',fonctionnalitePrd);
+            var descriptionPrd = $('#updt_avantage_product').val();
+            fd.append('avantage_prd',descriptionPrd);
             var quantityPrd = $('#updt_quantity_product').val();
             fd.append('quantite_prd',quantityPrd);
             var pricePrd = $('#updt_price_product').val();
@@ -1700,6 +1823,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         $(document).on('click','[id^="display_product_details_"]',function(){
             var id = $(this).attr("id").split("_")[3];
             var fd = new FormData();
+            var idBtq = $('#id_boutique_product').val();
+            fd.append('id_btq',idBtq);
             var idPrd = $('#id_prd_'+id).val();
             fd.append('id_prd',idPrd);
             $.ajax({
@@ -1710,7 +1835,11 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 processData: false,
                 beforeSend: function(){
                     $("body").addClass('body-after');
-                    $(".product-details").show();
+                    if (windowWidth > 768) {
+                        $(".product-details").show();
+                    }else{
+                        $(".product-details").css('transform','translateX(0)');
+                    }
                     $("#loader_product").show();
                 },
                 success: function(response){
@@ -1727,6 +1856,13 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         $(document).on('click','#cancel_product_details',function(){
             $("body").removeClass('body-after');
             $(".product-details").hide();
+            $('.product-details-container').empty();
+        })
+
+        $(document).on('click','#cancel_product_details_resp',function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            $(".product-details").css('transform','');
             $('.product-details-container').empty();
         })
 
@@ -1847,7 +1983,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 success: function(response){
                     if(response != 0){
                         history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
-                        updateReceverMessage(idBtq,idCrsp);
+                        updateSenderMessage(idCrsp,idBtq);
+                        $('.btq-new-msg').load('load-btq-new-msg.php?btq='+idBtq);
                         $('.boutique-message-right-container').append(response);
                         if (windowWidth <= 768) {
                             $('.boutique-message-right').css('transform','translateX(0)');
@@ -1887,6 +2024,91 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             });
         })
 
+        $(document).on('click','#display_gb_informations',function(){
+            var fd = new FormData();
+            var idBtq = $('#id_boutique_product').val();
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'load-boutique-informations.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutique-container").empty();
+                    $("#loader_gb_right").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                        $('.boutique-container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_gb_right").hide();
+                }
+            });
+        })
+
+        // upsate boutique
+        $(document).on('click','#update_boutique_button',function(){
+            var idBtq = $('#id_boutique_product').val();
+            var nomBtq = $('#nom_btq').val();
+            var villeBtq = $('#ville_btq').val();
+            var communeBtq = $('#commune_btq').val();
+            var adresseBtq = $('#adresse_btq').val();
+            var emailBtq = $('#email_btq').val();
+            var tlphBtq = $('#tlph_btq').val();
+            var dscrpBtq = $('#dscrp_btq').val();
+            if (nomBtq == '') {
+                $('#nom_btq').css('border','2px solid red');
+            }
+            else if(dscrpBtq == ''){
+                $('#nom_btq').css('border','');
+                $('#dscrp_btq').css('border','2px solid red');
+            }
+            else{
+                $('#nom_btq').css('border','');
+                $('#dscrp_btq').css('border','');
+                var fd = new FormData();
+                fd.append('id_btq',idBtq);
+                fd.append('nom_btq',nomBtq);
+                fd.append('ville_btq',villeBtq);
+                fd.append('commune_btq',communeBtq);
+                fd.append('adresse_btq',adresseBtq);
+                fd.append('email_btq',emailBtq);
+                fd.append('tlph_btq',tlphBtq);
+                fd.append('dscrp_btq',dscrpBtq);
+                $.ajax({
+                    url: 'update-boutique-informations.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".update-boutique-informations").css('opacity','0.5');
+                        $("#loader_gb_right").show();
+                    },
+                    success: function(response){
+                        if(response != 0){
+                            $('.gb-message-alert').css('transform','translateY(0)');
+                        }
+                    },
+                    complete: function(){
+                        $("#loader_gb_right").hide();
+                        $(".update-boutique-informations").css('opacity','');
+                        setTimeout(() => {
+                            $('.gb-message-alert').css('transform','');
+                        }, 4000);
+                    }
+                });
+            }
+        })
+
+        $(document).on('click','.cancel-alert-message',function(){
+            $('.gb-message-alert').css('transform','');
+        })
+
         $(document).on('click','[id^="gerer_boutique_boutique_"]',function(){
             var id = $(this).attr('id').split('_')[3];
             var fd = new FormData();
@@ -1906,6 +2128,10 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     success: function(response){
                         if(response != 0){
                             history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
+                            setTimeout(() => {
+                                $('.gb-messages-notifications').load('load-boutique-options.php?id_btq='+idBtq);
+                                $('.gerer-boutique-categorie-bottom').load('load-boutique-categorie.php?id_btq='+idBtq);
+                            }, 100);
                             $('.boutique-container').append(response);
                             $('#id_boutique_product').val(idBtq);
                         }
@@ -1918,7 +2144,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         })
 
         // admin boutique
-        $('#create_gb_admin').click(function(){
+        $(document).on('click','#create_gb_admin',function(){
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
@@ -2267,7 +2493,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 }
             });
         }
-        
+
         // $(document).on('click','.gerer-boutique-left',function(e){
         //     e.stopPropagation();
         //     $(this).css('transform','translateX(0)');

@@ -69,9 +69,6 @@ else{  header('location : insecription-connexion.php');  }
             $last_msg_result = mysqli_query($conn,$last_msg_query);
             $last_msg_row = mysqli_fetch_assoc($last_msg_result);
             $new_msg = '';
-            // if ($last_msg_row['etat_msg'] == 1) {
-            //     $new_msg = 'style="background:#ecedee"';
-            // }
             if ($last_msg_row['etat_recever_msg'] == $id_user || $last_msg_row['etat_sender_msg'] == $id_user) {
                 $new_msg = 'style="background:#ecedee"';
             }
@@ -106,13 +103,13 @@ else{  header('location : insecription-connexion.php');  }
                 <?php
                 while($get_sender_msg_row = mysqli_fetch_assoc($get_sender_msg_result)){
                     if ($get_sender_msg_row['id_recever'] == $id_user) { ?>
-                        <div class="message-left">
+                        <div class="message-right">
                             <div>
                                 <p><?php echo $get_sender_msg_row['message'] ?></p>
                             </div>
                         </div>
                     <?php }else{ ?>
-                        <div class="message-right">
+                        <div class="message-left">
                             <div>    
                                 <p><?php echo $get_sender_msg_row['message'] ?></p>
                             </div>

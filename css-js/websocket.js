@@ -98,11 +98,11 @@ function start(websocketServerLocation){
             if (cleMsg == msgCle) {
                 if (refreshSender == 1) {
                     if (messagerie == 'messagerie') {
-                        var template_message = $(document).find('#template_left_message').html();
+                        var template_message = $(document).find('#template_right_message').html();
                         var message = template_message.replace('{message}', umsg);
                         $('.messagerie-middle-bottom').append(message);
                     }else if(messagerie == 'boutique'){
-                        var boutique_template_message = $(document).find('#boutique_left_message').html();
+                        var boutique_template_message = $(document).find('#boutique_right_message').html();
                         var message_boutique = boutique_template_message.replace('{message}', umsg);
                         $('.boutique-message-right-bottom').append(message_boutique);
                     }
@@ -111,12 +111,11 @@ function start(websocketServerLocation){
                     // console.log('bpoutique user online');
                     if (userId != uid) {
                         if (messagerie == 'messagerie') {
-                            var template_message = $(document).find('#template_right_message').html();
+                            var template_message = $(document).find('#template_left_message').html();
                             var message = template_message.replace('{message}', umsg);
                             $('.messagerie-middle-bottom').append(message);
                         }else if(messagerie == 'boutique'){
-                            console.log('messagerie '+messagerie);
-                            var boutique_template_message = $(document).find('#boutique_right_message').html();
+                            var boutique_template_message = $(document).find('#boutique_left_message').html();
                             var message_boutique = boutique_template_message.replace('{message}', umsg);
                             $('.boutique-message-right-bottom').append(message_boutique);
                         }
@@ -124,11 +123,11 @@ function start(websocketServerLocation){
                         updateReceverMessage(senderId,userId);
                     }else{
                         if (messagerie == 'messagerie') {
-                            var template_message = $(document).find('#template_left_message').html();
+                            var template_message = $(document).find('#template_right_message').html();
                             var message = template_message.replace('{message}', umsg);
                             $('.messagerie-middle-bottom').append(message);
                         }else if(messagerie == 'boutique'){
-                            var boutique_template_message = $(document).find('#boutique_left_message').html();
+                            var boutique_template_message = $(document).find('#boutique_right_message').html();
                             var message_boutique = boutique_template_message.replace('{message}', umsg);
                             $('.boutique-message-right-bottom').append(message_boutique);
                         }
@@ -139,26 +138,26 @@ function start(websocketServerLocation){
                 scrolldiv();
             }
             setTimeout(() => {
-                // $('.user-new-msg').load('load-user-new-msg.php');
+                $('.btq-new-msg').load('load-btq-new-msg.php?btq='+senderId);
                 $('.boutique-message-left').load('load-boutique-sender.php?id_btq='+uid);
                 $('.messagerie-left').load('load-messagerie-sender.php?id_user='+uid);
-            }, 0);
+            }, 100);
         }else if(messagerieType == 'userUser'){
             if (cleMsg == msgCle) {
                 if (refreshSender == 1) {
-                    var template_message = $(document).find('#template_left_message').html();
+                    var template_message = $(document).find('#template_right_message').html();
                     var message = template_message.replace('{message}', umsg);
                     $('.messagerie-middle-bottom').append(message);
                     updateReceverMessage(userId,senderId);
                 }else{
                     if ( userId != uid ) {
                         // console.log('userId != uid');
-                        var template_message = $(document).find('#template_right_message').html();
+                        var template_message = $(document).find('#template_left_message').html();
                         updateSenderMessage(userId,senderId);
                         updateReceverMessage(senderId,userId);
                     } else {
                         // console.log('userId == uid');
-                        var template_message = $(document).find('#template_left_message').html();
+                        var template_message = $(document).find('#template_right_message').html();
                         updateReceverMessage(userId,senderId);
                         updateSenderMessage(senderId,userId);
                     }

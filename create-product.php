@@ -7,11 +7,15 @@ $nom_prd = htmlspecialchars($_POST['name_prd']);
 $reference_prd = htmlspecialchars($_POST['reference_prd']);
 $categorie_prd = htmlspecialchars($_POST['categorie_prd']);
 $description_prd = htmlspecialchars($_POST['description_prd']);
+$caracteristique_prd = htmlspecialchars($_POST['caracteristique_prd']);
+$fonctionnalite_prd = htmlspecialchars($_POST['fonctionnalite_prd']);
+$avantage_prd = htmlspecialchars($_POST['avantage_prd']);
 $quantite_prd = htmlspecialchars($_POST['quantity_prd']);
 $prix_prd = htmlspecialchars($_POST['price_prd']);
 
 $create_product_query = "UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd', categorie_prd = '$categorie_prd',
-description_prd = '$description_prd', quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', etat = 0 WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'";
+description_prd = '$description_prd',caracteristique_prd = '$caracteristique_prd', fonctionnalite_prd = '$fonctionnalite_prd', avantage_prd = '$avantage_prd', 
+quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', etat = 0 WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'";
 if (mysqli_query($conn,$create_product_query)) {
     $update_media_query = "UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'";
     if (mysqli_query($conn,$update_media_query)) {

@@ -29,13 +29,13 @@ $get_sender_info_row = mysqli_fetch_assoc($get_sender_info_result);
 <?php
 while($get_sender_msg_row = mysqli_fetch_assoc($get_sender_msg_result)){
     if ($get_sender_msg_row['id_recever'] == $id_user) { ?>
-        <div class="message-left">
+        <div class="message-right">
             <div>
                 <p><?php echo $get_sender_msg_row['message'] ?></p>
             </div>
         </div>
     <?php }else{ ?>
-        <div class="message-right">
+        <div class="message-left">
             <div>    
                 <p><?php echo $get_sender_msg_row['message'] ?></p>
             </div>

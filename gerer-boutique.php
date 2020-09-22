@@ -8,27 +8,41 @@ if (isset($_SESSION['user'])) {
     $id_user = $row['id_user'];
 }
 if (!empty($_GET['btq'])) {
-    // $_SESSION['boutique'] = $_GET['btq'];
+    if (empty($_SESSION['user'])) {
+        if (isset($_SESSION['btq']) && $_SESSION['btq'] == $_GET['btq']){
+            $get_btq_query = "SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}";    
+            $get_btq_result = mysqli_query($conn,$get_btq_query);
+            $get_btq_row = mysqli_fetch_assoc($get_btq_result);
+        }
+        else{
+            session_unset();
+            session_destroy();
+            ob_start();
+            header('location: ./gestion-boutique-connexion.php');
+        }
+    }
     $btq_inf_query = "SELECT * FROM boutiques WHERE id_btq = {$_GET['btq']}";
     $btq_inf_result = mysqli_query($conn, $btq_inf_query);
     $btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
     $id_createur = $btq_inf_row['id_createur'];
     $id_btq = $btq_inf_row['id_btq'];
-
+    if (empty($_SESSION['btq'])){
+        if($id_createur !== $id_user){
+            session_unset();
+            session_destroy();
+            ob_start();
+            header('location: ./inscription-connexion.php');
+        }
+    }
     $num_btq_msg_query = "SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever";    
     $num_btq_msg_result = mysqli_query($conn,$num_btq_msg_query);
     $num_btq_msg_row = mysqli_num_rows($num_btq_msg_result);
+    // echo $num_btq_msg_row;
     $show_btq_message = '';
     if ($num_btq_msg_row > 0) {
         $show_btq_message = 'style="display:block"';
     }
 }
-// if (!empty($_GET['msg'])) {
-//     header('lcoation: /projet/gerer-boutique.php?btq='.$btq_inf_row['id_btq'].'$msg=');
-// }
-$btq_crtr_query = "SELECT img_user,nom_user FROM utilisateurs WHERE id_user = '$id_createur'";
-$btq_crtr_result = mysqli_query($conn, $btq_crtr_query);
-$btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,27 +65,52 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             <i class="fas fa-arrow-left"></i>
         </div>
         <div id="gerer_boutique_recherche_responsive">
-            <input type="text" id="recherche_text_resp" placeholder="Entrez votre recherche ...">
+            <input type="text" id="recherche_text_resp" placeholder="Chercher un produit ...">
             <i class="fas fa-search"></i>
         </div>
         <div id="display_gb_manager_resp">
             <i class="fas fa-tasks"></i>
         </div>
+        <?php 
+        if (isset($_SESSION['btq']) && $get_btq_auth_row['messagerie'] == 1) {
+        ?>
         <div id="display_gb_messages_resp">
             <i class="fab fa-facebook-messenger"></i>
         </div>
+        <?php } ?>
+        <?php 
+        if (isset($_SESSION['user'])) {
+        ?>
+        <div id="display_gb_messages_resp">
+            <i class="fab fa-facebook-messenger"></i>
+        </div>
+        <?php } ?>
+        <?php 
+        if (isset($_SESSION['btq']) && $get_btq_auth_row['notifications'] == 1) {
+        ?>
         <div id="display_gb_notifications_resp">
             <i class="fas fa-bell"></i>
         </div>
+        <?php } ?>
+        <?php 
+        if (isset($_SESSION['user'])) {
+        ?>
+        <div id="display_gb_notifications_resp">
+            <i class="fas fa-bell"></i>
+        </div>
+        <?php } ?>
     </div>
     <div class="gerer-boutique-left">
         <h2>Gerer vos boutiques</h2>
         <div class="gerer-boutique-recherche">
-            <input type="text" id="recherche_text" placeholder="Entrez votre recherche ...">
+            <input type="text" id="recherche_text" placeholder="Chercher un produit ...">
             <i class="fas fa-search"></i>
         </div>
         <hr>
         <div class="gb-messages-notifications">
+            <?php 
+            if (isset($_SESSION['btq']) && $get_btq_auth_row['messagerie'] == 1) {
+            ?>
             <div class="gb-messages" id="display_gb_messagerie">
                 <div>
                     <i class="fab fa-facebook-messenger"></i>
@@ -83,6 +122,25 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     </div>
                 </div>
             </div>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['user'])) {
+            ?>
+            <div class="gb-messages" id="display_gb_messagerie">
+                <div>
+                    <i class="fab fa-facebook-messenger"></i>
+                </div>
+                <p>Messages</p>
+                <div class="btq-new-msg">
+                    <div id="btq_new_msg" <?php echo $show_btq_message ?>>
+                        <span><?php echo $num_btq_msg_row; ?></span>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['btq']) && $get_btq_auth_row['notifications'] == 1) {
+            ?>
             <div class="gb-notifications" id="display_gb_notifications">
                 <div>
                     <i class="fas fa-bell"></i>
@@ -94,6 +152,35 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     </div>
                 </div> -->
             </div>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['user'])) {
+            ?>
+            <div class="gb-notifications" id="display_gb_notifications">
+                <div>
+                    <i class="fas fa-bell"></i>
+                </div>
+                <p>Notifications</p>
+                <!-- <div class="btq-new-ntf">
+                    <div id="btq_new_ntf" <?php echo $show_btq_notification ?>>
+                        <span><?php echo $num_btq_ntf_row; ?></span>
+                    </div>
+                </div> -->
+            </div>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['btq']) && $get_btq_auth_row['modification'] == 1) {
+            ?>
+            <div class="gb-update" id="display_gb_informations">
+                <div>
+                    <i class="fas fa-cog"></i>
+                </div>
+                <p>Modifier la boutique</p>
+            </div>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['user'])) {
+            ?>
             <div class="gb-update" id="display_gb_informations">
                 <div>
                     <i class="fas fa-cog"></i>
@@ -107,13 +194,37 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 </div>
                 <p>Admin boutique</p>
             </div>
+            <?php } ?>
         </div>
         <input type="hidden" id="id_boutique_product" value="<?php echo $btq_inf_row['id_btq'] ?>">
         <div class="gb-options">
+            <?php 
+            if (isset($_SESSION['btq']) && $get_btq_auth_row['creation_prd'] == 1) {
+            ?>
             <button id="create_prd_button">
                 <i class="fas fa-plus"></i>
                 Créer un produit
             </button>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['user'])) {
+            ?>
+            <button id="create_prd_button">
+                <i class="fas fa-plus"></i>
+                Créer un produit
+            </button>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['btq']) && $get_btq_auth_row['creation_ctg'] == 1) {
+            ?>
+            <button id="create_ctgr_button">
+                <i class="fas fa-plus"></i>
+                Créer une catégorie
+            </button>
+            <?php } ?>
+            <?php 
+            if (isset($_SESSION['user'])) {
+            ?>
             <button id="create_ctgr_button">
                 <i class="fas fa-plus"></i>
                 Créer une catégorie
@@ -122,9 +233,30 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <i class="fas fa-trash"></i>
                 Supprimer la boutique
             </button>
+            <?php } ?>
         </div>
         <hr>
+        <?php 
+        if (isset($_SESSION['btq'])) {
+        ?>
         <div class="gerer-boutique-list-boutique">
+           <h3>boutique</h3>
+           <input type="hidden" id="id_gb_btq_<?php echo $i ?>" value="<?php echo $get_btq_row['id_btq'] ?>">
+           <div class="gerer-boutique-boutique" id="gerer_boutique_boutique_<?php echo $i ?>">
+               <?php if ($get_btq_row['logo_btq'] != '') { ?>
+                   <img src="./<?php echo $get_btq_row['logo_btq'] ?>" alt="">
+               <?php }else if($get_btq_row['logo_btq'] == ''){ ?>
+                   <img src="./boutique-logo/logo.png" alt="">
+               <?php } ?>
+               <h4><?php echo $get_btq_row['nom_btq'] ?></h4>
+           </div>
+        </div>
+        <?php } ?>
+        <?php 
+        if (isset($_SESSION['user'])) {
+        ?>
+        <div class="gerer-boutique-list-boutique">
+           
             <h3>Vos boutiques</h3>
             <?php 
                 $get_list_btq_query = "SELECT * FROM boutiques WHERE id_createur = $id_user";
@@ -144,6 +276,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             </div>
             <?php } ?>
         </div>
+        <?php } ?>
         <hr>
         <div class="gerer-boutique-categories">
             <div class="gerer-boutique-categorie-top">
@@ -166,18 +299,46 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     <p><?php echo $get_btq_ctg_row['nom_categorie']?></p>
                     <i id="display_ctg_options_<?php echo $i ?>" class="fas fa-ellipsis-h"></i>
                     <div class="categorie-options" id="categorie_options_<?php echo $i ?>">
+                        <?php 
+                        if (isset($_SESSION['btq']) && $get_btq_auth_row['modification_ctg'] == 1) {
+                        ?>    
                         <div class="categorie-option" id="update_categorie_<?php echo $i ?>">
                             <i class="fas fa-pen"></i>
                             <div>
                                 <p>Modifer la categorie</p>
                             </div>
                         </div>
+                        <?php } ?>
+                        <?php 
+                        if (isset($_SESSION['user'])) {
+                        ?>
+                        <div class="categorie-option" id="update_categorie_<?php echo $i ?>">
+                            <i class="fas fa-pen"></i>
+                            <div>
+                                <p>Modifer la categorie</p>
+                            </div>
+                        </div>
+                        <?php } ?>
+                        <?php 
+                        if (isset($_SESSION['btq']) && $get_btq_auth_row['suppression_ctg'] == 1) {
+                        ?>  
                         <div class="categorie-option" id="delete_categorie_<?php echo $i ?>">
                             <i class="fas fa-trash"></i>
                             <div>
                                 <p>Supprimer la categorie</p>
                             </div>
                         </div>  
+                        <?php } ?>
+                        <?php 
+                        if (isset($_SESSION['user'])) {
+                        ?>
+                        <div class="categorie-option" id="delete_categorie_<?php echo $i ?>">
+                            <i class="fas fa-trash"></i>
+                            <div>
+                                <p>Supprimer la categorie</p>
+                            </div>
+                        </div> 
+                        <?php } ?>
                     </div>
                 </div>
                 <?php } ?>
@@ -275,7 +436,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     </div>
                     <div class="product-description-bottom">
                         <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
-                        <button id="display_product_details_<?php echo $i ?>">Details</button>
+                        <!-- <button id="display_product_details_<?php echo $i ?>">Details</button> -->
                     </div>
                 </div>
             </div>
@@ -291,10 +452,11 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="cancel-create-product-mobile" id="cancel_create_product_resp">
                     <i class="fas fa-arrow-left"></i>
                 </div>
-                <h4>Créer un produit</h4>
+                <h4>Créer un produit a vendre!</h4>
                 <div class="cancel-create-product" id="cancel_create_product">
                     <i class="fas fa-times"></i>
                 </div>
+                <button id="create_product_button">Créer</button>
             </div>
             <div class="create-product-bottom">
                 <div class="product-input">
@@ -359,6 +521,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="cancel-update-product" id="cancel_update_product">
                     <i class="fas fa-times"></i>
                 </div>
+                <button id="update_product_button">Modifier</button>
             </div>
             <div class="update-product-bottom">
                 <input type="hidden" id="id_product_updt">
@@ -425,6 +588,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="cancel-create-categorie" id="cancel_create_categorie">
                     <i class="fas fa-times"></i>
                 </div>
+                <button id="update_categorie_button">Modifier</button>
             </div>
             <div class="create-categorie-bottom">
                 <div class="categorie-input">
@@ -447,6 +611,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <div class="cancel-update-categorie" id="cancel_update_categorie">
                     <i class="fas fa-times"></i>
                 </div>
+                <button id="update_categorie_button">Modifier</button>
             </div>
             <div class="update-categorie-bottom">
                 <div class="update-categorie-input">
@@ -563,7 +728,17 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         <div class="product-details-container"></div>
         <div id="loader_product" class="center-loader-product"></div>
     </div>
-    <div id="last_corresponder" style="display:none"></div>
+    <?php
+    $get_last_sender_query = "SELECT id_sender FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_btq' GROUP BY id_sender) ORDER BY id_msg DESC";
+    $get_last_sender_result = mysqli_query($conn, $get_last_sender_query);
+    $get_last_sender_num = mysqli_num_rows($get_last_sender_result);
+    if ($get_last_sender_num > 0) {
+    $get_last_sender_row = mysqli_fetch_assoc($get_last_sender_result);
+    ?>
+    <input type="hidden" id="last_corresponder" value="<?php echo $get_last_sender_row['id_sender']?>">
+    <?php }else{ ?>
+    <input type="hidden" id="last_corresponder" value="0">
+    <?php } ?>
     <input type="hidden" id="type_messagerie" value="boutiqueUser">
     <div id="loader" class="center"></div>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initBoutiqueMap"></script> -->
@@ -578,52 +753,57 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             } else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
+                var idBtq = $('#id_boutique_product').val();
+                history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
                 setTimeout(() => {
                     scrolldiv();
                 }, 100);
             } 
         };
-        
-        $('#last_corresponder').load('last-boutique-corresponder.php?id_btq='+<?php echo $btq_inf_row['id_btq'] ?>);
 
+        // load user new message
+        setInterval(() => {
+            $('.user-new-msg').load('load-user-new-msg.php');
+        }, 2000);
+        
         $(window).on('load',function(){
             if (history.state === 'messagerie') {
+                hideDivNotfBackg();
+                $('#display_gb_messagerie').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
-                setTimeout(() => {
-                    var idCrsp = $('#last_corresponder').text();
-                    fd.append('id_sender',idCrsp);
-                    
-                    // console.log('crsp '+idCrsp);
-                    $.ajax({
-                        url: 'load-boutique-messagerie.php',
-                        type: 'post',
-                        data: fd,
-                        contentType: false,
-                        processData: false,
-                        beforeSend: function(){
-                            $(".boutique-container").empty();
-                            $("#loader_gb_right").show();
-                        },
-                        success: function(response){
-                            if(response != 0){
-                                history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
-                                $('.boutique-container').append(response);
+                var idCrsp = $('#last_corresponder').val();
+                // fd.append('id_sender',idCrsp);
+                $.ajax({
+                    url: 'load-boutique-messagerie.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutique-container").empty();
+                        $("#loader_gb_right").show();
+                    },
+                    success: function(response){
+                        if(response != 0){
+                            history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
+                            $('.boutique-container').append(response);
                             scrolldiv();
-
-                            }
-                        },
-                        complete: function(){
-                            $("#loader_gb_right").hide();
                         }
-                    });
-                }, 0);
+                    },
+                    complete: function(){
+                        $("#loader_gb_right").hide();
+                    }
+                });
             }
             if(history.state === 'notifications'){
+                hideDivNotfBackg();
+                $('#display_gb_notifications').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
+                var numNtf = $('#num_ntf').val();
                 $.ajax({
                     url: 'load-boutique-notifications.php',
                     type: 'post',
@@ -646,6 +826,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 });
             }
             if(history.state === 'admin'){
+                hideDivNotfBackg();
+                $('#create_gb_admin').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -671,6 +853,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 });
             }
             if(history.state === 'boutique'){
+                // hideDivNotfBackg();
+                // $('#display_gb_messagerie').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -699,6 +883,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 }, 0);
             }
             if(history.state === 'informations'){
+                hideDivNotfBackg();
+                $('#display_gb_informations').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -729,11 +915,13 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
 
         $(window).on('popstate',function(){
             if (history.state === 'messagerie') {
+                hideDivNotfBackg();
+                $('#display_gb_messagerie').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
-                var idCrsp = $('#last_corresponder').text();
-                fd.append('id_sender',idCrsp);
+                var idCrsp = $('#last_corresponder').val();
+                // fd.append('id_sender',idCrsp);
                 $.ajax({
                     url: 'load-boutique-messagerie.php',
                     type: 'post',
@@ -748,8 +936,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                         if(response != 0){
                             history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
                             $('.boutique-container').append(response);
-                        scrolldiv();
-
+                            scrolldiv();
                         }
                     },
                     complete: function(){
@@ -758,6 +945,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 });
             }
             if(history.state === 'notifications'){
+                hideDivNotfBackg();
+                $('#display_gb_notifications').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -783,6 +972,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 });
             }
             if(history.state === 'admin'){
+                hideDivNotfBackg();
+                $('#create_gb_admin').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -808,6 +999,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 });
             }
             if(history.state === 'boutique'){
+                // hideDivNotfBackg();
+                // $('#display_gb_informations').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -836,6 +1029,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 }, 0);
             }
             if(history.state === 'informations'){
+                hideDivNotfBackg();
+                $('#display_gb_informations').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -1568,7 +1763,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
 
         // product options
         $(document).on('click','[id^="display_prd_options_button_"]',function(e){
-            // e.stopPropagation();
+            e.stopPropagation();
             id = $(this).attr("id").split("_")[4];
             if (windowWidth > 768) {
                 if ($('#product_options_'+id).is(':visible')) {
@@ -1695,7 +1890,15 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             $('.update-product').css('transform','');
         })
 
-        $('#cancel_update_product').click(function(){
+        $('#cancel_update_product').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            $('.update-product').hide();
+            $('.update-product-container').css({'top':'','transform':''});
+            $('.product-update-images-preview div').remove();
+        })
+
+        $('#update_product').click(function(){
             $("body").removeClass('body-after');
             $('.update-product').hide();
             $('.update-product-container').css({'top':'','transform':''});
@@ -1800,8 +2003,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $('.update-product-top').hide();
-                    $('.update-product-bottom').hide();
+                    $('.update-product').css('opacity','0.5');
                     $("#loader_load_updt").show();
                 },
                 success: function(response){
@@ -1814,14 +2016,62 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     $(".update-product").hide();
                     $("body").removeClass('body-after');
                     $('.update-product-container').css({'top':'','transform':''});
-                    $('.update-product-top').show();
-                    $('.update-product-bottom').show();
+                    $('.update-product').css('opacity','');
                 }
             });
         });
 
-        $(document).on('click','[id^="display_product_details_"]',function(){
-            var id = $(this).attr("id").split("_")[3];
+        $('#update_product_button_resp').click(function(){
+            var fd = new FormData();
+            var idPrd = $('#id_product_updt').val();
+            fd.append('id_prd',idPrd);
+            var namePrd = $('#updt_name_product').val();
+            fd.append('nom_prd',namePrd);
+            var referencePrd = $('#updt_refernce_product').val();
+            fd.append('reference_prd',referencePrd);
+            var categoriePrd = $('#updt_categorie_product').val();
+            fd.append('categorie_prd',categoriePrd);
+            var descriptionPrd = $('#updt_description_product').val();
+            fd.append('description_prd',descriptionPrd);
+            var caracteristiquePrd = $('#updt_caracteristique_product').val();
+            fd.append('caracteristique_prd',caracteristiquePrd);
+            var fonctionnalitePrd = $('#updt_fonctionnalite_product').val();
+            fd.append('fonctionnalite_prd',fonctionnalitePrd);
+            var descriptionPrd = $('#updt_avantage_product').val();
+            fd.append('avantage_prd',descriptionPrd);
+            var quantityPrd = $('#updt_quantity_product').val();
+            fd.append('quantite_prd',quantityPrd);
+            var pricePrd = $('#updt_price_product').val();
+            fd.append('prix_prd',pricePrd);
+            var id = $('#product_tail_updt').val();
+            fd.append('tail_prd',id);
+            $.ajax({
+                url: 'update-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.update-product').css('opacity','0.5');
+                    $("#loader_load_updt").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#boutique_product_'+id).replaceWith(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_load_updt").hide();
+                    $(".update-product").hide();
+                    $("body").removeClass('body-after');
+                    $('.update-product-container').css({'top':'','transform':''});
+                    $('.update-product').css('opacity','');
+                }
+            });
+        });
+
+        $(document).on('click','[id^="boutique_product_"]',function(){
+            var id = $(this).attr("id").split("_")[2];
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
@@ -1868,18 +2118,36 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
 
         $(document).on('click','#overview_product_button',function(){
             $("#comment_product_button").removeClass('product-details-bottom-top-active');
+            $("#informations_product_button").removeClass('product-details-bottom-top-active');
             $("#overview_product_button").addClass('product-details-bottom-top-active');
             
             $("#comments_product").removeClass('product-details-bottom-bottom-active');
+            // $("#informations_product").removeClass('product-details-bottom-bottom-active');
             $("#overview_product").addClass('product-details-bottom-bottom-active');
+            $("#informations_product").css('display','');
+            
+        })
+        
+        $(document).on('click','#informations_product_button',function(){
+            $("#overview_product_button").removeClass('product-details-bottom-top-active');
+            $("#informations_product_button").addClass('product-details-bottom-top-active');
+            $("#comment_product_button").removeClass('product-details-bottom-top-active');
+
+            $("#overview_product").removeClass('product-details-bottom-bottom-active');
+            // $("#informations_product").addClass('product-details-bottom-bottom-active');
+            $("#comments_product").removeClass('product-details-bottom-bottom-active');
+            $("#informations_product").css('display','grid');
         })
 
         $(document).on('click','#comment_product_button',function(){
             $("#overview_product_button").removeClass('product-details-bottom-top-active');
+            $("#informations_product_button").removeClass('product-details-bottom-top-active');
             $("#comment_product_button").addClass('product-details-bottom-top-active');
 
             $("#overview_product").removeClass('product-details-bottom-bottom-active');
+            $("#informations_product").removeClass('product-details-bottom-bottom-active');
             $("#comments_product").addClass('product-details-bottom-bottom-active');
+            $("#informations_product").css('display','');
         })
 
         $(document).on('click','.display-modele',function(){
@@ -1896,12 +2164,20 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             })
         }
 
+        function hideDivNotfBackg(){
+            $('#display_gb_messagerie').css('background','');
+            $('#display_gb_notifications').css('background','');
+            $('#display_gb_informations').css('background','');
+            $('#create_gb_admin').css('background','');
+        }
         $(document).on('click','#display_gb_messagerie',function(){
+            hideDivNotfBackg();
+            $(this).css('background','#ecedee');
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
-            var idCrsp = $('#last_corresponder').text();
-            fd.append('id_sender',idCrsp);
+            var idCrsp = $('#last_corresponder').val();
+            // fd.append('id_sender',idCrsp);
             $.ajax({
                 url: 'load-boutique-messagerie.php',
                 type: 'post',
@@ -1916,8 +2192,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     if(response != 0){
                         history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
                         $('.boutique-container').append(response);
-                    scrolldiv();
-
+                        scrolldiv();
                     }
                 },
                 complete: function(){
@@ -1999,9 +2274,12 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         })
 
         $(document).on('click','#display_gb_notifications',function(){
+            hideDivNotfBackg();
+            $(this).css('background','#ecedee');
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
+            var numNtf = $('#num_ntf').val();
             $.ajax({
                 url: 'load-boutique-notifications.php',
                 type: 'post',
@@ -2016,6 +2294,11 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     if(response != 0){
                         history.pushState('notifications','', '/projet/gerer-boutique.php?btq='+idBtq+'&ntf');
                         $('.boutique-container').append(response);
+                        if (numNtf == 0) {
+                            $(".boutique-notification").hide();
+                            $(".empty-msg-ntf").show();
+                            $(".empty-msg-ntf p").text("Vous n'avez auccune notification");
+                        }
                     }
                 },
                 complete: function(){
@@ -2025,6 +2308,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         })
 
         $(document).on('click','#display_gb_informations',function(){
+            hideDivNotfBackg();
+            $(this).css('background','#ecedee');
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
@@ -2109,7 +2394,12 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             $('.gb-message-alert').css('transform','');
         })
 
+        function hideGererBtqBtqBackg(){
+            $('.gerer-boutique-boutique').css('background','');
+        }
         $(document).on('click','[id^="gerer_boutique_boutique_"]',function(){
+            hideGererBtqBtqBackg();
+            $(this).css('background','#ecedee');
             var id = $(this).attr('id').split('_')[3];
             var fd = new FormData();
             var idBtq = $('#id_gb_btq_'+id).val();
@@ -2145,6 +2435,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
 
         // admin boutique
         $(document).on('click','#create_gb_admin',function(){
+            hideDivNotfBackg();
+            $(this).css('background','#ecedee');
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
@@ -2190,15 +2482,13 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         $(document).on('click','#create_matricule',function(e){
             $.ajax({
                 url: 'create-admin-boutique-matricule.php',
-                type: 'post',
                 beforeSend: function(){
                     $("#loader_create_matricule").show();
                 },
                 success: function(response){
-                    if(response != 0){
-                        $('.matricule').addClass('active-create-admin-span');
-                        $('#matricule_adm').val(response);
-                    }
+                    console.log(response);
+                    $('.matricule').addClass('active-create-admin-span');
+                    $('#matricule_adm').val(response);
                 },
                 complete: function(){
                     $("#loader_create_matricule").hide();
@@ -2266,10 +2556,18 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 fd.append('notifications',notificationsAdmAutrs);
                 var modificationAdmAutrs = $('#modification_adm_autrs').val();
                 fd.append('modification',modificationAdmAutrs);
-                var creationAdmAutrs = $('#creation_adm_autrs').val();
-                fd.append('product',creationAdmAutrs);
-                var categorieAdmAutrs = $('#categorie_adm_autrs').val();
-                fd.append('categorie',categorieAdmAutrs);
+                var creationPrdAdmAutrs = $('#creation_prd_adm_autrs').val();
+                fd.append('creation_prd',creationPrdAdmAutrs);
+                var modificationPrdAdmAutrs = $('#modification_prd_adm_autrs').val();
+                fd.append('modification_prd',modificationPrdAdmAutrs);
+                var suppressionPrdAdmAutrs = $('#suppression_prd_adm_autrs').val();
+                fd.append('suppression_prd',suppressionPrdAdmAutrs);
+                var creationCtgAdmAutrs = $('#creation_ctg_adm_autrs').val();
+                fd.append('creation_ctg',creationCtgAdmAutrs);
+                var modificationCtgAdmAutrs = $('#modification_ctg_adm_autrs').val();
+                fd.append('modification_ctg',modificationCtgAdmAutrs);
+                var suppressionCtgAdmAutrs = $('#suppression_ctg_adm_autrs').val();
+                fd.append('suppression_ctg',suppressionCtgAdmAutrs);
                 $.ajax({
                     url: 'create-admin-boutique.php',
                     type: 'post',
@@ -2303,10 +2601,18 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             fd.append('notifications',notificationsAdmAutrs);
             var modificationAdmAutrs = $('#modification_adm_autrs').val();
             fd.append('modification',modificationAdmAutrs);
-            var creationAdmAutrs = $('#creation_adm_autrs').val();
-            fd.append('product',creationAdmAutrs);
-            var categorieAdmAutrs = $('#categorie_adm_autrs').val();
-            fd.append('categorie',categorieAdmAutrs);
+            var creationPrdAdmAutrs = $('#creation_prd_adm_autrs').val();
+            fd.append('creation_prd',creationPrdAdmAutrs);
+            var modificationPrdAdmAutrs = $('#modification_prd_adm_autrs').val();
+            fd.append('modification_prd',modificationPrdAdmAutrs);
+            var suppressionPrdAdmAutrs = $('#suppression_prd_adm_autrs').val();
+            fd.append('suppression_prd',suppressionPrdAdmAutrs);
+            var creationCtgAdmAutrs = $('#creation_ctg_adm_autrs').val();
+            fd.append('creation_ctg',creationCtgAdmAutrs);
+            var modificationCtgAdmAutrs = $('#modification_ctg_adm_autrs').val();
+            fd.append('modification_ctg',modificationCtgAdmAutrs);
+            var suppressionCtgAdmAutrs = $('#suppression_ctg_adm_autrs').val();
+            fd.append('suppression_ctg',suppressionCtgAdmAutrs);
             $.ajax({
                 url: 'update-admin-boutique.php',
                 type: 'post',
@@ -2420,8 +2726,8 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
             fd.append('id_btq',idBtq);
-            var idCrsp = $('#last_corresponder').text();
-            fd.append('id_sender',idCrsp);
+            var idCrsp = $('#last_corresponder').val();
+            // fd.append('id_sender',idCrsp);
             $.ajax({
                 url: 'load-boutique-messagerie.php',
                 type: 'post',
@@ -2436,8 +2742,7 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                     if(response != 0){
                         history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
                         $('.boutique-container').append(response);
-                    scrolldiv();
-
+                        scrolldiv();
                     }
                 },
                 complete: function(){
@@ -2494,10 +2799,59 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             });
         }
 
-        // $(document).on('click','.gerer-boutique-left',function(e){
-        //     e.stopPropagation();
-        //     $(this).css('transform','translateX(0)');
-        // })
+        $(document).on('keypress',"#recherche_text",function() {
+            if (event.which == 13) {
+                var fd = new FormData();
+                var rechercheText = $('#recherche_text').val();
+                fd.append('text',rechercheText);
+                var idBtq = $('#id_boutique_product').val();
+                fd.append('id_btq',idBtq);
+                $.ajax({
+                    url: 'recherche-boutique-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutique-container").empty();
+                        $("#loader_gb_right").show();
+                    },
+                    success: function(response){
+                        $('.boutique-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_gb_right").hide();
+                    }
+                });
+            }
+        });
+
+        $(document).on('keypress',"#recherche_text_resp",function() {
+            if (event.which == 13) {
+                var fd = new FormData();
+                var rechercheText= $('#recherche_text_resp').val();
+                fd.append('text',rechercheText);
+                var idBtq = $('#id_boutique_product').val();
+                fd.append('id_btq',idBtq);
+                $.ajax({
+                    url: 'recherche-boutique-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutique-container").empty();
+                        $("#loader_gb_right").show();
+                    },
+                    success: function(response){
+                        $('.boutique-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_gb_right").hide();
+                    }
+                });
+            }
+        });
 
         var uid = <?php echo $btq_inf_row['id_btq']; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;

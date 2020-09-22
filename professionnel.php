@@ -347,6 +347,7 @@
             if ($btq_row['etat_btq'] == 1) { $class_btq = 'unset-btq'; }
             else{ $class_btq = ''; }
             ?>
+            <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>">
             <div class="user-boutique <?php echo $class_btq?>" id="user_boutique_<?php echo $j ?>">
                 <?php if ($btq_row['logo_btq'] != '') { ?>
                     <img src="./<?php echo $btq_row['logo_btq'] ?>" alt="">
@@ -355,16 +356,35 @@
                 <?php } ?>
                 <div class="user-boutique-options">
                     <h4><?php echo $btq_row['nom_btq'] ?></h4>
-                    <div>
+                    <div class="user-boutique-option">
                         <input type="hidden" id="nom_btq_<?php echo $j ?>" value="<?php echo $btq_row['nom_btq'] ?>">
                         <input type="hidden" id="id_btq_<?php echo $j ?>" value="<?php echo $btq_row['id_btq'] ?>">
-                        <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>" onclick="pushState(<?php echo $btq_row['id_btq']?>)">Voir la boutiqe</a>
-                        <!-- <button class="delete-boutique-btn" id="delete_boutique_btn_<?php echo $j ?>">Supprimer</button> -->
-                        <p>Récuperer la boutque avant le <span>(<?php echo $btq_row['date_recuperation'] ?>)</span></p>
-                        <button class="recover-boutique-btn" id="recover_boutique_btn_<?php echo $j ?>">Récupérer</button>
+                        <div class="user-boutique-messages">
+                            <p>Messages</p>
+                            <i class="fab fa-facebook-messenger"></i>
+                            <?php 
+                            $num_btq_msg_query = "SELECT id_msg FROM messages WHERE id_sender = {$btq_row['id_btq']} AND etat_sender_msg = {$btq_row['id_btq']} GROUP BY id_recever";    
+                            $num_btq_msg_result = mysqli_query($conn,$num_btq_msg_query);
+                            $num_btq_msg_row = mysqli_num_rows($num_btq_msg_result);
+                            $show_btq_message = '';
+                            if ($num_btq_msg_row > 0) {
+                                $show_btq_message = 'style="display:block"';
+                            }
+                            ?>
+                            <div <?php echo $show_btq_message ?>><span><?php echo $num_btq_msg_row ?></span></div>
+                        </div>
+                        <div class="user-boutique-notifications">
+                            <p>Notifications</p>
+                            <i class="fas fa-bell"></i>
+                            <div><span></span></div>
+                        </div>
+                        <!-- <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>" onclick="pushState(<?php echo $btq_row['id_btq']?>)">Voir la boutiqe</a> -->
+                        <!-- <p>Récuperer la boutque avant le <span>(<?php echo $btq_row['date_recuperation'] ?>)</span></p> -->
+                        <!-- <button class="recover-boutique-btn" id="recover_boutique_btn_<?php echo $j ?>">Récupérer</button> -->
                     </div>
                 </div>
             </div>
+            </a>
             <?php } ?>
         </div>
     </div>

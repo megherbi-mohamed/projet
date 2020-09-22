@@ -80,7 +80,7 @@ $get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
         </div>
         <div class="product-description-bottom">
             <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
-            <button id="display_product_details_<?php echo $i ?>">Details</button>
+            <!-- <button id="display_product_details_<?php echo $i ?>">Details</button> -->
         </div>
     </div>
 </div>

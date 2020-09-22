@@ -5,43 +5,28 @@ if (isset($_SESSION['user'])) {
     $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
     $result = mysqli_query($conn, $cnx_user_query);
     $row = mysqli_fetch_assoc($result);
+    $id_user = $row['id_user'];
 }
-
+$text = '';
 if (isset($_GET['r'])) {
     $text = $_GET['r'];
     if ($text != '') {
-        $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel' AND nom_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%'";
+        $rech_user_query = "SELECT id_user AS id, type_user,nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
+        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'";
         $rech_user_result = mysqli_query($conn, $rech_user_query);
-        $rech_user_num = mysqli_num_rows($rech_user_result);
     }
     else{
-        $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel'";
+        $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques";
         $rech_user_result = mysqli_query($conn, $rech_user_query);
-        $rech_user_num = mysqli_num_rows($rech_user_result);
     }  
 }
 else{
-    $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel'";
+    $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques";
     $rech_user_result = mysqli_query($conn, $rech_user_query);
-    $rech_user_num = mysqli_num_rows($rech_user_result);
 }
   
-if (isset($_GET['r'])) {
-    $text = $_GET['r'];
-    if ($text != '') {
-        $rech_btq_query = "SELECT * FROM boutiques WHERE etat_btq = 1 AND (nom_btq LIKE '%$text%' OR type_btq LIKE '%$text%' OR ville_btq LIKE '%$text%' OR dscrp_btq LIKE '%$text%')";
-        $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-    }
-    else{
-        $rech_btq_query = "SELECT * FROM boutiques  WHERE etat_btq = 1";
-        $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-    }
-}
-else{
-    $rech_btq_query = "SELECT * FROM boutiques WHERE etat_btq = 1";
-    $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-}
-
 $get_ville_query = "SELECT ville FROM villes";
 $get_ville_result = mysqli_query($conn, $get_ville_query);
 ?>
@@ -159,7 +144,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 $categories_result = mysqli_query($conn,$categories_query);
                 while ($categories_row = mysqli_fetch_assoc($categories_result)) {
                 ?>
-                <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -179,7 +164,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 $categories_result = mysqli_query($conn,$categories_query);
                 while ($categories_row = mysqli_fetch_assoc($categories_result)) {
                 ?>
-                <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -199,7 +184,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 $categories_result = mysqli_query($conn,$categories_query);
                 while ($categories_row = mysqli_fetch_assoc($categories_result)) {
                 ?>
-                <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -219,7 +204,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 $categories_result = mysqli_query($conn,$categories_query);
                 while ($categories_row = mysqli_fetch_assoc($categories_result)) {
                 ?>
-                <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -235,11 +220,11 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
+                $categories_result = mysqli_query($conn,$categories_query);
+                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                ?>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -255,11 +240,11 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
+                $categories_result = mysqli_query($conn,$categories_query);
+                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                ?>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -275,11 +260,11 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
+                $categories_result = mysqli_query($conn,$categories_query);
+                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                ?>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -295,11 +280,11 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
+                $categories_result = mysqli_query($conn,$categories_query);
+                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                ?>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -315,11 +300,11 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
+                $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
+                $categories_result = mysqli_query($conn,$categories_query);
+                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                ?>
+                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
             </div>
         </div>
@@ -628,42 +613,140 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             }
         });
 
-        if (windowWidth <= 768) {
-            $(document).on('keypress',"#recherche_text_resp",function() {
-                if (event.which == 13) {
-                    var rechercheTextRsp = $('#recherche_text_resp').val();
-                    $('.recherche-middle').load('recherche-professionnel.php?r='+rechercheTextRsp);                
-                    history.replaceState(null,'', './recherche.php?r='+rechercheTextRsp);
-                    if (typeof google === 'object' && typeof google.maps === 'object') {
-                        initMap(rechercheTextRsp);
-                    }else{
-                        setTimeout(() => {
+        $(document).on('keypress',"#recherche_text_resp",function() {
+            if (event.which == 13) {
+                var rechercheTextRsp = $('#recherche_text_resp').val();
+                var fd = new FormData();
+                fd.append('r',rechercheTextRsp);
+                $.ajax({
+                    url: 'recherche-professionnel.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        history.replaceState(null,'', './recherche.php?r='+rechercheTextRsp);
+                        $('.recherche-middle-content').empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.recherche-middle-content').append(response);
+                        if (typeof google === 'object' && typeof google.maps === 'object') {
                             initMap(rechercheTextRsp);
-                        }, 2000);
+                        }else{
+                            setTimeout(() => {
+                                initMap(rechercheTextRsp);
+                            }, 2000);
+                        }
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
                     }
-                }
-            });
-        }
+                });
+            }
+        });
 
         $('#recherche_text_resp').click(function(e){
             e.stopPropagation();
             setRechercheSearchBar();
         })
 
+
         $(document).ready(function(){
-            if (windowWidth <= 768) {
-                $("#rechercher_rsp").click();
-            }else{
-                $("#rechercher").click();
-            }
+            var rechercheText = $('#r').val();
+            $('#recherche_text').val(rechercheText);
+            $('#recherche_text_resp').val(rechercheText);
+            var fd = new FormData();
+            fd.append('r',rechercheText);
+            $.ajax({
+                url: 'recherche-professionnel.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    if (typeof google === 'object' && typeof google.maps === 'object') {
+                        initMap(rechercheText);
+                    }else{
+                        setTimeout(() => {
+                            initMap(rechercheText);
+                        }, 2000);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
         });
 
         $(window).on('beforeunload', function(){
-            if (windowWidth <= 768) {
-                $("#rechercher_rsp").click();
-            }else{
-                $("#rechercher").click();
-            }
+            var rechercheText = $('#r').val();
+            $('#recherche_text').val(rechercheText);
+            $('#recherche_text_resp').val(rechercheText);
+            var fd = new FormData();
+            fd.append('r',rechercheText);
+            $.ajax({
+                url: 'recherche-professionnel.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    if (typeof google === 'object' && typeof google.maps === 'object') {
+                        initMap(rechercheText);
+                    }else{
+                        setTimeout(() => {
+                            initMap(rechercheText);
+                        }, 2000);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        });
+
+        $(document).on('click',".sous-categorie",function() {
+            var fd = new FormData();
+            var rechercheText = $(this).text();
+            fd.append('r',rechercheText);
+            $.ajax({
+                url: 'recherche-professionnel.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    if (typeof google === 'object' && typeof google.maps === 'object') {
+                        initMap(rechercheText);
+                    }else{
+                        setTimeout(() => {
+                            initMap(rechercheText);
+                        }, 2000);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
         });
 
         if (windowWidth <= 768) {
@@ -682,21 +765,6 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 lastScrollTop = st;
             });
         }
-
-        // var r = $('#r').val();
-        // if (r != '') {
-        //     $('.recherche-middle-content').load('recherche-professionnel.php?r='+r);
-        // }else{
-        //     $('.recherche-middle-content').load('recherche-professionnel.php?r=');
-        // }
-
-        // $(".recherche-middle-content").bind("ajaxStart", function(){
-        //     console.log('med');
-        //     $(this).show();
-        // }).bind("ajaxStop", function(){
-        //     $(this).hide();
-        //     console.log('med1');
-        // });
     
     </script>
 </body>

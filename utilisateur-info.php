@@ -6,20 +6,21 @@ if (isset($_SESSION['user'])) {
     $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
     $result = mysqli_query($conn, $cnx_user_query);
     $row = mysqli_fetch_assoc($result);
+    $id_user = $row['id_user'];
 
     $msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC";
     $msg_result = mysqli_query($conn,$msg_query);
 
-    $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND etat_msg = 1 GROUP BY id_sender";    
-    $num_msg_result = mysqli_query($conn,$num_msg_query);
-    $num_message = 0;
-    while ($num_msg_row = mysqli_fetch_assoc($num_msg_result)) {
-        $num_message++;
-    }
-    $etat_message = '';
-    if ($num_message > 0) {
-        $etat_message = 'active-message-num';
-    }else{ $etat_message = '';}
+    // $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND etat_msg = 1 GROUP BY id_sender";    
+    // $num_msg_result = mysqli_query($conn,$num_msg_query);
+    // $num_message = 0;
+    // while ($num_msg_row = mysqli_fetch_assoc($num_msg_result)) {
+    //     $num_message++;
+    // }
+    // $etat_message = '';
+    // if ($num_message > 0) {
+    //     $etat_message = 'active-message-num';
+    // }else{ $etat_message = '';}
 
     if (isset($_POST['send_message'])) {
 

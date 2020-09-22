@@ -216,6 +216,9 @@ if (isset($_SESSION['user'])) {
             // $('.clear-session').css('height','60px');
         }
 
+        <?php 
+            if (isset($_SESSION['user'])) {
+        ?>
         var uid = <?php echo $id_user; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
@@ -224,6 +227,7 @@ if (isset($_SESSION['user'])) {
         $(document).ready(function() {
             start(websocket_server);
         });
+        <?php } ?>
     </script>
     <script src="css-js/websocket.js"></script>
 </body>

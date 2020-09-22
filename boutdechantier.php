@@ -28,7 +28,7 @@ if (isset($_SESSION['user'])) {
             <i class="fas fa-arrow-left"></i>
         </div>
         <div id="boutdechantier_recherche_responsive">
-            <input type="text" id="recherche_text_resp" placeholder="Entrez votre recherche ...">
+            <input type="text" id="recherche_text_resp" placeholder="Chercher un produit ...">
             <i class="fas fa-search"></i>
         </div>
         <div id="display_categories">
@@ -41,8 +41,22 @@ if (isset($_SESSION['user'])) {
     <div class="boutdechantier-left">
         <h2>Bout de chantier</h2>
         <div class="boutdechantier-recherche">
-            <input type="text" id="recherche_text" placeholder="Entrez votre recherche ...">
+            <input type="text" id="recherche_text" placeholder="Chercher un produit ...">
             <i class="fas fa-search"></i>
+        </div>
+        <hr>
+        <div class="boutdechantier-annonces">
+            <div class="display-bt-product-user" id="display_bt_product_user">
+                <div>
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <p>Vos annonces</p>
+                <div class="bt-annonces-notification">
+                    <div id="bt_annc_ntf">
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <hr>
         <div class="boutdechantier-categories">
@@ -314,99 +328,285 @@ if (isset($_SESSION['user'])) {
         </div>
     </div>
     <div class="boutdechantier-right">
-        <div class="boutdechantier-right-top">
-            <div class="boutdechantier-right-pub"></div>
-            <div class="boutdechantier-right-slider">
-                <div class="boutdechantier-right-slider-img">
-                    <img class="current-slide" src="./boutique-logo/logo.png" alt="">
-                    <img src="./boutique-logo/logo2.jpg" alt="">
-                    <img src="./boutique-logo/logo3.jpg" alt="">
+        <div class="boutdechantier-right-container">
+            <div class="boutdechantier-right-top">
+                <div class="boutdechantier-right-pub"></div>
+                <div class="boutdechantier-right-slider">
+                    <div class="boutdechantier-right-slider-img">
+                        <img class="current-slide" src="./boutique-logo/logo.png" alt="">
+                        <img src="./boutique-logo/logo2.jpg" alt="">
+                        <img src="./boutique-logo/logo3.jpg" alt="">
+                    </div>
+                    <div id="prev_slide">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div id="next_slide">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
                 </div>
-                <div id="prev_slide">
-                    <i class="fas fa-chevron-left"></i>
+                <div class="boutdechantier-right-pub"></div>
+            </div>
+            <div class="boutdechantier-right-middle"></div>
+            <div class="boutdechantier-right-bottom">
+            <?php 
+            $get_product_query = "SELECT * FROM produit_boutdechantier ORDER BY date DESC";
+            $get_product_result = mysqli_query($conn,$get_product_query);
+            $i = 0;
+            while ($get_product_row = mysqli_fetch_assoc($get_product_result)){
+            $i++;
+            $get_product_media_query = "SELECT * FROM bt_produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1";
+            $get_product_media_result = mysqli_query($conn,$get_product_media_query);
+            $get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
+            ?>
+                <div class="bt-product">
+                    <div class="bt-product-img">
+                        <img src="<?php echo $get_product_media_row['media_url'] ?>" alt="">
+                    </div>
+                    <div class="bt-product-description">
+                        <p><?php echo $get_product_row['lieu_prd'] ?></p>
+                        <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
+                    </div>
                 </div>
-                <div id="next_slide">
-                    <i class="fas fa-chevron-right"></i>
+            <?php } ?>
+            </div>
+        </div>
+        <div id="loader_load" class="center"></div>
+    </div>
+    <div class="update-product" id="update_product">
+        <div class="update-product-container">
+            <div class="update-product-top">
+                <div class="cancel-update-product-mobile" id="cancel_update_product_resp">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <h4>Modifier l'annonce</h4>
+                <div class="cancel-update-product" id="cancel_update_product">
+                    <i class="fas fa-times"></i>
+                </div>
+                <button id="update_product_button_resp">Modifier</button>
+            </div>
+            <div class="update-product-bottom">
+                <input type="hidden" id="id_product_updt">
+                <input type="hidden" id="product_tail_updt">
+                <!-- <div class="product-input">
+                    <input type="text" id="updt_lieu_bt_prd">
+                    <span class="lieu-bt-prd">Lieu *</span>
+                </div> -->
+                <div class="product-input">
+                    <input type="text" id="updt_name_bt_prd">
+                    <span class="name-bt-prd active-updt-bt-prd-span">Titre *</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="updt_categorie_bt_prd">
+                    <span class="categorie-bt-prd active-updt-bt-prd-span">Categorie</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" id="updt_description_bt_prd">
+                    <span class="description-bt-prd active-updt-bt-prd-span">Description</span>
+                </div>
+                <div class="product-input">
+                    <input type="number" id="updt_quantity_bt_prd">
+                    <span class="quanntite-bt-prd">Quantite *</span>
+                </div>
+                <div class="product-input">
+                    <select id="updt_type_bt_prd">
+                        <option value="payant">Payant</option>
+                        <option value="gratuit">Gratuit</option>
+                    </select>
+                    <span class="type-bt-prd">Type *</span>
+                </div>
+                <div class="product-input">
+                    <input type="text" step="000000.00" id="updt_price_bt_prd" value="0">
+                    <span class="price-bt-prd">Prix *</span>
+                </div>
+                <div class="product-update-images-preview"></div>
+                <div class="update-product-options">
+                    <P>Ajouter des photos</P>
+                    <div id="update_product_image">
+                        <i class="far fa-images"></i>
+                    </div>
+                </div>
+                <form enctype="multipart/form-data">
+                    <input type="file" id="image_prd_updt" name="images_prd_updt[]" accept="image/*" multiple>
+                    <input type="button" id="update_product_image_button">
+                </form>
+                <button id="update_product_button">Enregistrer la modification</button>
+            </div>
+            <div id="loader_load_updt" class="center"></div>
+        </div>
+    </div>
+    <div class="delete-product" id="delete_product">
+        <div class="delete-product-container" id="delete_product_container">
+            <input type="hidden" id="product_tail_delete">
+            <input type="hidden" id="id_product_delete">
+            <div class="delete-product-top">
+                <h4>Supprimer l'annonce ?</h4>
+                <div class="cancel-delete-product" id="cancel_delete_product">
+                    <i class="fas fa-times"></i>
                 </div>
             </div>
-            <div class="boutdechantier-right-pub"></div>
+            <div class="delete-product-middle">
+                <p>Voulez vous vraiment Supprimer l'annonce ?</p>
+            </div>
+            <div class="delete-product-bottom">
+                <div></div>
+                <div></div>
+                <button id="cancel_delete_prd_button">Annuler</button>
+                <button id="delete_prd_button">Supprimer</button>
+            </div>
         </div>
-        <div class="boutdechantier-right-middle"></div>
-        <div class="boutdechantier-right-bottom">
-            
+    </div>
+    <div class="gb-message-alert">
+        <p>L'annence a été bien renouvelée !</p>
+        <div class="cancel-alert-message">
+            <i class="fas fa-times"></i>
         </div>
     </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./css-js/main.js"></script>
     <script>
+        var $pushState = 0;
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
                 document.querySelector("body").style.visibility = "hidden"; 
                 document.querySelector("#loader").style.visibility = "visible"; 
-            } else { 
+            } 
+            else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
+
+                // if (history.state == null) {
+                //     history.pushState('boutdechantier','', '/projet/boutdechantier.php');
+                // }
             } 
         };
+        // if (history.state == null) {
+        //     console.log('null');
+        // }
+        // console.log(history.state);
+        $(window).on('load',function(){
+            if (history.state === 'annonces') {
+                // hideDivNotfBackg();
+                $('#display_bt_product_user').css('background','#ecedee');
+                $.ajax({
+                    url: 'laod-user-bt-annonces.php',
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.pushState('annonces','', '/projet/boutdechantier.php?annonces');
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'boutdechantier') {
+                // hideDivNotfBackg();
+                $('#display_bt_product_user').css('background','');
+                $.ajax({
+                    url: 'laod-boutdechantier.php',
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.pushState('boutdechantier','', '/projet/boutdechantier.php');
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+
+        })
+
+        $(window).on('popstate',function(){
+            if (history.state === 'annonces') {
+                // hideDivNotfBackg();
+                $('#display_bt_product_user').css('background','#ecedee');
+                $.ajax({
+                    url: 'laod-user-bt-annonces.php',
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.pushState('annonces','', '/projet/boutdechantier.php?annonces');
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'boutdechantier') {
+                // hideDivNotfBackg();
+                $('#display_bt_product_user').css('background','');
+                $.ajax({
+                    url: 'laod-boutdechantier.php',
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.pushState('boutdechantier','', '/projet/boutdechantier.php');
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+        })
+
+        // var slider = document.querySelector('.boutdechantier-right-slider');
+        // var slides = document.querySelectorAll('.boutdechantier-right-slider img');
+        // var next = document.querySelector('#next_slide');
+        // var prev = document.querySelector('#prev_slide');
+        // var intervalTime = 3000;
+        // var sildeInterval = setInterval(nextSlide, intervalTime);
+
+        // function nextSlide(){
+        //     var current = document.querySelector(".current-slide");
+        //     current.classList.remove("current-slide");
+        //     if (current.nextElementSibling) {
+        //         current.nextElementSibling.classList.add("current-slide");
+        //     }else{
+        //         slides[0].classList.add("current-slide");
+        //     }
+        // }
+
+        // function prevSlide(){
+        //     var current = document.querySelector(".current-slide");
+        //     current.classList.remove("current-slide");
+        //     if (current.previousElementSibling) {
+        //         current.previousElementSibling.classList.add("current-slide");
+        //     }else{
+        //         slides[slides.length-1].classList.add("current-slide");
+        //     }
+        // }
         
-        var windowWidth = window.innerWidth;
-        if (windowWidth <= 768) {
-            $('.footer').css('display','none');
-            var session = $('#session').val();
-            if (session != 0) {
-                // $('.navbar-right').hide();
-            }
-            else{}
-        }
-        else{
-            $('.clear-session').css('height','60px');
-        }
+        // next.addEventListener('click', ()=>{
+        //     nextSlide();
+        //     clearInterval(sildeInterval);
+        // });
 
-        var slider = document.querySelector('.boutdechantier-right-slider');
-        var slides = document.querySelectorAll('.boutdechantier-right-slider img');
-        var next = document.querySelector('#next_slide');
-        var prev = document.querySelector('#prev_slide');
-        var intervalTime = 3000;
-        var sildeInterval = setInterval(nextSlide, intervalTime);
+        // prev.addEventListener('click', ()=>{
+        //     prevSlide()
+        //     clearInterval(sildeInterval);
+        // });
 
-        function nextSlide(){
-            var current = document.querySelector(".current-slide");
-            current.classList.remove("current-slide");
-            if (current.nextElementSibling) {
-                current.nextElementSibling.classList.add("current-slide");
-            }else{
-                slides[0].classList.add("current-slide");
-            }
-        }
+        // slider.addEventListener('mouseover', ()=>{
+        //     clearInterval(sildeInterval);
+        // });
 
-        function prevSlide(){
-            var current = document.querySelector(".current-slide");
-            current.classList.remove("current-slide");
-            if (current.previousElementSibling) {
-                current.previousElementSibling.classList.add("current-slide");
-            }else{
-                slides[slides.length-1].classList.add("current-slide");
-            }
-        }
-        
-        next.addEventListener('click', ()=>{
-            nextSlide();
-            clearInterval(sildeInterval);
-        });
-
-        prev.addEventListener('click', ()=>{
-            prevSlide()
-            clearInterval(sildeInterval);
-        });
-
-        slider.addEventListener('mouseover', ()=>{
-            clearInterval(sildeInterval);
-        });
-
-        slider.addEventListener('mouseleave', ()=>{
-            sildeInterval = setInterval(nextSlide, intervalTime);
-        });
+        // slider.addEventListener('mouseleave', ()=>{
+        //     sildeInterval = setInterval(nextSlide, intervalTime);
+        // });
 
         var btCategorie = document.querySelectorAll('.bt-categorie');
         var btSousCategorie = document.querySelectorAll('.bt-sous-gategorie');
@@ -447,6 +647,404 @@ if (isset($_SESSION['user'])) {
             setBoutdechantierSearchBar();
         })
 
+        $(document).on('keypress',"#recherche_text",function() {
+            if (event.which == 13) {
+                var fd = new FormData();
+                var rechercheText = $('#recherche_text').val();
+                fd.append('text',rechercheText);
+                $.ajax({
+                    url: 'recherche-boutdechantier-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+        });
+
+        $(document).on('keypress',"#recherche_text_resp",function() {
+            if (event.which == 13) {
+                var fd = new FormData();
+                var rechercheText = $('#recherche_text_resp').val();
+                fd.append('text',rechercheText);
+                $.ajax({
+                    url: 'recherche-boutdechantier-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.boutdechantier-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+        });
+
+        // display user annonces
+        $(document).on('click',"#display_bt_product_user",function() {
+            $(this).css('background','#ecedee');
+            $.ajax({
+                url: 'laod-user-bt-annonces.php',
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    history.pushState('annonces','', '/projet/boutdechantier.php?annonces');
+                    $('.boutdechantier-right-container').append(response);
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        });
+
+        // update boutdechantier annonce
+        $(document).on('focus','.update-product-bottom input',function(){
+            var id = $(this).attr('id');
+            if (id == 'updt_lieu_bt_prd') {
+                $('.lieu-bt-prd').addClass('active-updt-bt-prd-span');
+            }
+            if (id == 'updt_name_bt_prd') {
+                $('.name-bt-prd').addClass('active-updt-bt-prd-span');
+            }
+            if (id == 'updt_categorie_bt_prd') {
+                $('.categorie-bt-prd').addClass('active-updt-bt-prd-span');
+            }
+            if (id == 'updt_description_bt_prd') {
+                $('.description-bt-prd').addClass('active-updt-bt-prd-span');
+            }
+        })
+        
+        $(document).on('click','[id^="update_bt_annc_"]',function(){
+            id = $(this).attr("id").split("_")[3];
+            var idPrd = $('#id_prd_'+id).val(); 
+            var prdTail = $('#tail_prd_'+id).val();
+            var prdName = $('#name_prd_'+id).val();
+            var prdCategorie = $('#categorie_prd_'+id).val();
+            var prdDescription = $('#description_prd_'+id).val();
+            var prdQuantite = $('#quantity_prd_'+id).val();
+            var prdType = $('#type_prd_'+id).val();
+            var prdPrix = $('#price_prd_'+id).val();
+            
+            $('#id_product_updt').val(idPrd);
+            $('#product_tail_updt').val(prdTail);
+            $('#updt_name_bt_prd').val(prdName);
+            $('#updt_categorie_bt_prd').val(prdCategorie);
+            $('#updt_description_bt_prd').val(prdDescription);
+            $('#updt_quantity_bt_prd').val(prdQuantite);
+            $('#updt_type_bt_prd').val(prdType);
+            $('#updt_price_bt_prd').val(prdPrix);
+
+            $('.product-update-images-preview').load('bt-product-images-preview.php?id_prd='+idPrd);
+
+            if (windowWidth <= 768) {
+                $('.update-product').css('transform','translateX(0)');
+            }
+            else{
+                $("body").addClass('body-after');
+                $('.update-product').show();
+                $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+            }
+        });
+
+        $('#cancel_update_product_resp').click(function(){
+            $('.update-product').css('transform','');
+        })
+
+        $('#cancel_update_product').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            $('.update-product').hide();
+            $('.update-product-container').css({'top':'','transform':''});
+            $('.product-update-images-preview div').remove();
+        })
+
+        $('#update_product').click(function(){
+            $("body").removeClass('body-after');
+            $('.update-product').hide();
+            $('.update-product-container').css({'top':'','transform':''});
+            $('.product-update-images-preview div').remove();
+        })
+
+        //update product image
+        $('.update-product-container').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#update_product_image').click(function(){
+            $('#image_prd_updt').click();
+        });
+
+        $('#image_prd_updt').on('change',function(){ 
+            $('#update_product_image_button').click();
+        });
+
+        $('#update_product_image_button').click(function(){
+            var form_data = new FormData();
+            var idBtq = $('#id_boutique_product').val();
+            form_data.append('id_btq',idBtq);
+            var idPrd = $('#id_product_updt').val();
+            form_data.append('id_prd',idPrd);
+            var totalfiles = document.getElementById('image_prd_updt').files.length;
+            for (let i = 0; i < totalfiles; i++) {
+                form_data.append("images[]", document.getElementById('image_prd_updt').files[i]);
+            }
+            $.ajax({
+                url: 'upload-images-bt-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    // console.log(response);
+                    if (windowWidth > 768) {
+                        $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    for(let i = 0; i < response.length; i++) {
+                        var src = response[i];
+                        $('.product-update-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+i+"'><div id='product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                    }
+                }
+            });
+        });
+
+        // remove update product images preview
+        $('.product-update-images-preview').on('click','[id^="product_delete_preview_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var fd = new FormData();
+            var idBtq = $('#id_boutique_product').val();
+            fd.append('id_btq',idBtq);
+            var idPrd = $('#id_product_updt').val();
+            fd.append('id_prd',idPrd);
+            var mediaUrl = $('.product-update-images-preview #product_image_preview_'+id+' img').attr('src');
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'update-images-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        $('.product-update-images-preview #product_image_preview_'+id).remove();
+                    }
+                }
+            });
+        });
+
+        $('#update_product_button').click(function(){
+            console.log('click');
+            var fd = new FormData();
+            var idPrd = $('#id_product_updt').val();
+            fd.append('id_prd',idPrd);
+            var namePrd = $('#updt_name_bt_prd').val();
+            fd.append('nom_prd',namePrd);
+            var categoriePrd = $('#updt_categorie_bt_prd').val();
+            fd.append('categorie_prd',categoriePrd);
+            var descriptionPrd = $('#updt_description_bt_prd').val();
+            fd.append('description_prd',descriptionPrd);
+            var quantityPrd = $('#updt_quantity_bt_prd').val();
+            fd.append('quantite_prd',quantityPrd);
+            var typePrd = $('#updt_type_bt_prd').val();
+            fd.append('type_prd',typePrd);
+            var pricePrd = $('#updt_price_bt_prd').val();
+            fd.append('prix_prd',pricePrd);
+            var id = $('#product_tail_updt').val();
+            fd.append('tail_prd',id);
+            $.ajax({
+                url: 'update-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.update-product').css('opacity','0.5');
+                    $("#loader_load_updt").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#user_bt_annonce_'+id).replaceWith(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_load_updt").hide();
+                    $(".update-product").hide();
+                    $("body").removeClass('body-after');
+                    $('.update-product-container').css({'top':'','transform':''});
+                    $('.update-product').css('opacity','');
+                }
+            });
+        });
+
+        $('#update_product_button_resp').click(function(){
+            console.log('click');
+            var fd = new FormData();
+            var idPrd = $('#id_product_updt').val();
+            fd.append('id_prd',idPrd);
+            var namePrd = $('#updt_name_bt_prd').val();
+            fd.append('nom_prd',namePrd);
+            var categoriePrd = $('#updt_categorie_bt_prd').val();
+            fd.append('categorie_prd',categoriePrd);
+            var descriptionPrd = $('#updt_description_bt_prd').val();
+            fd.append('description_prd',descriptionPrd);
+            var quantityPrd = $('#updt_quantity_bt_prd').val();
+            fd.append('quantite_prd',quantityPrd);
+            var typePrd = $('#updt_type_bt_prd').val();
+            fd.append('type_prd',typePrd);
+            var pricePrd = $('#updt_price_bt_prd').val();
+            fd.append('prix_prd',pricePrd);
+            var id = $('#product_tail_updt').val();
+            fd.append('tail_prd',id);
+            $.ajax({
+                url: 'update-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.update-product').css('opacity','0.5');
+                    $("#loader_load_updt").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#user_bt_annonce_'+id).replaceWith(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_load_updt").hide();
+                    $(".update-product").hide();
+                    $("body").removeClass('body-after');
+                    $('.update-product-container').css({'top':'','transform':''});
+                    $('.update-product').css('opacity','');
+                }
+            });
+        });
+
+        $(document).on('click','[id^="renew_bt_annc_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var fd = new FormData();
+            var idPrd = $('#id_prd_'+id).val();
+            fd.append('id_prd',idPrd);
+            $.ajax({
+                url: 'renew-user-annonce.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.user_bt_annonce_'+id).css('opacity','0.5');
+                    $('.user_bt_annonce_'+id+' loader_annonce').show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('.gb-message-alert').css('transform','translateY(0)');
+                    }
+                },
+                complete: function(){
+                    $('.user_bt_annonce_'+id).css('opacity','');
+                    $('.user_bt_annonce_'+id+' loader_annonce').hide();
+                    setTimeout(() => {
+                        $('.gb-message-alert').css('transform','');
+                    }, 4000);
+                }
+            });
+        });
+
+        $(document).on('click','.cancel-alert-message',function(){
+            $('.gb-message-alert').css('transform','');
+        })
+
+        // delete annonce
+        $(document).on('click','[id^="delete_bt_annc_"]',function(){
+            id = $(this).attr("id").split("_")[3];
+            var idPrd = $('#id_prd_'+id).val();
+            var prdTail = $('#tail_prd_'+id).val();
+            $('#id_product_delete').val(idPrd);
+            $('#product_tail_delete').val(prdTail);
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $('#delete_product').show();
+            }else{
+                $('#delete_product').css('transform','translateY(0)');
+            }
+        });
+
+        $(document).on('click','#delete_prd_button',function(){
+            var fd = new FormData();
+            var idPrd = $('#id_product_delete').val();
+            fd.append('id_prd',idPrd);
+            var prdTail = $('#product_tail_delete').val();
+            $.ajax({
+                url: 'delete-annonce.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        $("body").removeClass('body-after');
+                        if (windowWidth > 768) {
+                            $('#delete_product').hide();
+                        }else{
+                            $('#delete_product').css('transform','');
+                        }
+                        $('#user_bt_annonce_'+prdTail).remove();
+                    }
+                }
+            });
+        });
+
+        $(document).on('click','#cancel_delete_product',function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $('#delete_product').hide();
+            }else{
+                $('#delete_product').css('transform','');
+            }
+        });
+
+        $(document).on('click','#cancel_delete_prd_button',function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $('#delete_product').hide();
+            }else{
+                $('#delete_product').css('transform','');
+            }
+        });
+
+        $('#delete_product').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $('#delete_product').hide();
+            }else{
+                $('#delete_product').css('transform','');
+            }
+        });
+
+        <?php 
+            if (isset($_SESSION['user'])) {
+        ?>
         var uid = <?php echo $id_user; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
@@ -455,6 +1053,7 @@ if (isset($_SESSION['user'])) {
         $(document).ready(function() {
             start(websocket_server);
         });
+        <?php } ?>
     </script>
     <script src="css-js/websocket.js"></script>
 </body>

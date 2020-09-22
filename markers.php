@@ -16,36 +16,17 @@ return $xmlStr;
 
 
 // if (isset($_GET['r'])) {
-  $text = $_GET['r'];
-  if ($text != '') {
-    $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel' AND nom_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%'";
-    $rech_user_result = mysqli_query($conn, $rech_user_query);
-  }
-  else{
-    $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel'";
-    $rech_user_result = mysqli_query($conn, $rech_user_query);
-  } 
-// }
-// else{
-//   $rech_user_query = "SELECT * FROM utilisateurs WHERE type_user = 'professionnel'";
-//   $rech_user_result = mysqli_query($conn, $rech_user_query);
-// }
-
-// if (isset($_GET['r'])) {
-//   $text = $_GET['r'];
-  if ($text != '') {
-    $rech_btq_query = "SELECT * FROM boutiques WHERE nom_btq LIKE '%$text%' OR type_btq LIKE '%$text%' OR ville_btq LIKE '%$text%' OR dscrp_btq LIKE '%$text%'";
-    $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-  }
-  else{
-    $rech_btq_query = "SELECT * FROM boutiques";
-    $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-  }
-// }
-// else{
-//   $rech_btq_query = "SELECT * FROM boutiques";
-//   $rech_btq_result = mysqli_query($conn, $rech_btq_query);
-// }
+$text = $_GET['r'];
+if ($text != '') {
+  $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
+  UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'";
+  $rech_user_result = mysqli_query($conn, $rech_user_query);
+}
+else{
+  $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+  UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques";
+  $rech_user_result = mysqli_query($conn, $rech_user_query);
+} 
 
 header("Content-type: text/xml");
 
@@ -58,29 +39,15 @@ while ($rech_user_row = mysqli_fetch_assoc($rech_user_result)){
   // Add to XML document node
   echo '<marker ';
   echo 'type="user" ';
-  echo 'id="' . $rech_user_row['id_user'] . '" ';
-  echo 'nom="' . parseToXML($rech_user_row['nom_user']) . '" ';
-  echo 'address="' . parseToXML($rech_user_row['adresse_user']) . '" ';
-  echo 'latitude="' . $rech_user_row['latitude_user'] . '" ';
-  echo 'longitude="' . $rech_user_row['longitude_user'] . '" ';
-  echo 'image="' . $rech_user_row['img_user'] . '" ';
+  echo 'id="' . $rech_user_row['id'] . '" ';
+  echo 'nom="' . parseToXML($rech_user_row['nom']) . '" ';
+  echo 'address="' . parseToXML($rech_user_row['adresse']) . '" ';
+  echo 'latitude="' . $rech_user_row['latitude'] . '" ';
+  echo 'longitude="' . $rech_user_row['longitude'] . '" ';
+  echo 'image="' . $rech_user_row['img'] . '" ';
   echo '/>';
   $ind = $ind + 1;
 }
-while ($rech_btq_row = mysqli_fetch_assoc($rech_btq_result)){
-  // Add to XML document node
-  echo '<marker ';
-  echo 'type="boutique" ';
-  echo 'id="' . $rech_btq_row['id_btq'] . '" ';
-  echo 'nom="' . parseToXML($rech_btq_row['nom_btq']) . '" ';
-  echo 'address="' . parseToXML($rech_btq_row['adresse_btq']) . '" ';
-  echo 'latitude="' . $rech_btq_row['latitude_btq'] . '" ';
-  echo 'longitude="' . $rech_btq_row['longitude_btq'] . '" ';
-  echo 'image="' . $rech_btq_row['logo_btq'] . '" ';
-  echo '/>';
-  $ind = $ind + 1;
-}
-
 // End XML file
 echo '</markers>';
 

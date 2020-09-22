@@ -46,7 +46,7 @@
     height: 30px;
     position: absolute;
     border-radius: 15px;
-    background: rgb(137, 218, 238);
+    background: #ecedee;
     cursor: pointer;
 }
 .update-user-image{
@@ -60,7 +60,7 @@
 }
 .update-user-image:hover,
 .update-user-couverture:hover{
-    background: coral;
+    background: #e0e0e0;
 }
 .update-user-image i,
 .update-user-couverture i{
@@ -284,68 +284,39 @@
     height: 100%;
     border-radius: 10px;
 }
-.user-profile-right-centent h4{
-    margin: 0 0 10px 0;
-}
-.create-pre-boutique-name{
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    margin: 10px auto;
-    display: none;
-}
-.create-pre-boutique-name label{
-    font-size: .9rem;
-    font-weight: bold;
-}
-.create-pre-boutique-name input[type="text"]{
-    width: 80%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 2px solid rgb(137, 218, 238);
-    outline: none;
-    border-radius: 4px;
-    margin-top: 5px;
-}
-.create-pre-boutique-name div{
-    margin-top: 10px;
-}
-.create-pre-boutique-name input[type="submit"],
-.create-pre-boutique-name button{
-    padding: 8px 15px;
-    box-sizing: border-box;
-    background: rgb(137, 218, 238);
-    color: #fff;
-    border-radius: 4px;
-    outline: none;
-    border: none;
-    cursor: pointer;
-    width: 39%;
-}
-.create-pre-boutique-name button{
-    background: red;
-}
-.create-pre-boutique-name input[type="submit"]:hover{
-    background: coral;
+.user-profile-right-content-pub h4,
+.user-profile-right-content-boutique h4{
+    margin: 0 0 10px 0
 }
 .user-profile-right-content > h4{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
+
+/* user boutique */
 .user-boutiques{
     width: 100%;
-    
+}
+.user-boutiques a{
+    text-decoration: none;
+    color: #000;
 }
 .user-boutique{
     width: 100%;
     display: grid;
-    grid-template-columns: 28% 70%;
+    grid-template-columns: 20% 78%;
     grid-gap: 2%;
     margin-bottom: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.user-boutique:hover{
+    background: #e0e0e0;
 }
 .user-boutique img{
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
     justify-self: center;
     align-self: center;
 }
@@ -354,159 +325,50 @@
     display: grid;
     grid-template-columns: 100%;
 }
-.user-boutique-options h4{
-    margin: 5px;
-}
-.user-boutique-options button,
-.user-boutique-options a{
-    text-decoration: none;
-    color: #fff;
-    background: rgb(137, 218, 238);
-    border: none;
-    padding: 7px 10px;
-    box-sizing: border-box;
-    font-size: .9rem;
-    cursor: pointer;
-    border-radius: 4px;
-    outline: none;
-}
-.user-boutique-options div p,
-.user-boutique-options .recover-boutique-btn{
-    display: none;
-}
-.user-boutique-options button:hover,
-.user-boutique-options a:hover{
-    background: coral;
-}
-.unset-btq div div{
+.user-boutique-option{
     display: flex;
-    align-items: center;
+    grid-gap: 15px;
 }
-.unset-btq p,
-.unset-btq .recover-boutique-btn{
-    display: initial !important;
+.user-boutique-options h4{
+    margin: 5px 0;
 }
-.unset-btq .recover-boutique-btn{
-    margin-left: 10px;
+.user-boutique-notifications,
+.user-boutique-messages{
+    display: flex;
+    grid-gap: 3px;
+    position: relative;
+    padding: 8px 5px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    background: #e0e0e0;
 }
-.unset-btq img,
-.unset-btq h4{
-    opacity: 0.5;
+.user-boutique-notifications p,
+.user-boutique-messages p{
+    margin: 0;
+    font-size: .85rem;
 }
-.unset-btq div a,
-.unset-btq .delete-boutique-btn{
+.user-boutique-notifications div,
+.user-boutique-messages div{
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 2px;
+    right: 2px;
+    border-radius: 50%;
+    background: red;
     display: none;
 }
-.unset-btq p{
-    font-size: 0.8rem;
-    margin: 0;
-}
-.unset-btq span{
-    font-weight: bold;
-    color: coral;
-}
-.top-travailleur-container{
-    width: 90%;
-    margin: auto;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    border-bottom: 1px solid rgb(175, 175, 175);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
-}
-.top-travailleur{
-    width: 100%;
-    text-align: center;
-}
-.top-travailleur img{
-    width: 70px;
-    height: 70px;
-    border-radius: 35px;
-}
-.top-travailleur-container a{
-    text-decoration: none;
-    color: #000;
-}
-.top-travailleur h5:hover{
-    background: coral;
-}
-.top-travailleur h5{
-    margin: 5px;
-    padding: 5px;
-    box-sizing: border-box;
-    background: rgb(137, 218, 238);
-    border-radius: 3px;
-}
-.top-travailleur-rating i{
-    font-size: .8rem;
-    color: rgb(137, 218, 238);
-}
-.bottom-travailleur-container{
-    width: 90%;
-    margin: 10px auto 0;
-    padding: 10px;
-    box-sizing: border-box;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 5px;
-}
-.bottom-travailleur-container a{
-    text-decoration: none;
-    color: #000;
-}
-.bottom-travailleur{
-    text-align: center;
-}
-.bottom-travailleur img{
-    width: 40px;
-    height: 40px;
-    border-radius: 25px;
-}
-.bottom-travailleur h5:hover{
-    background: coral;
-}
-.bottom-travailleur h5{
-    margin: 5px;
-    padding: 3px;
-    box-sizing: border-box;
-    background: rgb(137, 218, 238);
-    border-radius: 3px;
-    font-size: .9rem;
-}
-.bottom-travailleur-rating i{
-    font-size: .5rem;
-    color: rgb(137, 218, 238);
-}
-.user-offres-informations{
-    width: 100%;
-    margin: 10px auto 0;
-    padding: 10px;
-    box-sizing: border-box;
-}
-.user-offres-informations p{
-    font-size: .95rem;
-    margin: 10px 0;
+.user-boutique-notifications div span,
+.user-boutique-messages div span{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #fff;
+    font-size: .6rem;
     font-weight: bold;
 }
-.user-offres-informations p:last-child{
-    font-size: .95rem;
-    margin: 10px 0;
-    font-weight: initial;
-}
-.user-offres-informations span{
-    font-weight: initial;
-    padding-left: 10px;
-}
-.user-offres-informations a{
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: bold;
-    margin-left: 10px;
-}
-.user-offres-informations a:hover{
-    color: coral;
-}
+
 
 /* manage user publicalions */
 .manage-user-publications{
@@ -1115,6 +977,7 @@ input:checked + .slider:before {
         flex-direction: column;
     }
     .user-profile-left-content{
+        padding-top: 20px;
         height: auto;
         width: 100%;
         position: initial;
@@ -1146,6 +1009,7 @@ input:checked + .slider:before {
         order: 3;
         width: 100%;
         padding: 0;
+        margin-bottom: 60px;
     }
     .user-profile-middle-content-pub-slide-button{
         overflow-x: auto;

@@ -11,12 +11,17 @@ function generateRandomString($length = 10) {
     }
     return $randomString;
 }
-while ($get_matricule_row = mysqli_fetch_assoc($get_matricule_result)) {
-    if ($get_matricule_row['matricule_adm'] == generateRandomString()) {
-        generateRandomString();
-    }else{
-        echo generateRandomString();
+if (mysqli_num_rows($get_matricule_result) > 0) {
+    while ($get_matricule_row = mysqli_fetch_assoc($get_matricule_result)) {
+        if ($get_matricule_row['matricule_adm'] == generateRandomString()) {
+            generateRandomString();
+        }else{
+            echo generateRandomString();
+        }
     }
+}
+else{
+    echo generateRandomString();
 }
 
 ?>

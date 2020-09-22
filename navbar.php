@@ -1,22 +1,26 @@
 <?php 
-    $indexActive = '';
-    $promotionsActive = '';
-    $evenementsActive = '';
-    $boutdechantierActive = '';
+    $indexActive = ''; $indexRespActive = '';
+    $promotionsActive = ''; $promotionsRespActive = '';
+    $evenementsActive = ''; $evenementsRespActive = '';
+    $boutdechantierActive = ''; $boutdechantierRespActive = '';
     $utilisateurActive = '';
     // $recrutementsActive = '';
 
     if ($_SERVER['REQUEST_URI'] == '/projet/index.php') {
         $indexActive = 'active';
+        $indexRespActive = 'hide-menu-left-list-active';
     }
     elseif ($_SERVER['REQUEST_URI'] == '/projet/promotions.php') {
         $promotionsActive = 'active';
+        $promotionsRespActive = 'hide-menu-left-list-active';
     }
     elseif ($_SERVER['REQUEST_URI'] == '/projet/evenements.php' || $_SERVER['REQUEST_URI'] == '/projet/evenement-details.php') {
         $evenementsActive = 'active';
+        $evenementsRespActive = 'hide-menu-left-list-active';
     }
     elseif ($_SERVER['REQUEST_URI'] == '/projet/boutdechantier.php') {
         $boutdechantierActive = 'active';
+        $boutdechantierRespActive = 'hide-menu-left-list-active';
     }
     // elseif ($_SERVER['REQUEST_URI'] == '/projet/recrutements.php'|| $_SERVER['REQUEST_URI'] == '/projet/offre.php') {
     //     $recrutementsActive = 'active';
@@ -69,13 +73,18 @@
 <?php if (isset($_SESSION['user'])){ ?>
 <div class="hide-menu">
     <div class="hide-menu-left">
-        <div id="home_button"><i class="fas fa-home"></i><p>acceuil</p></div>
-        <div id="categories_button"><i class="fas fa-list"></i><p>categories</p></div>
-        <div id="boutdechantier_button"><i class="fas fa-tools"></i><p>bout de chantier</p></div>
-        <div id="recrutements_button"><i class="fas fa-briefcase"></i><p>recrutements</p></div>
-        <div id="promotions_button"><i class="fas fa-ad"></i><p>promotions</p></div>
-        <div id="evenements_button"><i class="far fa-calendar-check"></i><p>évènements</p></div>
-        <h4>Nhanik &copy; 2020</h4>
+        <div class="hide-menu-logo">
+            <h4>Nhannik</h4>
+        </div>
+        <div class="hide-menu-left-list <?php echo $indexRespActive ?>" id="home_button"><div><i class="fas fa-home"></i></div><p>acceuil</p></div>
+        <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div>
+        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-tools"></i></div><p>bout de chantier</p></div>
+        <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div>
+        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-ad"></i></div><p>promotions</p></div>
+        <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
+        <div class="hide-menu-footer">
+            <h4>Nhanik &copy; 2020</h4>
+        </div>
     </div>
 </div>
 <div class="navbar">
@@ -349,7 +358,7 @@
             <p>Crées vos boutiques personnalisées</p>
         </div>
     </div>
-    <div class="create-option">
+    <div class="create-option" id="create_bt_prd_button">
         <div>
             <i class="fas fa-tag"></i>
         </div>
@@ -406,6 +415,7 @@
             <div class="cancel-create" id="cancel_create_publication">
                 <i class="fas fa-times"></i>
             </div>
+            <button id="create_publication_button">Publier</button>
         </div>
         <div class="create-publication-bottom">
             <div class="create-publication-location">
@@ -462,16 +472,18 @@
             <div class="cancel-create-mobile" id="cancel_create_boutique_resp">
                 <i class="fas fa-arrow-left"></i>
             </div>
-            <h4>Créer votre Boutique maintenant !</h4>
+            <h4>Créer une Boutique!</h4>
             <div class="cancel-create" id="cancel_create_boutique">
                 <i class="fas fa-times"></i>
             </div>
+            <button type="button" id="create_boutique_button_resp">Créer</button>
         </div>
         <div class="create-publication-bottom create-boutique-bottom">
-            <div>
-                <input type="text" id="nom_boutique" placeholder="Nom du boutique">
+            <div class="boutique-input">
+                <input type="text" id="nom_boutique">
+                <span class="nom-btq">Nom boutique *</span>
             </div>
-            <div class="categories-boutique">
+            <div class="categories-boutique boutique-input">
                 <select id="categorie_boutique">
                     <option value="">Categories</option>
                     <option id="services" value="services">Services</option>
@@ -484,16 +496,19 @@
                     <option id="fabriquants" value="fabriquants">Fabriquants</option>
                     <option id="import-export" value="import-export">Import-Export</option>
                 </select>
+                <span class="categorie-btq">Categorie *</span>
             </div>
-            <div class="sous-categorie-boutique">
+            <div class="sous-categorie-boutique boutique-input">
                 <select id="sous_categorie_boutique">
                     <option value="">Professions</option>
                 </select>
+                <span class="sous-categori-btq">Profession *</span>
             </div>
-            <div class="sous-categorie-autre">
+            <div class="sous-categorie-autre boutique-input">
                 <input type="text" id="sous_categorie_boutique" placeholder="Entrez votre profession">
+                <span class="sous-categorie-btq">Profession *</span>
             </div>
-            <div>
+            <div class="boutique-input">
                 <select id="ville_boutique">
                     <option value="">Ville</option>
                     <?php 
@@ -504,39 +519,98 @@
                     <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
                     <?php } ?>
                 </select>
+                <span class="ville-btq">Ville *</span>
             </div>
-            <div class="commune-boutique"> 
+            <div class="commune-boutique boutique-input"> 
                 <select id="commune_boutique">
                     <option value="">Commune</option>
                 </select>
+                <span class="commune-btq">Commune *</span>
             </div>
-            <div>
-                <input type="text" id="adresse_boutique" placeholder="Adresse">
+            <div class="boutique-input">
+                <input type="text" id="adresse_boutique">
+                <span class="adresse-btq">Adresse *</span>
             </div>
-            <div>
-                <input type="text" id="email_boutique" placeholder="Email">
+            <div class="boutique-input">
+                <input type="text" id="email_boutique">
+                <span class="email-btq">Email *</span>
             </div>
-            <div>
-                <input type="text" id="tlph_boutique" placeholder="Numéro téléphone">
+            <div class="boutique-input">
+                <input type="text" id="tlph_boutique">
+                <span class="tlph-btq">Téléphone *</span>
             </div>
-            <button type="button" id="create_boutique_button">Créer</button>
+            <button type="button" id="create_boutique_button">Créer maintenant</button>
         </div>
     </div>
 </div>
-<div class="create-publication" id="create_boutdechantier">
+<div class="create-publication" id="create_bt_product">
     <div class="create-publication-container">
+        <input type="hidden" id="id_bt_prd">
         <div class="create-publication-top">
-            <div class="cancel-create-mobile">
+            <div class="cancel-create-mobile" id="cancel_create_bt_prd_resp">
                 <i class="fas fa-arrow-left"></i>
             </div>
-            <h4>Créer une annonce</h4>
-            <div class="cancel-create">
+            <h4>Créer une annconce!</h4>
+            <div class="cancel-create" id="cancel_create_bt_prd">
                 <i class="fas fa-times"></i>
             </div>
+            <button id="create_bt_product_button_resp">Créer</button>
         </div>
         <div class="create-publication-bottom">
-            
+            <div class="bt-product-input">
+                <input type="text" id="lieu_bt_prd">
+                <span class="lieu-bt-prd">Lieu *</span>
+            </div>
+            <div class="bt-prd-preview-location">
+                <?php 
+                $ville_query = "SELECT ville FROM villes UNION SELECT commune AS ville FROM communes";
+                $ville_result = mysqli_query($conn, $ville_query); 
+                while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                ?>
+                <div id="bt_prd_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
+                <?php } ?>    
+            </div>
+            <div class="bt-product-input">
+                <input type="text" id="name_bt_prd">
+                <span class="name-bt-prd">Titre *</span>
+            </div>
+            <div class="bt-product-input">
+                <input type="text" id="categorie_bt_prd">
+                <span class="categorie-bt-prd">Categorie</span>
+            </div>
+            <div class="bt-product-input">
+                <input type="text" id="description_bt_prd">
+                <span class="description-bt-prd">Description</span>
+            </div>
+            <div class="bt-product-input">
+                <input type="number" id="quantity_bt_prd" value="0">
+                <span class="quanntite-bt-prd">Quantite *</span>
+            </div>
+            <div class="bt-product-input">
+                <select id="type_bt_prd">
+                    <option value="payant">Payant</option>
+                    <option value="gratuit">Gratuit</option>
+                </select>
+                <span class="type-bt-prd">Type *</span>
+            </div>
+            <div class="bt-product-input">
+                <input type="text" step="000000.00" id="price_bt_prd" value="0">
+                <span class="price-bt-prd">Prix *</span>
+            </div>
+            <div class="bt-product-images-preview"></div>
+            <div class="create-product-options">
+                <P>Ajouter des photos</P>
+                <div id="add_bt_product_image">
+                    <i class="far fa-images"></i>
+                </div>
+            </div>
+            <form enctype="multipart/form-data">
+                <input type="file" id="image_bt_prd" name="images_prd[]" accept="image/*" multiple>
+                <input type="button" id="add_bt_product_image_button">
+            </form>
+            <button id="create_bt_product_button">Ajouter maintenant</button>
         </div>
+        <!-- <div id="loader_load" class="center-load"></div> -->
     </div>
 </div>
 <div class="create-publication" id="create_offre">
@@ -616,6 +690,7 @@
             <div class="cancel-update" id="cancel_update_publication">
                 <i class="fas fa-times"></i>
             </div>
+            <button id="update_publication_button">Modifier</button>
         </div>
         <div class="update-publication-bottom">
             <div class="update-publication-location">
@@ -661,7 +736,7 @@
                 <input type="file" id="video_updt" name="video_updt" accept="video/*">
                 <input type="button" id="update_publication_video_button">
             </form>
-            <button id="update_publication_button">Publier</button>
+            <button id="update_publication_button">Modifier</button>
         </div>
     </div>
 </div>
@@ -728,19 +803,59 @@
         </div>
     </div>
 </div>
+<?php } else if (isset($_SESSION['btq'])) {
+$get_btq_auth_query = "SELECT * FROM admin_boutique WHERE id_btq = {$_SESSION['btq']}";    
+$get_btq_auth_result = mysqli_query($conn,$get_btq_auth_query);
+$get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
+?>
+<div class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-left">
+            <div class="logo-name">
+                <h4>Nhannik</h4>
+            </div>
+        </div>
+        <div class="navbar-middle"></div>
+        <div class="navbar-right">
+            <div class="profile-btq-desktop">
+                <img src="<?php if($get_btq_row['logo_btq']==''){echo'./images/profile.png';}else{echo './'.$get_btq_row['logo_btq'];}?>" alt="btq_img">
+                <p style="color:#000;width:100px"><?php echo $get_btq_row['nom_btq']; ?></p>
+            </div>
+            <div class="btq-deconnexion-button" id="btq_logout">
+                <p>Deconnexion</p>
+            </div>
+            <input type="hidden" id="id_btq_adm" value="<?php echo $get_btq_row['id_btq'] ?>">
+        </div>
+    </div>
+</div>
+<input type="hidden" id="ville_boutique">
+<input type="hidden" id="categorie_boutique">
+<input type="hidden" id="sous_categorie_boutique">
 <?php }else{ ?>
-<div class="hide-menu">
+    <div class="hide-menu">
     <div class="hide-menu-left">
-        <div id="home_button"><i class="fas fa-home"></i><p>acceuil</p></div>
-        <div id="categories_button"><i class="fas fa-list"></i><p>categories</p></div>
-        <div id="boutdechantier_button"><i class="fas fa-tools"></i><p>bout de chantier</p></div>
-        <div id="recrutements_button"><i class="fas fa-briefcase"></i><p>recrutements</p></div>
-        <div id="promotions_button"><i class="fas fa-ad"></i><p>promotions</p></div>
-        <div id="evenements_button"><i class="far fa-calendar-check"></i><p>évènements</p></div>
-
-        <a href="#"><i class="fas fa-store-alt"></i>Gestion du boutique</a>
-        <a style="margin-top:10px" href="./inscription-connexion.php"><i class="fas fa-sign-in-alt"></i>Inscrire/Connecter</a>
-        <h4>Nhanik &copy; 2020</h4>
+        <div class="hide-menu-logo">
+            <h4>Nhannik</h4>
+        </div>
+        <div class="hide-menu-left-list <?php echo $indexRespActive ?>" id="home_button"><div><i class="fas fa-home"></i></div><p>acceuil</p></div>
+        <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div>
+        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-tools"></i></div><p>bout de chantier</p></div>
+        <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div>
+        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-ad"></i></div><p>promotions</p></div>
+        <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
+        
+        <div class="hide-menu-login">
+            <a href="./gestion-boutique-connexion.php"><div>
+                <p>Gerer boutique</p>
+            </div></a>
+            <a href="./inscription-connexion.php"><div>
+                <p>Inscrire/Connecter</p>
+            </div></a>
+        </div>
+        
+        <div class="hide-menu-footer">
+            <h4>Nhanik &copy; 2020</h4>
+        </div>
     </div>
 </div>
 <div class="navbar">
@@ -770,13 +885,13 @@
             <!-- <a class="<?php echo $recrutementsActive; ?>" href="./recrutements.php">recrutement</a> -->
         </div>
         <div class="navbar-right-login">
-            <div id="gestion_store">
+            <div id="gestion_boutique_button">
                 <!-- <i class="fas fa-store-alt"></i> -->
-                <p>Gestion de boutique</p>
+                <p>Gerer boutique</p>
             </div>
             <div id="inscription_connexion_button">
                 <!-- <i class="fas fa-sign-in-alt"></i> -->
-                <p>Inscrire / Connecter</p>
+                <p>Inscrire/Connecter</p>
             </div>
         </div>
     </div>
@@ -933,6 +1048,9 @@
         <div class="categorie-professionnel-bottom-bottom"></div>
     </div>
 </div>
+<input type="hidden" id="ville_boutique">
+<input type="hidden" id="categorie_boutique">
+<input type="hidden" id="sous_categorie_boutique">
 <div class="user-list-dropdown" style="display:none">
     <a id="modify_profile"><i class="fas fa-cog"></i>Paramaitre</a>
     <a id="create_boutique_button"><i class="fas fa-plus"></i>Creer une boutique<span>Pro</span></a>

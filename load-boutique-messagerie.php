@@ -2,8 +2,15 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_btq = htmlspecialchars($_POST['id_btq']);
-$id_sender = htmlspecialchars($_POST['id_sender']);
 
+$get_last_sender_query = "SELECT id_sender FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_btq' GROUP BY id_sender) ORDER BY id_msg DESC";
+$get_last_sender_result = mysqli_query($conn, $get_last_sender_query);
+$get_last_sender_num = mysqli_num_rows($get_last_sender_result);
+
+if ($get_last_sender_num > 0) {
+$get_last_sender_row = mysqli_fetch_assoc($get_last_sender_result);
+$id_sender = $get_last_sender_row['id_sender'];
+ 
 $get_sender_msg_query = "SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE 
 id_recever = '$id_btq' AND id_sender = '$id_sender' OR id_recever = '$id_sender' AND id_sender = '$id_btq'";
 $get_sender_msg_result = mysqli_query($conn, $get_sender_msg_query);
@@ -107,3 +114,8 @@ $get_last_sender_info_row = mysqli_fetch_assoc($get_last_sender_info_result);
         </div>
     </div>
 </div>
+<?php }else{ ?>
+<div class="empty-msg-ntf">
+    <p>Vous n'avez auccune conversation</p>
+</div>
+<?php } ?>

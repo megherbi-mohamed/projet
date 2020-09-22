@@ -4,11 +4,16 @@ $id_btq = htmlspecialchars($_POST['id_btq']);
 $messagerie = htmlspecialchars($_POST['messagerie']);
 $notifications = htmlspecialchars($_POST['notifications']);
 $modification = htmlspecialchars($_POST['modification']);
-$product = htmlspecialchars($_POST['product']);
-$categorie = htmlspecialchars($_POST['categorie']);
+$creation_prd = htmlspecialchars($_POST['creation_prd']);
+$modification_prd = htmlspecialchars($_POST['modification_prd']);
+$suppression_prd = htmlspecialchars($_POST['suppression_prd']);
+$creation_ctg = htmlspecialchars($_POST['creation_ctg']);
+$modification_ctg = htmlspecialchars($_POST['modification_ctg']);
+$suppression_ctg = htmlspecialchars($_POST['suppression_ctg']);
 
 $update_admin_query = "UPDATE admin_boutique SET messagerie = '$messagerie',notifications = '$notifications',modification = '$modification',
-product = '$product',categorie = '$categorie' WHERE id_btq = $id_btq";
+creation_prd = '$creation_prd',modification_prd = '$modification_prd',suppression_prd = '$suppression_prd', 
+creation_ctg = '$creation_ctg',modification_ctg = '$modification_ctg',suppression_ctg = '$suppression_ctg' WHERE id_btq = $id_btq";
 if(mysqli_query($conn,$update_admin_query)){
     $get_btq_admin_query = "SELECT * FROM admin_boutique WHERE id_btq = $id_btq";
     if ($get_btq_admin_result = mysqli_query($conn,$get_btq_admin_query)) {
@@ -71,9 +76,9 @@ if(mysqli_query($conn,$update_admin_query)){
             </div>
         </div>
         <div class="admin-autoisation">
-            <input type="hidden" id="creation_adm_autrs" value="<?php echo $get_btq_admin_row['product'] ?>">  
+            <input type="hidden" id="creation_prd_adm_autrs" value="<?php echo $get_btq_admin_row['creation_prd'] ?>">  
             <?php 
-            if ($get_btq_admin_row['product'] == 1) {
+            if ($get_btq_admin_row['creation_prd'] == 1) {
             ?> 
             <i class="fas fa-check etat"></i>
             <?php }else{ ?>
@@ -85,15 +90,71 @@ if(mysqli_query($conn,$update_admin_query)){
             </div>
         </div>
         <div class="admin-autoisation">
-            <input type="hidden" id="categorie_adm_autrs" value="<?php echo $get_btq_admin_row['categorie'] ?>">
+            <input type="hidden" id="modification_prd_adm_autrs" value="<?php echo $get_btq_admin_row['modification_prd'] ?>">  
             <?php 
-            if ($get_btq_admin_row['categorie'] == 1) {
+            if ($get_btq_admin_row['modification_prd'] == 1) {
+            ?> 
+            <i class="fas fa-check etat"></i>
+            <?php }else{ ?>
+            <i style="color:red" class="fas fa-ban etat"></i>
+            <?php } ?>
+            <p>Modification de produit</p>
+            <div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        <div class="admin-autoisation">
+            <input type="hidden" id="suppression_prd_adm_autrs" value="<?php echo $get_btq_admin_row['suppression_prd'] ?>">  
+            <?php 
+            if ($get_btq_admin_row['suppression_prd'] == 1) {
+            ?> 
+            <i class="fas fa-check etat"></i>
+            <?php }else{ ?>
+            <i style="color:red" class="fas fa-ban etat"></i>
+            <?php } ?>
+            <p>Suppression de produit</p>
+            <div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        <div class="admin-autoisation">
+            <input type="hidden" id="creation_ctg_adm_autrs" value="<?php echo $get_btq_admin_row['creation_ctg'] ?>">
+            <?php 
+            if ($get_btq_admin_row['creation_ctg'] == 1) {
             ?> 
             <i class="fas fa-check etat"></i>
             <?php }else{ ?>
             <i style="color:red" class="fas fa-ban etat"></i>
             <?php } ?>
             <p>Creation de categorie</p>
+            <div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        <div class="admin-autoisation">
+            <input type="hidden" id="modification_ctg_adm_autrs" value="<?php echo $get_btq_admin_row['modification_ctg'] ?>">
+            <?php 
+            if ($get_btq_admin_row['modification_ctg'] == 1) {
+            ?> 
+            <i class="fas fa-check etat"></i>
+            <?php }else{ ?>
+            <i style="color:red" class="fas fa-ban etat"></i>
+            <?php } ?>
+            <p>Modification de categorie</p>
+            <div>
+                <i class="fas fa-plus"></i>
+            </div>
+        </div>
+        <div class="admin-autoisation">
+            <input type="hidden" id="suppression_ctg_adm_autrs" value="<?php echo $get_btq_admin_row['suppression_ctg'] ?>">
+            <?php 
+            if ($get_btq_admin_row['suppression_ctg'] == 1) {
+            ?> 
+            <i class="fas fa-check etat"></i>
+            <?php }else{ ?>
+            <i style="color:red" class="fas fa-ban etat"></i>
+            <?php } ?>
+            <p>Suppression de categorie</p>
             <div>
                 <i class="fas fa-plus"></i>
             </div>

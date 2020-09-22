@@ -56,8 +56,21 @@ $(document).on('click',".profile-image-desktop",function() {
     window.location = './utilisateur.php';
 });
 
+$(document).on('click',".profile-btq-desktop",function() {
+    var idBtq = $('#id_btq_adm').val();
+    window.location = './gerer-boutique.php?btq='+idBtq;
+});
+
 $(document).on('click',".user-logout",function() {
     window.location = './deconnexion.php';
+});
+
+$(document).on('click',"#btq_logout",function() {
+    window.location = './deconnexion.php';
+});
+
+$(document).on('click',"#gestion_boutique_button",function() {
+    window.location = './gestion-boutique-connexion.php';
 });
 
 $(document).on('click',"#inscription_connexion_button",function() {
@@ -602,8 +615,8 @@ $('#add_publication_image_button').click(function(){
     var form_data = new FormData();
     var idPub = $('#id_publication').val();
     form_data.append('id_pub',idPub);
-    var totalfiles = document.getElementById('image').files.length;
-    for (let i = 0; i < totalfiles; i++) {
+    // var totalfiles = document.getElementById('image').files.length;
+    for (let i = 0; i < 4; i++) {
         form_data.append("images[]", document.getElementById('image').files[i]);
     }
     $.ajax({
@@ -886,6 +899,35 @@ $('#cancel_update_publication').click(function(){
 
 // valide create publication
 $('#create_publication_button').click(function(){
+    if ($('#publication_description').val() !== '') {
+        var fd = new FormData();
+        var idPubLieu = $('#publication_location_text').val();
+        fd.append('lieu_pub',idPubLieu);
+        var idPub = $('#id_publication').val();
+        fd.append('id_pub',idPub);
+        var descriptionPub = $('#publication_description').val();
+        fd.append('description_pub',descriptionPub);
+        $.ajax({
+            url: 'create-publication.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    $("body").removeClass('body-after');
+                    hideCreatePublication();
+                    $('.publication-images-preview div').remove();
+                    $('.publication-video-preview div').remove();
+                    $('.create-publication-container').css({'top':'','transform':''});
+                    window.location.href = "./utilisateur.php?p="+response;
+                }
+            }
+        });
+    }
+});
+
+$('#create_publication_button_resp').click(function(){
     if ($('#publication_description').val() !== '') {
         var fd = new FormData();
         var idPubLieu = $('#publication_location_text').val();
@@ -1353,10 +1395,12 @@ $('#save_publication').click(function(e){
 
 // create boutique
 $('#create_btq_button').click(function(){
+    console.log('click');
     $.ajax({
         url: 'pre-create-boutique.php',
         type: 'post',
         success: function(response){
+            console.log(response);
             if(response != 0){
                 $('#id_boutique').val(response);
                 hideCreatePublication();
@@ -1470,6 +1514,29 @@ $('#create_boutique').click(function(){
             }    
         }
     });
+})
+
+$(document).on('focus','.create-boutique-bottom input',function(){
+    var id = $(this).attr('id');
+    // if (id == 'matricule_adm') {
+    //     $('.matricule').addClass('active-create-admin-span');
+    // }
+    // else
+    if (id == 'nom_boutique') {
+        $('.nom-btq').addClass('active-create-btq-span');
+    }
+    if (id == 'sous_categorie_boutique') {
+        $('.sous-categorie-btq').addClass('active-create-btq-span');
+    }
+    if (id == 'adresse_boutique') {
+        $('.adresse-btq').addClass('active-create-btq-span');
+    }
+    if (id == 'email_boutique') {
+        $('.email-btq').addClass('active-create-btq-span');
+    }
+    if (id == 'tlph_boutique') {
+        $('.tlph-btq').addClass('active-create-btq-span');
+    }
 })
 
 var villeBoutique = document.querySelector('#ville_boutique');
@@ -1594,3 +1661,530 @@ $('#create_boutique_button').click(function(event){
         });
     }
 })
+
+$('#create_boutique_button_resp').click(function(event){
+    // event.preventDefault(); 
+    var idBtq = $('#id_boutique').val();
+    var nomBoutique = $('#nom_boutique').val();
+    var categorieBoutique = $('#categorie_boutique').val();
+    var sousCategorieBoutique = $('#sous_categorie_boutique').val();
+    var villeBoutique = $('#ville_boutique').val();
+    var communeBoutique = $('#commune_boutique').val();
+    var adresseBoutique = $('#adresse_boutique').val();
+    var emailBoutique = $('#email_boutique').val();
+    var tlphBoutique = $('#tlph_boutique').val();
+    
+    if (nomBoutique == '') {
+        $('#nom_boutique').css("border","2px solid red");
+    }
+    else if (categorieBoutique == '') {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","2px solid red");
+    }
+    else if (sousCategorieBoutique == '') {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","2px solid red");
+    }
+    else if (villeBoutique == '') {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","");
+        $('#ville_boutique').css("border","2px solid red");
+    }
+    else if (communeBoutique == '') {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","");
+        $('#ville_boutique').css("border","");
+        $('.create-boutique-bottom #commune_boutique').css("border","2px solid red");
+    }
+    else if (adresseBoutique == '') {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","");
+        $('#ville_boutique').css("border","");
+        $('.create-boutique-bottom #commune_boutique').css("border","");
+        $('#adresse_boutique').css("border","2px solid red");
+    }
+    else if (emailBoutique !== '' && !validateEmail(emailBoutique)) {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","");
+        $('#ville_boutique').css("border","");
+        $('.create-boutique-bottom #commune_boutique').css("border","");
+        $('#adresse_boutique').css("border","");
+        $('#email_boutique').css("border","2px solid red");
+    }
+    else if (tlphBoutique !== '' && !validatePhone(tlphBoutique)) {
+        $('#nom_boutique').css("border","");
+        $('#categorie_boutique').css("border","");
+        $('#sous_categorie_boutique').css("border","");
+        $('#ville_boutique').css("border","");
+        $('.create-boutique-bottom #commune_boutique').css("border","");
+        $('#adresse_boutique').css("border","");
+        $('#email_boutique').css("border","");
+        $('#tlph_boutique').css("border","2px solid red");
+    }
+    else if (nomBoutique != '' && categorieBoutique != '' &&
+        sousCategorieBoutique != '' && villeBoutique != '' && 
+        communeBoutique != '' && adresseBoutique != '') {
+        $('#tlph_boutique').css("border","");
+        
+        var fd = new FormData();
+        fd.append('id_btq',idBtq);
+        fd.append('nom_btq',nomBoutique);
+        fd.append('categorie',categorieBoutique);
+        fd.append('sous_categorie',sousCategorieBoutique);
+        fd.append('ville_btq',villeBoutique);
+        fd.append('commune_btq',communeBoutique);
+        fd.append('adresse_btq',adresseBoutique);
+        fd.append('email_btq',emailBoutique);
+        fd.append('tlph_btq',tlphBoutique);
+
+        $.ajax({
+            url: 'create-boutique.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    window.location = 'boutique.php?btq='+response;
+                }else{
+                    alert('err');
+                }
+            },
+        });
+    }
+})
+
+// create boutdechantier product
+$('#create_bt_prd_button').click(function(){
+    console.log('click');
+    $.ajax({
+        url: 'pre-create-bt-product.php',
+        type: 'post',
+        success: function(response){
+            console.log(response);
+            if(response != 0){
+                $('#id_bt_prd').val(response);
+                hideCreatePublication();
+                $("body").addClass('body-after');
+                $('#create_bt_product').show();
+            }   
+        }
+    });
+})
+
+$('#cancel_create_bt_prd_resp').click(function(){
+    var fd= new FormData();
+    var idPrd= $('#id_bt_prd').val();
+    fd.append('id_prd',idPrd);
+    $.ajax({
+        url: 'pre-delete-bt-prd.php',
+        type: 'post',
+        data: fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $("body").removeClass('body-after');
+                createPublication[2].style.transform = "";
+                $('#lieu-bt-prd').val("");
+                $('#name-bt-prd').val("");
+                $('#categorie_bt_prd').val("");
+                $('#description_bt_prd').val("");
+                $('#quantity_bt_prd').val("0");
+                $('#price_bt_prd').val("0");
+
+                $('#lieu-bt-prd').css("border","");
+                $('#name-bt-prd').css("border","");
+                $('#categorie_bt_prd').css("border","");
+                $('#description_bt_prd').css("border","");
+                $('#quantity_bt_prd').css("border","");
+                $('#price_bt_prd').css("border","");
+
+                $('.bt-product-input span').removeClass('active-create-bt-prd-span');
+            }    
+        }
+    });
+})
+
+$('#cancel_create_bt_prd').click(function(){
+    var fd= new FormData();
+    var idPrd= $('#id_bt_prd').val();
+    fd.append('id_prd',idPrd);
+    $.ajax({
+        url: 'pre-delete-bt-prd.php',
+        type: 'post',
+        data: fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $("body").removeClass('body-after');
+                createPublication[2].style.display = "";
+                $('#lieu-bt-prd').val("");
+                $('#name-bt-prd').val("");
+                $('#categorie_bt_prd').val("");
+                $('#description_bt_prd').val("");
+                $('#quantity_bt_prd').val("0");
+                $('#price_bt_prd').val("0");
+
+                $('#lieu-bt-prd').css("border","");
+                $('#name-bt-prd').css("border","");
+                $('#categorie_bt_prd').css("border","");
+                $('#description_bt_prd').css("border","");
+                $('#quantity_bt_prd').css("border","");
+                $('#price_bt_prd').css("border","");
+
+                $('.bt-product-input span').removeClass('active-create-bt-prd-span');
+            }    
+        }
+    });
+})
+
+$('#create_bt_product').click(function(){
+    var fd= new FormData();
+    var idPrd= $('#id_bt_prd').val();
+    fd.append('id_prd',idPrd);
+    $.ajax({
+        url: 'pre-delete-bt-prd.php',
+        type: 'post',
+        data: fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $("body").removeClass('body-after');
+                createPublication[2].style.display = "";
+                $('#lieu-bt-prd').val("");
+                $('#name-bt-prd').val("");
+                $('#categorie_bt_prd').val("");
+                $('#description_bt_prd').val("");
+                $('#quantity_bt_prd').val("0");
+                $('#price_bt_prd').val("0");
+
+                $('#lieu-bt-prd').css("border","");
+                $('#name-bt-prd').css("border","");
+                $('#categorie_bt_prd').css("border","");
+                $('#description_bt_prd').css("border","");
+                $('#quantity_bt_prd').css("border","");
+                $('#price_bt_prd').css("border","");
+
+                $('.bt-product-input span').removeClass('active-create-bt-prd-span');
+            }    
+        }
+    });
+})
+
+$(document).on('focus','.create-publication-bottom input',function(){
+    var id = $(this).attr('id');
+    if (id == 'lieu_bt_prd') {
+        $('.lieu-bt-prd').addClass('active-create-bt-prd-span');
+    }
+    if (id == 'name_bt_prd') {
+        $('.name-bt-prd').addClass('active-create-bt-prd-span');
+    }
+    if (id == 'categorie_bt_prd') {
+        $('.categorie-bt-prd').addClass('active-create-bt-prd-span');
+    }
+    if (id == 'description_bt_prd') {
+        $('.description-bt-prd').addClass('active-create-bt-prd-span');
+    }
+})
+
+$("#lieu_bt_prd").on('keyup',function(){
+    var locationText = document.getElementById("lieu_bt_prd");
+    var filter = locationText.value.toUpperCase();
+    var location = document.querySelectorAll("#bt_prd_location_item p");
+    var locationItem= document.querySelectorAll("#bt_prd_location_item");
+    for (let i = 0; i < locationItem.length; i++) {
+        txtValue = location[i].textContent || location[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            locationItem[i].style.display = "";
+            $('.bt-prd-preview-location').css('display','initial');
+        } else {
+            locationItem[i].style.display = "none";
+        }
+    }
+    if ($(this).val() == '') {
+        $('.bt-prd-preview-location').css('display','');
+    }
+});
+
+var locationPrdItem = document.querySelectorAll("#bt_prd_location_item");
+var locationPrdName = document.querySelector("#lieu_bt_prd");
+var locationPrdText = document.querySelectorAll("#bt_prd_location_item p");
+
+for (let i = 0; i < locationPrdItem.length; i++) {
+    locationPrdItem[i].addEventListener('click',()=>{
+        $('.bt-prd-preview-location').css('display','');
+        locationPrdName.value = locationPrdText[i].textContent;
+    });
+}
+
+ // upload product image 
+$('#add_bt_product_image').click(function(){
+    $('#image_bt_prd').click();
+});
+
+$('#image_bt_prd').click(function(e){
+    e.stopPropagation();
+});
+
+$('#image_bt_prd').on('change', function () { 
+    $('#add_bt_product_image_button').click();
+});
+
+$('#add_bt_product_image_button').click(function(){
+    var form_data = new FormData();
+    var idPrd = $('#id_bt_prd').val();
+    form_data.append('id_prd',idPrd);
+    var totalfiles = document.getElementById('image_bt_prd').files.length;
+    for (let i = 0; i < totalfiles; i++) {
+        form_data.append("images[]", document.getElementById('image_bt_prd').files[i]);
+    }
+    $.ajax({
+        url: 'upload-images-bt-product.php', 
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        success: function (response) {
+            if (windowWidth > 768) {
+                $('.create-publication-container').css({'top':'10px','transform':'translate(-50%,0%)'});
+            }
+            for(let i = 0; i < response.length; i++) {
+                var src = response[i];
+                $('.bt-product-images-preview').append("<div class='bt-product-image-preview' id='bt_product_image_preview_"+i+"'><div id='bt_product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+            }
+        }
+    });
+});
+
+// remove product image preview
+$('.bt-product-images-preview').on('click','[id^="bt_product_delete_preview_"]',function(){
+    var id = $(this).attr("id").split("_")[4];
+    var fd = new FormData();
+    var idPrd = $('#id_bt_prd').val();
+    fd.append('id_prd',idPrd);
+    var mediaUrl = $('#bt_product_image_preview_'+id+' img').attr('src');
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-image-bt-product-preview.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $('#bt_product_image_preview_'+id).remove();
+            }
+        }
+    });
+});
+
+// valide create product boutdechantier
+$('#create_bt_product_button').click(function(){
+    var idPrd = $('#id_bt_prd').val();
+    var lieuPrd = $('#lieu_bt_prd').val();
+    var namePrd = $('#name_bt_prd').val();
+    var categoriePrd = $('#categorie_bt_prd').val();
+    var descriptionPrd = $('#description_bt_prd').val(); 
+    var quantityPrd = $('#quantity_bt_prd').val();
+    var typePrd = $('#type_bt_prd').val();
+    var pricePrd = $('#price_bt_prd').val();
+
+    if (lieuPrd == ''){
+        $('#lieu-bt-prd').css('border','2px solid red');
+    }
+    else if (namePrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name_product').css('border','2px solid red');
+    }
+    else if(descriptionPrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','2px solid red');
+    }
+    // else if(categoriePrd == ''){
+    //     $('#lieu-bt-prd').css('border','');
+    //     $('#name_product').css('border','');
+    //     $('#categorie_product').css('border','2px solid red');
+    // }
+    else if(quantityPrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','');
+        $('#quantity_bt_prd').css('border','2px solid red');
+    }
+    // else if(typePrd == ''){
+    //     $('#lieu-bt-prd').css('border','');
+    //     $('#name-bt-prd').css('border','');
+    //     // $('#categorie-bt-prd').css('border','');
+    //     $('#description-bt-prd').css('border','');
+    //     $('#quantity_bt_prd').css('border','');
+    //     $('#type_bt_prd').css('border','2px solid red');
+    // }
+    else if(pricePrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','');
+        $('#quantity_bt_prd').css('border','');
+        // $('#type_bt_prd').css('border','');
+        $('#price-bt-prd').css('border','2px solid red');
+    }
+    else if(lieuPrd != '' && namePrd != '' && descriptionPrd != '' &&
+            quantityPrd != '' && pricePrd != ''){
+        $('#price-bt-prd').css('border','');
+        var fd = new FormData();
+        fd.append('id_prd',idPrd);
+        fd.append('lieu_prd',lieuPrd);
+        fd.append('nom_prd',namePrd);
+        fd.append('categorie_prd',categoriePrd);
+        fd.append('description_prd',descriptionPrd);
+        fd.append('quantity_prd',quantityPrd);
+        fd.append('type_prd',typePrd);
+        fd.append('price_prd',pricePrd);
+        $.ajax({
+            url: 'create-bt-product.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                $('.create-product-top').hide();
+                $('.create-product-bottom').hide();
+                $("#loader_load").show();
+            },
+            success: function(response){
+                if(response != 0){
+                    console.log(response);
+                }
+            },
+            complete: function(){
+                $("#loader_load").hide();
+                createPublication[2].style.display = "";
+                $("body").removeClass('body-after');
+                $('.create-product-container').css({'top':'','transform':''});
+                $('.create-product-top').show();
+                $('.create-product-bottom').show();
+                $('#name_bt_prd').val('');
+                $('#lieu_bt_prd').val('');
+                $('#categorie_bt_prd').val('');
+                $('#description_bt_prd').val('');
+                $('#quantity_bt_prd').val('');
+                $('#price_bt_prd').val('');
+                $('.bt-product-images-preview').empty();
+            }
+        });
+    }
+});
+
+$('#create_bt_product_button_resp').click(function(){
+    var idPrd = $('#id_bt_prd').val();
+    var lieuPrd = $('#lieu_bt_prd').val();
+    var namePrd = $('#name_bt_prd').val();
+    var categoriePrd = $('#categorie_bt_prd').val();
+    var descriptionPrd = $('#description_bt_prd').val(); 
+    var quantityPrd = $('#quantity_bt_prd').val();
+    var typePrd = $('#type_bt_prd').val();
+    var pricePrd = $('#price_bt_prd').val();
+
+    if (lieuPrd == ''){
+        $('#lieu-bt-prd').css('border','2px solid red');
+    }
+    else if (namePrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name_product').css('border','2px solid red');
+    }
+    else if(descriptionPrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','2px solid red');
+    }
+    // else if(categoriePrd == ''){
+    //     $('#lieu-bt-prd').css('border','');
+    //     $('#name_product').css('border','');
+    //     $('#categorie_product').css('border','2px solid red');
+    // }
+    else if(quantityPrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','');
+        $('#quantity_bt_prd').css('border','2px solid red');
+    }
+    // else if(typePrd == ''){
+    //     $('#lieu-bt-prd').css('border','');
+    //     $('#name-bt-prd').css('border','');
+    //     // $('#categorie-bt-prd').css('border','');
+    //     $('#description-bt-prd').css('border','');
+    //     $('#quantity_bt_prd').css('border','');
+    //     $('#type_bt_prd').css('border','2px solid red');
+    // }
+    else if(pricePrd == ''){
+        $('#lieu-bt-prd').css('border','');
+        $('#name-bt-prd').css('border','');
+        // $('#categorie-bt-prd').css('border','');
+        $('#description-bt-prd').css('border','');
+        $('#quantity_bt_prd').css('border','');
+        // $('#type_bt_prd').css('border','');
+        $('#price-bt-prd').css('border','2px solid red');
+    }
+    else if(lieuPrd != '' && namePrd != '' && descriptionPrd != '' &&
+            quantityPrd != '' && pricePrd != ''){
+        $('#price-bt-prd').css('border','');
+        var fd = new FormData();
+        fd.append('id_prd',idPrd);
+        fd.append('lieu_prd',lieuPrd);
+        fd.append('nom_prd',namePrd);
+        fd.append('categorie_prd',categoriePrd);
+        fd.append('description_prd',descriptionPrd);
+        fd.append('quantity_prd',quantityPrd);
+        fd.append('type_prd',typePrd);
+        fd.append('price_prd',pricePrd);
+        $.ajax({
+            url: 'create-bt-product.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                $('.create-product-top').hide();
+                $('.create-product-bottom').hide();
+                $("#loader_load").show();
+            },
+            success: function(response){
+                if(response != 0){
+                    console.log(response);
+                }
+            },
+            complete: function(){
+                $("#loader_load").hide();
+                createPublication[2].style.display = "";
+                $("body").removeClass('body-after');
+                $('.create-product-container').css({'top':'','transform':''});
+                $('.create-product-top').show();
+                $('.create-product-bottom').show();
+                $('#name_bt_prd').val('');
+                $('#lieu_bt_prd').val('');
+                $('#categorie_bt_prd').val('');
+                $('#description_bt_prd').val('');
+                $('#quantity_bt_prd').val('');
+                $('#price_bt_prd').val('');
+                $('.bt-product-images-preview').empty();
+            }
+        });
+    }
+});

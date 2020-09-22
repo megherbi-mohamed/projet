@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
-$create_btq_query = "INSERT INTO boutiques (id_createur,etat) VALUES ({$_SESSION['user']},1)";
+$create_btq_query = "INSERT INTO boutiques (type_user,id_createur,etat) VALUES ('boutique','{$_SESSION['user']}',1)";
 if (mysqli_query($conn, $create_btq_query)) {
     $get_btq_query = "SELECT id_btq FROM boutiques WHERE id_createur = {$_SESSION['user']} AND etat = 1";
     $get_btq_result = mysqli_query($conn,$get_btq_query);

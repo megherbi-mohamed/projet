@@ -960,35 +960,63 @@ $('#create_publication_button_resp').click(function(){
 
 // valide update publication
 $('#update_publication_button').click(function(){
-    // if ($('#publication_description').val() !== '') {
-        var fd = new FormData();
-        var idPubLieu = $('#publication_location_text_updt').val();
-        fd.append('lieu_pub',idPubLieu);
-        var idPub = $('#id_publication_updt').val();
-        fd.append('id_pub',idPub);
-        var id = $('#publication_tail_updt').val();
-        fd.append('id',id);
-        var descriptionPub = $('#publication_description_updt').val();
-        fd.append('description_pub',descriptionPub);
-        var etatCommentaire = $('#etat_commentaire_updt').val();
-        fd.append('etat_commentaire',etatCommentaire);
+    var fd = new FormData();
+    var idPubLieu = $('#publication_location_text_updt').val();
+    fd.append('lieu_pub',idPubLieu);
+    var idPub = $('#id_publication_updt').val();
+    fd.append('id_pub',idPub);
+    var id = $('#publication_tail_updt').val();
+    fd.append('id',id);
+    var descriptionPub = $('#publication_description_updt').val();
+    fd.append('description_pub',descriptionPub);
+    var etatCommentaire = $('#etat_commentaire_updt').val();
+    fd.append('etat_commentaire',etatCommentaire);
 
-        $.ajax({
-            url: 'update-publication.php',
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                    $("body").removeClass('body-after');
-                    $('.update-publication').hide();
-                    $('.update-publication-container').css({'top':'','transform':''});
-                    $('#user_publication_'+id).replaceWith(response);
-                }
+    $.ajax({
+        url: 'update-publication.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $("body").removeClass('body-after');
+                $('.update-publication').hide();
+                $('.update-publication-container').css({'top':'','transform':''});
+                $('#user_publication_'+id).replaceWith(response);
             }
-        });
-    // }
+        }
+    });
+});
+
+$('#update_publication_button_resp').click(function(){
+    var fd = new FormData();
+    var idPubLieu = $('#publication_location_text_updt').val();
+    fd.append('lieu_pub',idPubLieu);
+    var idPub = $('#id_publication_updt').val();
+    fd.append('id_pub',idPub);
+    var id = $('#publication_tail_updt').val();
+    fd.append('id',id);
+    var descriptionPub = $('#publication_description_updt').val();
+    fd.append('description_pub',descriptionPub);
+    var etatCommentaire = $('#etat_commentaire_updt').val();
+    fd.append('etat_commentaire',etatCommentaire);
+
+    $.ajax({
+        url: 'update-publication.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function(response){
+            if(response != 0){
+                $("body").removeClass('body-after');
+                $('.update-publication').hide();
+                $('.update-publication-container').css({'top':'','transform':''});
+                $('#user_publication_'+id).replaceWith(response);
+            }
+        }
+    });
 });
 
 // publication options

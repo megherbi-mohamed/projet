@@ -415,7 +415,7 @@
             <div class="cancel-create" id="cancel_create_publication">
                 <i class="fas fa-times"></i>
             </div>
-            <button id="create_publication_button">Publier</button>
+            <button id="create_publication_button_resp">Publier</button>
         </div>
         <div class="create-publication-bottom">
             <div class="create-publication-location">
@@ -690,7 +690,7 @@
             <div class="cancel-update" id="cancel_update_publication">
                 <i class="fas fa-times"></i>
             </div>
-            <button id="update_publication_button">Modifier</button>
+            <button id="update_publication_button_resp">Modifier</button>
         </div>
         <div class="update-publication-bottom">
             <div class="update-publication-location">

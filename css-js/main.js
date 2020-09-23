@@ -612,6 +612,7 @@ $('#image').on('change', function () {
 });
 
 $('#add_publication_image_button').click(function(){
+    console.log('click');
     var form_data = new FormData();
     var idPub = $('#id_publication').val();
     form_data.append('id_pub',idPub);
@@ -630,6 +631,7 @@ $('#add_publication_image_button').click(function(){
             $("#loader_pub_img").show();
         },
         success: function (response) {
+            console.log(response);
             if (windowWidth > 768) {
                 $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
             }

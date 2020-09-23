@@ -10,8 +10,15 @@ for($index = 0 ; $index < $countfiles; $index++){
     $filename = $_FILES['images']['name'][$index];
     $imageName = time().$index.$id_user.'.png';
     $path = $upload_location.$imageName;
-    $create_images_query = "INSERT INTO publications_media (id_pub,id_user,media_type,media_url,etat) VALUES ('$id_pub',{$_SESSION['user']},'i','$path',1)";
-    if (mysqli_query($conn, $create_images_query)) {
+    $etat = 1;
+    $type = "i";
+    $create_images_query = $conn->prepare("INSERT INTO publications_media (id_pub,id_user,media_type,media_url,etat) VALUES (:id_pub, :id_user, :media_type, :media_url, :etat)");
+    $create_images_query->bindParam(':id_pub', $id_pub);
+    $create_images_query->bindParam(':id_user', $_SESSION['user']);
+    $create_images_query->bindParam(':media_type', $type);
+    $create_images_query->bindParam(':media_url', $path);
+    $create_images_query->bindParam(':etat', $etat);
+    if ($create_images_query->execute()) {
         if(move_uploaded_file($_FILES['images']['tmp_name'][$index],$path)){
             $files_arr[] = $path;
         }

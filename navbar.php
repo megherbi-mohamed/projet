@@ -34,24 +34,24 @@
 
     if (isset($_SESSION['user'])) {
 
-        $msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC";
-        $navbar_msg_result = mysqli_query($conn,$msg_query);
+        $msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC");
+        $navbar_msg_result = $msg_query->execute();
 
-        $notification_query = "SELECT * FROM notifications WHERE id_recever_n = {$_SESSION['user']} ORDER BY id_n DESC";
-        $notification_result = mysqli_query($conn,$notification_query);
+        $notification_query = $conn->prepare("SELECT * FROM notifications WHERE id_recever_ntf = {$_SESSION['user']} ORDER BY id_ntf DESC");
+        $notification_result = $notification_query->execute();
 
-        $num_msg_query = "SELECT id_msg FROM messages WHERE id_sender = $id_user AND etat_sender_msg = $id_user GROUP BY id_recever";    
-        $num_msg_result = mysqli_query($conn,$num_msg_query);
-        $num_msg_row = mysqli_num_rows($num_msg_result);
+        $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = $id_user AND etat_sender_msg = $id_user GROUP BY id_recever");    
+        $num_msg_query->execute();
+        $num_msg_row = $num_msg_query->rowCount();
         $show_message = '';
         if ($num_msg_row > 0) {
             $show_message = 'style="display:block"';
         }
 
-        $num_notf_query = "SELECT id_ntf FROM notifications WHERE id_recever_ntf = {$row['id_user']} AND etat_ntf = 1";    
-        $num_notf_result = mysqli_query($conn,$num_notf_query);
+        $num_notf_query = $conn->prepare("SELECT id_ntf FROM notifications WHERE id_recever_ntf = {$row['id_user']} AND etat_ntf = 1");    
+        $num_notf_query->execute();
         $num_notification = 0;
-        while ($num_ntf_row = mysqli_fetch_assoc($num_notf_result)) {
+        while ($num_ntf_row = $num_notf_query->fetch(PDO::FETCH_ASSOC)) {
             $num_notification++;
         }
         $etat_notification = '';
@@ -59,9 +59,9 @@
             $etat_notification = 'active-notification-num';
         }else{ $etat_notification = '';}
 
-        $num_prd_query = "SELECT id FROM produit_panier WHERE id_user = {$row['id_user']}";    
-        $num_prd_result = mysqli_query($conn,$num_prd_query);
-        $num_prd = mysqli_num_rows($num_prd_result);
+        $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = {$row['id_user']}");    
+        $num_prd_query->execute();
+        $num_prd = $num_prd_query->rowCount();
         $etat_panier = '';
         if ($num_prd > 0) {
             $etat_panier = 'active-panier-num';

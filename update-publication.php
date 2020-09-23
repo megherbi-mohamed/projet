@@ -6,15 +6,15 @@ $id_pub = htmlspecialchars($_POST['id_pub']);
 $lieu_pub = htmlspecialchars($_POST['lieu_pub']);
 $description_pub = htmlspecialchars($_POST['description_pub']);
 
-$update_pub_query = "UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']}";
-if (mysqli_query($conn, $update_pub_query)) {
-$publication_query = "SELECT * FROM publications WHERE id_pub = '$id_pub'"; 
-$publication_result = mysqli_query($conn, $publication_query);
-$publication_row=mysqli_fetch_assoc($publication_result);
+$update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']}");
+if ($update_pub_query->execute()) {
+$publication_query = $conn->prepare("SELECT * FROM publications WHERE id_pub = '$id_pub'"); 
+$$publication_query->execute();
+$publication_row=$publication_query->fetch(PDO::FETCH_ASSOC);
 
-$cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-$result = mysqli_query($conn, $cnx_user_query);
-$row = mysqli_fetch_assoc($result);
+$cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+$cnx_user_query->execute();
+$row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <div class="user-publication" id="user_publication_<?php echo $id ?>">
     <div class="user-publication-top">
@@ -78,9 +78,9 @@ $row = mysqli_fetch_assoc($result);
             <p><?php echo $publication_row['description_pub'] ?></p>
         </div>
         <?php 
-        $publication_media_query = "SELECT * FROM publications_media WHERE id_pub = {$publication_row['id_pub']}"; 
-        $publication_media_result = mysqli_query($conn, $publication_media_query);
-        if (mysqli_num_rows($publication_media_result) == 1) { ?>
+        $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = {$publication_row['id_pub']}"); 
+        $publication_media_query->execute();
+        if ($publication_media_query->rowCount() == 1) { ?>
         <div class="user-publication-middle-one-view">
             <?php
             $publication_media_row=mysqli_fetch_assoc($publication_media_result);
@@ -118,17 +118,17 @@ $row = mysqli_fetch_assoc($result);
     </div>
     <div class="user-publication-bottom">
         <?php
-        $publication_comment_query = "SELECT * FROM commentaire_publication WHERE id_pub = {$publication_row['id_pub']}"; 
-        $publication_comment_result = mysqli_query($conn, $publication_comment_query);
-        $publication_comment_count = mysqli_num_rows($publication_comment_result);
+        $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = {$publication_row['id_pub']}"); 
+         $publication_comment_query->execute();
+        $publication_comment_count = $publication_comment_query->rowCount();
         ?>
         <div class="user-publication-bottom-top" id="user_publication_bottom_top_<?php echo $id ?>">
             <div>
                 <?php
-                $num_like_pub_query = "SELECT id_j,id_user FROM jaime_publication WHERE id_pub = {$publication_row['id_pub']}"; 
-                $num_like_pub_result = mysqli_query($conn, $num_like_pub_query);
-                $num_like_pub_row = mysqli_fetch_assoc($num_like_pub_result);
-                $num_like_pub_count = mysqli_num_rows($num_like_pub_result);
+                $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = {$publication_row['id_pub']}"); 
+                $num_like_pub_query->execute();
+                $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
+                $num_like_pub_count = $num_like_pub_query->rowCount();
                 if ($num_like_pub_count > 0) {
                 if ($num_like_pub_row['id_user'] == $row['id_user']) { ?>
                 <i id="dislike_pub_button_<?php echo $id ?>" class="fas fa-heart"></i>
@@ -158,10 +158,10 @@ $row = mysqli_fetch_assoc($result);
         <?php } ?>
         <div class="user-publication-bottom-comment" id="user_publication_bottom_comment_<?php echo $id ?>">
         <?php 
-        while($publication_comment_row = mysqli_fetch_assoc($publication_comment_result)){
-        $publication_comment_user_query = "SELECT img_user,nom_user FROM utilisateurs WHERE id_user = {$publication_comment_row['id_user']}"; 
-        $publication_comment_user_result = mysqli_query($conn, $publication_comment_user_query);
-        $publication_comment_user_row = mysqli_fetch_assoc($publication_comment_user_result);
+        while($publication_comment_row = $publication_comment_query->fetch(PDO::FETCH_ASSOC)){
+        $publication_comment_user_query = $conn->prepare("SELECT img_user,nom_user FROM utilisateurs WHERE id_user = {$publication_comment_row['id_user']}"); 
+        $publication_comment_user_query->execute();
+        $publication_comment_user_row = $publication_comment_user_query->fetch(PDO::FETCH_ASSOC);
         ?>
         <img src="./<?php echo $publication_comment_user_row['img_user'] ?>" alt="">
         <div>

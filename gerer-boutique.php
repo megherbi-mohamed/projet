@@ -2,17 +2,17 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
 }
 if (!empty($_GET['btq'])) {
     if (empty($_SESSION['user'])) {
         if (isset($_SESSION['btq']) && $_SESSION['btq'] == $_GET['btq']){
-            $get_btq_query = "SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}";    
-            $get_btq_result = mysqli_query($conn,$get_btq_query);
-            $get_btq_row = mysqli_fetch_assoc($get_btq_result);
+            $get_btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}");    
+            $get_btq_query->execute();
+            $get_btq_row = $get_btq_query->fetch(PDO::FETCH_ASSOC);
         }
         else{
             session_unset();

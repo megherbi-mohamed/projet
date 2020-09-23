@@ -3,9 +3,10 @@
     $userName = 'root';
     $passWord = '';
     $dbName = 'projet';
-   
-    $conn = mysqli_connect($serverName,$userName,$passWord,$dbName);
-    if (!$conn) {
-        die("Connection failed: " . mysqli_connect_error());
-    }
+    try {
+        $conn = new PDO("mysql:host=$serverName;dbname=$dbName", $userName, $passWord);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+     } catch (PDOException $e) {
+        echo $e->getMessage();
+     }
 ?>

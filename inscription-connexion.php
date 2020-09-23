@@ -32,7 +32,7 @@ if (!empty( $_SESSION['user'])) {
             <div class="inscription">
                 <h4>inscrivez-vous</h4>
                 <div>
-                    <span class="nom-user">Nom d'utilisateur</span>
+                    <span class="nom-user">Nom et prenom</span>
                     <input type="text" id="nom_user" autocomplete="off">
                 </div>
                 <p id="nom_err"></p>
@@ -77,73 +77,7 @@ if (!empty( $_SESSION['user'])) {
             </div>
         </div>
         <div id="loader_load" class="center"></div>
-    <!-- <div class="inscription-details-container">
-        <div class="inscription-client-professionnel-final">
-            <div class="close-final-inscription" id="close_final_inscription">
-                <i class="fas fa-times"></i>
-            </div>
-            <div class="inscription-final-details">
-                <div class="inscription-client-final-details">
-                    <p>Aujourd'hui, il n'a jamais été aussi simple de trouver un pro 
-                        des taches que monsieur tout le monde a besoin avec la plate forme N’HANIK.</p>
-                    <p>Si  vous avez une petite mission à déléguer, faites tout simplement 
-                        appel à N’HANIK  plutôt qu'à une grande enseigne spécialisée : bricolage, 
-                        ménage, jardinage ou même déménagement, de nombreux partenaires ont 
-                        du temps à revendre et toutes les compétences nécessaires pour venir à 
-                        bout de votre corvée en un temps record et de manière efficace et professionnelle. 
-                        Alors, pour tous vos petits traquas du quotidien, faites confiance a N’HANIK.</p>
-                    <p>Non seulement vous pourrez donner à un particulier le complément de revenu qu'il 
-                        mérite, mais vous pourrez aussi aider une micro-entreprise qui débute à développer 
-                        sa notoriété. Et pour cela, rien de plus simple, choisissez la catégorie dans laquelle 
-                        poster votre besoin et faites nous confiance  pour tout le reste, il réalisera votre 
-                        mission en toute confiance et en toute sécurité !</p>
-                    <p>N’HANIK  est la solution idéale pour tous vos besoins: plomberie, électricité…etc.</p>
-                    <p>Réactivité à toute heure, professionnalisme des intervenants, super expérience client, bref, que du positif.</p>
-                    <p>- Décrivez votre besoin.</p>
-                    <p>- Des professionnels disponibles et compétents vous proposent leurs services.</p>
-                    <p>- Evaluez et réglez votre prestataire une fois le job terminé.</p>
-                </div>
-                <div class="inscription-professionnel-final-details">
-                    <h4>Vous êtes une entreprise ou artisan!</h4>
-                    <p>Devenez partenaire de la plate forme N’HANIK, trouvez de nouveaux clients.</p>
-                    <p>En créant votre profil ; sélectionnez vos compétences. Souscrivez à nos alertes jobs pour ne jamais rien manquer.</p>
-                    <p>Proposez vos services : Faites des offres pour les jobs qui vous intéressent. Vous fixez vos propres tarifs. Vous êtes payé après la fin du job.</p>
-                    <h4>Vous avez un volume de travail dépassant vos capacités!</h4>
-                    <p>nous vous mettons en relation avec des partenaires et des collaborateurs en cas de besoin et nous nous chargerons de toute prospection en matériaux et équipements.</p>
-                    <h4>Nous mettons a votre disposition une équipe qui vous:</h4>
-                    <p>déchargera  des taches administratifs et autres qui risquent de vous faire perdre du temps précieux.</p>
-                </div>   
-            </div>
-            <form action="./client-professionnel-inscription.php" method="post" id="final_inscription_form">
-                <input type="hidden" id="id_user_final">
-                <input type="hidden" id="type_user_final">
-                <input type="submit" value="Valider">
-            </form>
-        </div>
-        <div class="inscription-details-container-responsive">
-            <div class="profession-inscription">
-                <div class="inscription-profession-details">
-                    <div class="inscription-avantages">
-                        <img src="./icons/service-icon.png" alt="">
-                    </div>
-                    <button id="professionnel_inscription">Inscription professionnel</button>
-                </div>
-            </div>
-            <div class="inscription-choice">
-                <p>- OU -</p>
-            </div>
-            <div class="client-inscription">
-                <div class="inscription-client-details">
-                    <div class="inscription-avantages">
-                        <img src="./icons/service-icon.png" alt="">
-                    </div>
-                    <button id="client_inscription">Inscription client</button>
-                </div>
-            </div>
-        </div>
-    </div> -->
     </div>
-    <input type="hidden" id="id_user">
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./css-js/main.js"></script>
@@ -158,6 +92,55 @@ if (!empty( $_SESSION['user'])) {
                 document.querySelector("body").style.visibility = "visible"; 
             } 
         };
+
+        $('#connecter').click(function(event){
+            var emailUserCnx = $('#cnx_email_user').val();
+            var mtpUserCnx = $('#cnx_mtp_user').val();
+            if (emailUserCnx == '') {
+                $('#cnx_email_err').text("Entrez votre email ou téléphone.");
+                $('#cnx_email_user').css('border','2px solid red');
+            }
+            else if (!validateEmail(emailUserCnx) && !validatePhone(emailUserCnx)) {
+                $('#cnx_email_err').text("Format incorrect.");
+                $('#cnx_email_user').css('border','2px solid red');
+            }
+            else if (mtpUserCnx == '') {
+                $('#cnx_email_err').text("");
+                $('#cnx_mtp_err').text("Entrez votre mot de passe.");
+                $('#cnx_email_user').css('border','');
+                $('#cnx_mtp_user').css('border','2px solid red');
+            }
+            else{
+                $('#cnx_mtp_user').css('border','');
+                var fd = new FormData();
+                fd.append('email_user',emailUserCnx);
+                fd.append('mtp_user',mtpUserCnx);
+                $.ajax({
+                    url: 'connexion.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $("#loader_load").show();
+                        $('.inscription-connexion-container').css('opacity','0.5');
+                    },
+                    success: function(response){
+                        if(response != 0){
+                            window.location.href = 'utilisateur.php';
+                        }
+                        else{
+                            $('.alert-inscription-connexion p').text("Information incorrecte.");
+                            $('.alert-inscription-connexion').css('display','grid');
+                        } 
+                    },
+                    complete: function(){
+                        $("#loader_load").hide();
+                        $('.inscription-connexion-container').css('opacity','');
+                    }
+                }); 
+            }
+        });
 
         $(document).on('focus','.inscription input',function(){
             var id = $(this).attr('id');
@@ -304,8 +287,11 @@ if (!empty( $_SESSION['user'])) {
                             else{
                                 $('.inscription-connexion-container').empty();
                                 $('.inscription-connexion-container').append(response);
-                                $('.email-confirmation input[type="text"]').focus();
-                                $('.mobile-confirmation input[type="text"]').focus();
+                                var windowWidth = window.innerWidth;
+                                if (windowWidth > 768) {
+                                    $('.email-confirmation input[type="text"]').focus();
+                                    $('.mobile-confirmation input[type="text"]').focus();
+                                }
                             }
                         }
                     },
@@ -320,7 +306,6 @@ if (!empty( $_SESSION['user'])) {
         $(document).on('click','#verify_email_button',function(event){
             var code = $('#code_verification').val();
             var idUser = $('#id_user').val();
-
             if (code == '') {
                 $('#code_verification').css("border","2px solid red");
             }
@@ -341,7 +326,8 @@ if (!empty( $_SESSION['user'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            console.log(response);
+                            $('.inscription-connexion-container').empty();
+                            $('.inscription-connexion-container').append(response);
                         }
                         else{
                             $('#code_verification').val("");
@@ -360,7 +346,6 @@ if (!empty( $_SESSION['user'])) {
         $(document).on('click','#verify_mobile_button',function(event){
             var code = $('#code_verification').val();
             var idUser = $('#id_user').val();
-
             if (code == '') {
                 $('#code_verification').css("border","2px solid red");
             }
@@ -381,7 +366,8 @@ if (!empty( $_SESSION['user'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            console.log(response);
+                            $('.inscription-connexion-container').empty();
+                            $('.inscription-connexion-container').append(response);
                         }
                         else{
                             $('#code_verification').val("");
@@ -398,166 +384,73 @@ if (!empty( $_SESSION['user'])) {
         })
 
         $(window).on('beforeunload', function(){
-            $('#delete_user_btn').click();
-        });
-
-        $('#delete_user_btn').click(function(){
-            $("#delete_user_form").submit();
-        });
-
-        $("#delete_user_form").submit(function(event){
-            event.preventDefault(); 
-            var post_url = $(this).attr("action"); 
-            var request_method = $(this).attr("method");
-            var form_data = $(this).serialize();
-
-            $.ajax({
-                url : post_url,
-                type: request_method,
-                data : form_data
-            }).done(function(response){
-                if (response != 0) {
-                }
-                else{
-                }
-            });
-        });
-
-        $('#professionnel_inscription').click(function(event){
-            // event.preventDefault();
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.clear').height(10);
-            }
-            $('#type_user_final').val("professionnel");
-            $('.navbar').css('z-index','50');
-            $('body').addClass('body-after');
-            $('.inscription-client-professionnel-final').show();
-            $('.inscription-details-container-responsive').hide();
-            $('.inscription-client-final-details').hide();
-            $('.inscription-professionnel-final-details').show();
-        });
-
-        $('#client_inscription').click(function(event){
-            // event.preventDefault(); 
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.clear').height(10);
-            }
-            $('#type_user_final').val("client");
-            $('.navbar').css('z-index','50');
-            $('body').addClass('body-after');
-            $('.inscription-client-professionnel-final').show();
-            $('.inscription-details-container-responsive').hide();
-            $('.inscription-client-final-details').show();
-            $('.inscription-professionnel-final-details').hide();
-        });
-
-        $('#close_final_inscription').click(function(event){
-            // event.preventDefault(); 
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.clear').height(40);
-            }
-            $('.navbar').css('z-index','');
-            $('#type_user_final').val("");
-            $('body').removeClass('body-after');
-            $('.inscription-client-professionnel-final').hide();
-            $('.inscription-details-container-responsive').show();
-        });
-
-        $("#final_inscription_form").submit(function(event){
-            event.preventDefault(); 
-            var post_url = $(this).attr("action"); 
-            var request_method = $(this).attr("method");
-            var form_data = $(this).serialize();
-            
-            $.ajax({
-                url : post_url,
-                type: request_method,
-                data : form_data
-            }).done(function(response){
-                if (response != 0) {
-                    $('#final_inscription_form')[0].reset();
-                    window.location.href = 'utilisateur.php';
-                }
-                else{
-                    alert("err d'inscription");
-                }
-            });
-        });
-
-        $('#connecter').click(function(event){
-            var emailUserCnx = $('#cnx_email_user').val();
-            var mtpUserCnx = $('#cnx_mtp_user').val();
-            if (emailUserCnx == '') {
-                $('#cnx_email_err').text("Entrez votre email ou téléphone.");
-                $('#cnx_email_user').css('border','2px solid red');
-            }
-            else if (!validateEmail(emailUserCnx) && !validatePhone(emailUserCnx)) {
-                $('#cnx_email_err').text("Format incorrect.");
-                $('#cnx_email_user').css('border','2px solid red');
-            }
-            else if (mtpUserCnx == '') {
-                $('#cnx_email_err').text("");
-                $('#cnx_mtp_err').text("Entrez votre mot de passe.");
-                $('#cnx_email_user').css('border','');
-                $('#cnx_mtp_user').css('border','2px solid red');
-            }
-            else{
-                $('#cnx_mtp_user').css('border','');
-                var fd = new FormData();
-                fd.append('email_user',emailUserCnx);
-                fd.append('mtp_user',mtpUserCnx);
+            var fd = new FormData();
+                var idUser = $("#id_user").val();
+                fd.append('id_user',idUser);
                 $.ajax({
-                    url: 'connexion.php',
+                    url: 'delete-user-inscription.php',
                     type: 'post',
                     data: fd,
                     contentType: false,
                     processData: false,
-                    beforeSend: function(){
-                        $("#loader_load").show();
-                        $('.inscription-connexion-container').css('opacity','0.5');
-                    },
-                    success: function(response){
-                        if(response != 0){
-                            window.location.href = 'utilisateur.php';
-                        }
-                        else{
-                            $('.alert-inscription-connexion p').text("Information incorrecte.");
-                            $('.alert-inscription-connexion').css('display','grid');
-                        } 
-                    },
-                    complete: function(){
-                        $("#loader_load").hide();
-                        $('.inscription-connexion-container').css('opacity','');
-                    }
-                }); 
-            }
+                });
         });
 
-        // $("#connexion_form").submit(function(event){
-        //     event.preventDefault(); 
-        //     var post_url = $(this).attr("action"); 
-        //     var request_method = $(this).attr("method");
-        //     var form_data = $(this).serialize();
-            
-        //     $.ajax({
-        //         url : post_url,
-        //         type: request_method,
-        //         data : form_data
-        //     }).done(function(response){
-        //         if (response != 0) {
-        //             window.location.href = 'utilisateur.php';
-        //         }
-        //         else{
-        //             $("#connexion_form")[0].reset();
-        //             $('.inscription-connexion-container h3').text("Votre numéro ou mot de passe est incorrecte.");
-        //             $('h3').css('background','red');
-        //         }
-        //     });
-                
-        // });
+        $(document).on('click','#client_inscription_button',function(event){
+            $('#type_user').val('client');
+            $('.inscription-details-background').css('transform','translateX(100%)');
+            $('.inscription-professionnel-information').css('transform','translateX(-101%)');
+            $('.inscription-client-information').css('transform','translateX(0)');
+            setTimeout(() => {
+                $(this).addClass('active-button');
+                $('#professionnel_inscription_button').removeClass('active-button');
+            }, 300);
+        })
+
+        $(document).on('click','#professionnel_inscription_button',function(event){
+            $('#type_user').val('professionnel');
+            $('.inscription-details-background').css('transform','');
+            $('.inscription-professionnel-information').css('transform','');
+            $('.inscription-client-information').css('transform','');
+            setTimeout(() => {
+                $(this).addClass('active-button');
+                $('#client_inscription_button').removeClass('active-button');
+            }, 300);
+        })
+
+        $(document).on('click','#valide_final_inscription',function(event){
+            var fd = new FormData();
+            var idUser = $('#id_user').val();
+            var typeUser = $('#type_user').val();
+            fd.append('type_user',typeUser);
+            fd.append('id_user',idUser);
+            $.ajax({
+                url: 'client-professionnel-inscription.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $("#loader_load").show();
+                    $('.inscription-connexion-container').css('opacity','0.5');
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        window.location.href = 'utilisateur.php';
+                    }
+                    else{
+                        $('#code_verification').val("");
+                        $('.alert-inscription-connexion p').text("Erreur d'inscription, réessayer.");
+                        $('.alert-inscription-connexion').css('display','grid');
+                    }
+                },
+                complete: function(){
+                    $("#loader_load").hide();
+                    $('.inscription-connexion-container').css('opacity','');
+                }
+            });
+        })
 
         var categorieProfssTop = document.querySelectorAll('.categorie-profss-top');
         var categorieProfssBottom = document.querySelectorAll('.categorie-profss-bottom');

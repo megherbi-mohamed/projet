@@ -206,160 +206,124 @@
 }
 
 .inscription-details-container{
-    width: 100%;
-    height: 100%;
-    transition: transform 0.5s ease-in-out;
-    z-index: 150;
-}
-.inscription-details-container-responsive{
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: 45% 10% 45%;
-    margin-top: 20px;
-}
-.inscription-choice{
-    justify-self: center;
-    align-self: center;
-}
-.inscription-choice p{
-    font-weight: bold;
-    font-size: 1.3rem;
-}
-.inscription-client-professionnel-final{
+    width: 550px;
+    height: 550px;
     position: fixed;
-    top: 0;
+    top: 65%;
     left: 50%;
-    transform: translateX(-50%);
-    width: 50%;
-    height: 95%;
-    background: #ffffff;
-    border-radius: 5px;
-    display: none;
-    z-index: 150;
+    transform: translate(-50%,-65%);
 }
-.close-final-inscription{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    background: rgb(137, 218, 238);
-    cursor: pointer;
-}
-.close-final-inscription:hover{
-    background: coral;
-}
-.close-final-inscription i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    padding: 10px;
-}
-.inscription-final-details{
-    width: 95%;
-    margin: 70px auto 0px;
-    padding: 10px;
-    box-sizing: border-box;
-    border-top: 2px solid rgb(137, 218, 238);
-    border-bottom: 2px solid rgb(137, 218, 238);
-}
-.inscription-client-final-details,
-.inscription-professionnel-final-details{
+.inscription-details{
     width: 100%;
-    height: 390px;
-    overflow-y: auto;
-}
-.inscription-client-final-details::-webkit-scrollbar-track,
-.inscription-professionnel-final-details::-webkit-scrollbar-track{
-	background-color: var(--primary-color);
-}
-.inscription-client-final-details::-webkit-scrollbar,
-.inscription-professionnel-final-details::-webkit-scrollbar{
-	width: 5px;
-}
-.inscription-client-final-details::-webkit-scrollbar-thumb,
-.inscription-professionnel-final-details::-webkit-scrollbar-thumb{
-    background-color: coral;
-    width: 5px;
-}
-.inscription-client-final-details p,
-.inscription-professionnel-final-details p{
-    font-size: .95rem;
-}
-.inscription-client-professionnel-final input[type='submit']{
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-    box-sizing: border-box;
-    color: #fff;
-    background: rgb(137, 218, 238);
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    outline: none;
-}.inscription-client-professionnel-final input[type='submit']:hover{
-    background: coral;
-}
-.client-inscription,
-.profession-inscription{
     height: 100%;
-    width: 100%;
-    margin: auto;
-    position: relative;
-}
-.inscription-client-details,
-.inscription-profession-details{
-    width: 400px;
-    height: 400px !important;
+    top: 0;
+    left: 0;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #ffffff;
-    border-radius: 5px;
+    border-radius: 10px;
     -webkit-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
     -moz-box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
     box-shadow: 0px 1px 15px -9px rgba(0,0,0,0.75);
-    overflow: hidden;
-}
-.inscription-avantages{
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+    background: #ffffff;
     text-align: center;
 }
-.inscription-avantages img{
-    width: 60%;
-    margin-top: 20px;
-}
-.inscription-client-details button,
-.inscription-profession-details button{
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
+.inscription-details h4{
+    text-transform: uppercase;
+    padding: 10px;
     box-sizing: border-box;
-    border: none;
-    outline: none;
-    color: #fff;
-    border-radius: 3px;
-    background: rgb(137, 218, 238);
+    margin: 10px;
+}
+.inscription-details-top{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 70%;
+    margin: auto;
+    background: #ecedee;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+.inscription-details-button{
+    z-index: 10;
     cursor: pointer;
+    padding: 15px 10px;
+    box-sizing: border-box;
+}
+.inscription-details-button p{
+    margin: 0;
+    font-size: .95rem;
     font-weight: bold;
 }
-.inscription-client-details button:hover,
-.inscription-profession-details button:hover{
-    background: coral;
+.active-button{
+    color: #fff;
 }
-#delete_user_form{
-    display: none;
+.inscription-details-background{
+    height: 100%;
+    width: 50%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #000000dc;
+    z-index: 1;
+    transition: transform 0.5s ease-in-out;
 }
+.inscription-details-bottom{
+    width: 90%;
+    margin: 10px auto;
+    height: 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 2px solid #ecedee;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+.inscription-details-bottom::-webkit-scrollbar-track{
+	background-color: #ecedee;
+}
+.inscription-details-bottom::-webkit-scrollbar{
+	width: 8px;
+}
+.inscription-details-bottom::-webkit-scrollbar-thumb{
+    background-color: #929292;
+    border-radius: 5px;
+}
+.inscription-professionnel-information,
+.inscription-client-information{
+    text-align: left;
+    transition: transform 0.5s ease-in-out;
+    position: absolute;
+}
+.inscription-client-information{
+    transform: translateX(100%);
+}
+.inscription-professionnel-information h4,
+.inscription-client-information h4{
+    margin: 0;
+    padding: 0;
+    font-size: .9rem;
+}
+.inscription-professionnel-information p,
+.inscription-client-information p{
+    margin: 5px 0;
+    font-size: .9rem;
+}
+.inscription-details button{
+    width: 90%;
+    margin: 10px auto;
+    cursor: pointer;
+    padding: 10px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    background: #000000dc;
+    color: #fff;
+    font-weight: bold;
+}
+.inscription-details button:hover{
+    background: #000000;
+}
+
 #loader_load { 
     display: none;
     position: absolute;
@@ -410,88 +374,68 @@
 @media only screen and (max-width: 768px) {
     .inscription-connexion-container{
         width: 100%;
-        margin-top: -5px;
+        min-height: calc(100vh - 50px);
+        position: relative;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
     }
     .inscription-container,
     .connexion-container{
-        width: 100%;
-        height: 100%;
-        left: 0;
-        top: 0;
         border-radius: 0;
     }
     .inscription, 
     .connexion{
-        position: absolute;
-        top: 30%;
-        left: 50%;
-        transform: translate(-50%,-30%);
-    }
-    .connexion div{
-        position: relative;
-        width: 320px;
-        margin-bottom: 10px;
-    }
-    .connexion button{
-        margin-top: 20px;
-    }
-    .inscription input,
-    .inscription select{
         width: 90%;
-    }
-    .inscription h5{
-        margin: 20px auto 0;
-        padding: 10px;
-    }
-    .inscription button{
-        padding: 12px 0;
-        display: block;
         margin: auto;
-        margin-top: 10px;
-    }
-    .inscription h4{
-        margin: 0 auto 10px;
-    }
-    .mobile-email-confirmation-container{
-        margin-top: 0px;
-        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
     }
     .mobile-email-confirmation{
         width: 100%;
-        height: 100%;
+        min-height: calc(100vh - 50px);
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
         border-radius: 0;
     }
-    .email-confirmation input[type='text'],
-    .mobile-confirmation input[type='text']{
-        width: 70%;
-    }
-
-    .inscription-details-container-responsive{
-        grid-template-columns: 1fr;
-        grid-template-rows: 47% 6% 47%;
-        grid-gap: 0%;
+    .email-confirmation,
+    .mobile-confirmation{
+        width: 90%;
         margin: auto;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
     }
-    .inscription-client-professionnel-final{
-        width: 95%;
-        height: 90%;
+    .inscription-details-container{
+        width: 100%;
+        min-height: calc(100vh - 50px);
+        position: relative;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #ffffff;
     }
-    .inscription-client-details,
-    .inscription-profession-details{
-        width: 70%;
-        height: 85% !important;
+    .inscription-details{
+        border-radius: 0;
+        height: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        box-shadow: none;
     }
-    .profession-inscription{
-        margin: 0 auto;
-    }
-    .inscription-final-details{
-        width: 95%;
-        margin: 60px auto 10px;
+    .inscription-details h4{
+        text-transform: uppercase;
         padding: 10px;
-    }
-    .inscription-final-details p{
-        line-height: 1.3rem;
-        font-size: .95rem;
+        box-sizing: border-box;
         margin: 0;
+    }
+    .inscription-details-bottom{
+        width: 90%;
+        height: 360px;
     }
 }

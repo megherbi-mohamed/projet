@@ -42,11 +42,6 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <?php }else if($btq_inf_row['couverture_btq'] == ''){ ?>
                     <img id="couverture_img" src="./boutique-couverture/couverture.png" alt="">
                 <?php } ?>
-                <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $btq_inf_row['id_createur']) { ?>
-                <div class="couverture-modification-icon" id="but_updt_img_cvrt">
-                    <i class="fas fa-camera"></i>
-                </div>
-                <?php } ?>
                 </div>
                 <div class="boutique-logo">
                 <?php if ($btq_inf_row['logo_btq'] != '') { ?>
@@ -54,25 +49,14 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
                 <?php }else if($btq_inf_row['logo_btq'] == ''){ ?>
                     <img src="./boutique-logo/logo.png" alt="">
                 <?php } ?>
-                <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $btq_inf_row['id_createur']) { ?>
-                <div class="logo-modification-icon">
-                    <i id="but_updt_img_logo" class="fas fa-camera"></i>
-                </div>
-                <?php } ?>
                 </div>
             </div>
             <div class="boutique-options">
                 <div class="boutique-name">
                     <h3><?php echo $btq_inf_row['nom_btq'] ?></h3>
                 </div>
-                <hr>
+                <!-- <hr> -->
                 <div class="boutique-option">
-                    <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $btq_inf_row['id_createur']) { ?>
-                    <div id="create_product_button">
-                        <i class="fas fa-plus">
-                        <p>Créer un produit</p>
-                    </div>
-                    <?php } ?>
                     <?php if (isset($_SESSION['user']) && $_SESSION['user'] !== $btq_inf_row['id_createur']) { ?>
                     <div id="follow_button">
                         <i class="fas fa-user-plus"></i>
@@ -101,10 +85,9 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
         </div>
     </div>
     <div id="loader" class="center"></div>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initBoutiqueMap"></script>
+    <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initBoutiqueMap"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./css-js/main.js"></script>
-    <script src="./css-js/croppie.js"></script>
     <script>
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
@@ -116,7 +99,17 @@ $btq_crtr_row = mysqli_fetch_assoc($btq_crtr_result);
             } 
         };
         
-
+        <?php if (isset($_SESSION['user'])) { ?>
+        var uid = <?php echo $id_user; ?>;
+        var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
+        var websocket = false;
+        var js_flood = 0;
+        var status_websocket = 0;
+        $(document).ready(function() {
+            start(websocket_server);
+        });
+        <?php } ?>
     </script>
+    <script src="css-js/websocket.js"></script>
 </body>
 </html>

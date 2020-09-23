@@ -69,36 +69,36 @@ $msg_result = mysqli_query($conn,$msg_query);
                 <h4>Completer les informations de votre profile</h4>
                 <div class="pre-update-profile-left">
                     <div>
-                        <label>Nom et prenom <span>*</span></label>
-                        <input type="text" id="pre_nom_user" value="<?php echo $row['nom_user'] ?>">
+                        <span class="pre-nom-user">Nom et prenom *</span>
+                        <input type="text" id="pre_nom_user" value="<?php echo $row['nom_user'] ?>" autocomplete="off">
                     </div>
                     <div>
-                        <label>Nom d'entreprise <span>*</span></label>
-                        <input type="text" id="pre_entrp_user">
+                        <span class="pre-entrp-user">Nom d'entreprise *</span>
+                        <input type="text" id="pre_entrp_user" autocomplete="off">
                     </div>
                     <?php if ($row['email_user'] !== '') { ?>
                     <div>
-                        <label>Téléphone <span>*</span></label>
-                        <input type="text" id="pre_tlph_user">
+                        <span class="pre-tlph-user">Téléphone *</span>
+                        <input type="text" id="pre_tlph_user" autocomplete="off">
                         <input type="hidden" id="pre_email_user" value="<?php echo $row['email_user'] ?>">
                     </div>
                     <?php }else{ ?>
                     <div>
-                        <label>Email <span>*</span></label>
-                        <input type="text" id="pre_email_user">
+                        <span class="pre-email-user">Email *</span>
+                        <input type="text" id="pre_email_user" autocomplete="off">
                         <input type="hidden" id="pre_tlph_user" value="<?php echo $row['tlph_user'] ?>">
                     </div>
                     <?php } ?>
                     <div>
-                        <label>Adresse <span>*</span></label>
-                        <input type="text" id="pre_adresse_user">
+                        <span class="pre-adresse-user">Adresse *</span>
+                        <input type="text" id="pre_adresse_user" autocomplete="off">
                     </div>
                     <div>
-                        <label>Ville <span>*</span></label>
-                        <input type="text" id="pre_ville_user">
+                        <span class="pre-ville-user">Ville *</span>
+                        <input type="text" id="pre_ville_user" autocomplete="off">
                     </div>
-                    <div class="pre-categories pre-categories-active">
-                        <label>Catégories <span>*</span></label>
+                    <div class="pre-categories">
+                        <span class="pre-categorie-user">Categorie *</span>
                         <select id="pre_categorie">
                             <option value="">Categories</option>
                             <option id="services" value="services">Services</option>
@@ -113,138 +113,19 @@ $msg_result = mysqli_query($conn,$msg_query);
                         </select>
                     </div>
                     <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
+                        <span class="pre-profession-user">Profession *</span>
                         <select id="pre_profession">
                             <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'services'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
                         </select>
                     </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'artisants'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'transports'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'locations'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <select id="pre_profession">
-                            <option value="">Professions</option>
-                            <?php 
-                                $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
-                                $categories_result = mysqli_query($conn,$categories_query);
-                                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
-                            ?>
-                            <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
-                            <?php } ?>
-                            <option value="autre">Autres</option>
-                        </select>
-                    </div>
-                    <div class="pre-profession">
-                        <label>Professions <span>*</span></label>
-                        <input type="text" id="pre_profession" placeholder="Entrez votre profession">
+                    <div class="pre-profession-autre">
+                        <span class="pre-profession-user">Profession *</span>
+                        <input type="text" id="pre_profession" autocomplete="off">
                     </div>
                 </div>
-                <input type="submit" id="pre_updt" value="Vailder">
+                <button id="pre_updt">Enregirer</button>
             </div>
+            <div id="loader_load" class="center"></div>
         </div>
     </div>
     <div class="show-hided-publications">
@@ -638,71 +519,32 @@ $msg_result = mysqli_query($conn,$msg_query);
           $('body').addClass('body-after');
         }
 
-        var categorie = document.querySelector('#pre_categorie');
-        var profession = document.querySelectorAll('.pre-profession');
-        var categorieActive = document.querySelector('.pre-categories');
-
-        categorie.addEventListener('change', function (e) {
-            $('#pre_categorie').css("border","");
-            categorieActive.classList.remove('pre-categories-active');
+        var preCategories = document.querySelector('#pre_categorie');
+        preCategories.addEventListener('change', function (e) {
             if (e.target.value !== '') {
-                if (e.target.value == 'services') {
-                    hideProfessions();
-                    profession[0].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'artisants') {
-                    hideProfessions();
-                    profession[1].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'transports') {
-                    hideProfessions();
-                    profession[2].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'locations') {
-                    hideProfessions();
-                    profession[3].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'entreprises') {
-                    hideProfessions();
-                    profession[4].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'detaillons') {
-                    hideProfessions();
-                    profession[5].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'grossidtes') {
-                    hideProfessions();
-                    profession[6].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'fabriquants') {
-                    hideProfessions();
-                    profession[7].classList.add('pre-profession-active');
-                }
-                if (e.target.value == 'import-export') {
-                    hideProfessions();
-                    profession[8].classList.add('pre-profession-active');
-                }
+                var categorie = e.target.value;
+                $('.pre-profession').load('categorie-profile.php?c='+categorie);
             }
-            else{
-                categorieActive.classList.add('pre-categories-active');
-                hideProfessions();
-            }
-        });
+        })
 
-        for (let p = 0; p < profession.length; p++) {
-            profession[p].addEventListener('change', function (e) {
-                if (e.target.value == 'autre') {
-                    hideProfessions();
-                    profession[9].classList.add('pre-profession-active');
-                }
-            });
-        }
-        
-        function hideProfessions(){
-            profession.forEach(p => {
-                p.classList.remove('pre-profession-active');
-            });
-        }
+        $(document).on('focus','.pre-update-profile-left input',function(){
+            var id = $(this).attr('id');
+            if (id == 'pre_entrp_user') {
+                $('.pre-entrp-user').addClass('pre-updt-active-span');
+            }
+            if (id == 'pre_email_user') {
+                $('.pre-email-user').addClass('pre-updt-active-span');
+            }
+            if (id == 'pre_tlph_user') {
+                $('.pre-tlph-user').addClass('pre-updt-active-span');
+            }
+            if (id == 'pre_adresse_user') {
+                $('.pre-adresse-user').addClass('pre-updt-active-span');
+            }
+            if (id == 'pre_ville_user') {
+                $('.pre-ville-user').addClass('pre-updt-active-span');
+            }
+        })
 
         function validateEmail(email) {
             var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
@@ -713,8 +555,7 @@ $msg_result = mysqli_query($conn,$msg_query);
             return re.test(phone);
         }
 
-        $('#pre_updt').click(function(event){
-            event.preventDefault(); 
+        $('#pre_updt').click(function(event){;
             var nomUser = $('#pre_nom_user').val();
             var nomEntrpUser = $('#pre_entrp_user').val();
             var tlphUser = $('#pre_tlph_user').val();
@@ -722,8 +563,7 @@ $msg_result = mysqli_query($conn,$msg_query);
             var adresseUser = $('#pre_adresse_user').val();
             var villeUser = $('#pre_ville_user').val();
             var categorieUser = $('#pre_categorie').val();
-            var professionUser = $('.pre-profession-active #pre_profession').val();
-            
+            var professionUser = $('.pre-update-profile-left #pre_profession').val();
             if (nomUser == '') {
                 $('#pre_nom_user').css("border","2px solid red");
             }
@@ -774,12 +614,12 @@ $msg_result = mysqli_query($conn,$msg_query);
                 $('#pre_adresse_user').css("border","");
                 $('#pre_ville_user').css("border","");
                 $('#pre_categorie').css("border","");
-                $('.pre-profession-active #pre_profession').css("border","2px solid red");
+                $('.pre-update-profile-left #pre_profession').css("border","2px solid red");
             }
             else if (nomUser != '' && nomEntrpUser != '' && tlphUser != '' &&
                     emailUser != '' && adresseUser != '' && villeUser != '' && 
                     categorieUser != '' && professionUser != '') {
-                $('.pre-profession-active #pre_profession').css("border","");
+                $('.pre-update-profile-left #pre_profession').css("border","");
                 
                 var fd = new FormData();
                 fd.append('nom_user',nomUser);
@@ -797,7 +637,12 @@ $msg_result = mysqli_query($conn,$msg_query);
                     data: fd,
                     contentType: false,
                     processData: false,
+                    beforeSend: function(){
+                        $("#loader_load").show();
+                        $('.pre-update-profile').css('opacity','0.5');
+                    },
                     success: function(response){
+                        console.log(response);
                         if(response != 0){
                             $('.pre-update-profile').hide();
                             $('body').removeClass('body-after');
@@ -806,6 +651,10 @@ $msg_result = mysqli_query($conn,$msg_query);
                             alert('err');
                         }
                     },
+                    complete: function(){
+                        $("#loader_load").hide();
+                        $('.pre-update-profile').css('opacity','');
+                    }
                 });
             }
         })
@@ -948,6 +797,7 @@ $msg_result = mysqli_query($conn,$msg_query);
             });
         });
 
+        <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $id_user; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
@@ -956,6 +806,7 @@ $msg_result = mysqli_query($conn,$msg_query);
         $(document).ready(function() {
             start(websocket_server);
         });
+        <?php } ?>
     </script>
     <script src="css-js/websocket.js"></script>
 </body>

@@ -33,7 +33,6 @@ if ($find_tlph_user_count > 0) {
 }
 else if ($find_tlph_user_count == 0) {
     if(mysqli_query($conn,$inscr_user_query)){
-
         if (filter_var($email_tlph_user, FILTER_VALIDATE_EMAIL)) {
             $get_userid_query = "SELECT id_user,email_user FROM preutilisateurs WHERE email_user = '$email_tlph_user'";
             $get_userid_result = mysqli_query($conn, $get_userid_query);

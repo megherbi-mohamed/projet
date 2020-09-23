@@ -495,7 +495,7 @@
                     <option id="grossidtes" value="grossidtes">Grossistes</option>
                     <option id="fabriquants" value="fabriquants">Fabriquants</option>
                     <option id="import-export" value="import-export">Import-Export</option>
-                </select>
+                </select> 
                 <span class="categorie-btq">Categorie *</span>
             </div>
             <div class="sous-categorie-boutique boutique-input">

@@ -753,8 +753,8 @@ if (!empty($_GET['btq'])) {
             } else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
-                var idBtq = $('#id_boutique_product').val();
-                history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
+                // var idBtq = $('#id_boutique_product').val();
+                // history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
                 setTimeout(() => {
                     scrolldiv();
                 }, 100);

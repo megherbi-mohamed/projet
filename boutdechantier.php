@@ -563,50 +563,50 @@ if (isset($_SESSION['user'])) {
             }
         })
 
-        // var slider = document.querySelector('.boutdechantier-right-slider');
-        // var slides = document.querySelectorAll('.boutdechantier-right-slider img');
-        // var next = document.querySelector('#next_slide');
-        // var prev = document.querySelector('#prev_slide');
-        // var intervalTime = 3000;
-        // var sildeInterval = setInterval(nextSlide, intervalTime);
+        var slider = document.querySelector('.boutdechantier-right-slider');
+        var slides = document.querySelectorAll('.boutdechantier-right-slider img');
+        var next = document.querySelector('#next_slide');
+        var prev = document.querySelector('#prev_slide');
+        var intervalTime = 3000;
+        var sildeInterval = setInterval(nextSlide, intervalTime);
 
-        // function nextSlide(){
-        //     var current = document.querySelector(".current-slide");
-        //     current.classList.remove("current-slide");
-        //     if (current.nextElementSibling) {
-        //         current.nextElementSibling.classList.add("current-slide");
-        //     }else{
-        //         slides[0].classList.add("current-slide");
-        //     }
-        // }
+        function nextSlide(){
+            var current = document.querySelector(".current-slide");
+            current.classList.remove("current-slide");
+            if (current.nextElementSibling) {
+                current.nextElementSibling.classList.add("current-slide");
+            }else{
+                slides[0].classList.add("current-slide");
+            }
+        }
 
-        // function prevSlide(){
-        //     var current = document.querySelector(".current-slide");
-        //     current.classList.remove("current-slide");
-        //     if (current.previousElementSibling) {
-        //         current.previousElementSibling.classList.add("current-slide");
-        //     }else{
-        //         slides[slides.length-1].classList.add("current-slide");
-        //     }
-        // }
+        function prevSlide(){
+            var current = document.querySelector(".current-slide");
+            current.classList.remove("current-slide");
+            if (current.previousElementSibling) {
+                current.previousElementSibling.classList.add("current-slide");
+            }else{
+                slides[slides.length-1].classList.add("current-slide");
+            }
+        }
         
-        // next.addEventListener('click', ()=>{
-        //     nextSlide();
-        //     clearInterval(sildeInterval);
-        // });
+        next.addEventListener('click', ()=>{
+            nextSlide();
+            clearInterval(sildeInterval);
+        });
 
-        // prev.addEventListener('click', ()=>{
-        //     prevSlide()
-        //     clearInterval(sildeInterval);
-        // });
+        prev.addEventListener('click', ()=>{
+            prevSlide()
+            clearInterval(sildeInterval);
+        });
 
-        // slider.addEventListener('mouseover', ()=>{
-        //     clearInterval(sildeInterval);
-        // });
+        slider.addEventListener('mouseover', ()=>{
+            clearInterval(sildeInterval);
+        });
 
-        // slider.addEventListener('mouseleave', ()=>{
-        //     sildeInterval = setInterval(nextSlide, intervalTime);
-        // });
+        slider.addEventListener('mouseleave', ()=>{
+            sildeInterval = setInterval(nextSlide, intervalTime);
+        });
 
         var btCategorie = document.querySelectorAll('.bt-categorie');
         var btSousCategorie = document.querySelectorAll('.bt-sous-gategorie');
@@ -1041,10 +1041,7 @@ if (isset($_SESSION['user'])) {
                 $('#delete_product').css('transform','');
             }
         });
-
-        <?php 
-            if (isset($_SESSION['user'])) {
-        ?>
+        <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $id_user; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;

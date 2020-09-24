@@ -21,14 +21,14 @@ include_once './bdd/connexion.php';
 <div class="boutdechantier-right-middle"></div>
 <div class="boutdechantier-right-bottom">
 <?php 
-$get_product_query = "SELECT * FROM produit_boutdechantier ORDER BY date DESC";
-$get_product_result = mysqli_query($conn,$get_product_query);
+$get_product_query = $conn->prepare("SELECT * FROM produit_boutdechantier ORDER BY date DESC");
+$get_product_query->execute();
 $i = 0;
-while ($get_product_row = mysqli_fetch_assoc($get_product_result)){
+while ($get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC)){
 $i++;
-$get_product_media_query = "SELECT * FROM bt_produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1";
-$get_product_media_result = mysqli_query($conn,$get_product_media_query);
-$get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
+$get_product_media_query = $conn->prepare("SELECT * FROM bt_produits_media WHERE id_prd = '{$get_product_row["id_prd"]}' LIMIT 1");
+$get_product_media_query->execute();
+$get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
 ?>
     <div class="bt-product">
         <div class="bt-product-img">

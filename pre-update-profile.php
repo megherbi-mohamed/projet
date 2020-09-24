@@ -11,15 +11,15 @@ $ville_user = htmlspecialchars($_POST['ville_user']);
 $categorie_user = htmlspecialchars($_POST['categorie_user']);
 $profession_user = htmlspecialchars($_POST['profession_user']);
 
-$updt_user_query = 'UPDATE utilisateurs SET nom_user="'."$nom_user".'" ,nom_entrp_user = "'."$nom_entrp_user".'" ,tlph_user="'."$tlph_user".'",email_user="'."$email_user".'",
+$updt_user_query = $conn->prepare('UPDATE utilisateurs SET nom_user="'."$nom_user".'" ,nom_entrp_user = "'."$nom_entrp_user".'" ,tlph_user="'."$tlph_user".'",email_user="'."$email_user".'",
 adresse_user="'."$adresse_user".'",ville="'."$ville_user".'",categorie_user="'."$categorie_user".'",profession_user="'."$profession_user".'",
-cnx_count = 1 WHERE id_user="'."{$_SESSION["user"]}".'"';
+cnx_count = 1 WHERE id_user="'."{$_SESSION["user"]}".'"');
 
-if(mysqli_query($conn, $updt_user_query)){
+if($updt_user_query->execute()){
 
-    $query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_assoc($result);
+    $query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $query->execute();
+    $row = $query->fetch(PDO::FETCH_ASSOC);
 
     echo "
         <div id='user_informations'>

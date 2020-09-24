@@ -1,7 +1,7 @@
-
 <?php 
 session_start();
-if (!empty( $_SESSION['user'])) {
+include_once './bdd/connexion.php';
+if (!empty($_SESSION['user'])) {
     header('Location: index.php');
     exit;
 }

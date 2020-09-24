@@ -6,14 +6,13 @@ if (isset($_SESSION['user'])) {
     $cnx_user_query->execute();
     $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
-    
 }
 else{
     header('Location: inscription-connexion.php');
 }
 
-$msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '{$row['id_user']}' GROUP BY id_sender) ORDER BY id_msg DESC");
-$msg_result = $msg_query->execute();
+// $msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC";
+// $msg_result = mysqli_query($conn,$msg_query);
 
 // $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND etat_msg = 1 GROUP BY id_sender";    
 // $num_msg_result = mysqli_query($conn,$num_msg_query);
@@ -45,14 +44,6 @@ $msg_result = $msg_query->execute();
     <?php include './navbar.php';?>
     <div class="clear"></div>
     <div class="user-profile-container">
-        <?php 
-        if (isset($_GET['a'])) {
-            $updt_etat_ntf_query = "UPDATE notifications SET etat_n = 0 WHERE id_activity=".$_GET['a'];
-            mysqli_query($conn, $updt_etat_ntf_query);    
-        ?>
-        <input type="hidden" id="active_notification" value="<?php echo $_GET['a']; ?>">
-        <?php }else{?><input type="hidden" id="active_notification" value="0"><?php } ?>
-        
         <?php if ($row['type_user'] == 'professionnel') { 
             include './professionnel.php';
         }else if ($row['type_user'] == 'client'){ 
@@ -181,12 +172,12 @@ $msg_result = $msg_query->execute();
             }
         });
 
-        if ($('#active_notification').val() != 0) {
-            var actvNtf = $('#active_notification').val();
-            $('html, body').animate({
-                scrollTop: $("#active_notification_"+actvNtf).offset().top
-            }, 1000);
-        }
+        // if ($('#active_notification').val() != 0) {
+        //     var actvNtf = $('#active_notification').val();
+        //     $('html, body').animate({
+        //         scrollTop: $("#active_notification_"+actvNtf).offset().top
+        //     }, 1000);
+        // }
 
         document.querySelector('#input_user_checkbox').addEventListener('click',()=>{
             document.querySelector("#check_btn").click();

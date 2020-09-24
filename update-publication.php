@@ -9,8 +9,8 @@ $description_pub = htmlspecialchars($_POST['description_pub']);
 $update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']}");
 if ($update_pub_query->execute()) {
 $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_pub = '$id_pub'"); 
-$$publication_query->execute();
-$publication_row=$publication_query->fetch(PDO::FETCH_ASSOC);
+$publication_query->execute();
+$publication_row = $publication_query->fetch(PDO::FETCH_ASSOC);
 
 $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
 $cnx_user_query->execute();
@@ -28,7 +28,7 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     </div>
     <div class="publication-options" id="publication_options_<?php echo $id ?>">
         <?php if ($publication_row['etat_commentaire'] == 0) { ?>
-        <div class="publication-option" id="desactive_publication_comment_<?php echo $i ?>">
+        <div class="publication-option" id="desactive_publication_comment_<?php echo $id ?>">
             <i class="fas fa-comment-slash"></i>
             <div>
                 <p>Désactiver les commentaires</p>
@@ -36,7 +36,7 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
             </div>
         </div>
         <?php }else{ ?>
-        <div class="publication-option" id="active_publication_comment_<?php echo $i ?>">
+        <div class="publication-option" id="active_publication_comment_<?php echo $id ?>">
             <i class="fas fa-comment-slash"></i>
             <div>
                 <p>Activer les commentaires</p>
@@ -78,38 +78,43 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
             <p><?php echo $publication_row['description_pub'] ?></p>
         </div>
         <?php 
-        $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = {$publication_row['id_pub']}"); 
+        $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = '{$publication_row["id_pub"]}'"); 
         $publication_media_query->execute();
         if ($publication_media_query->rowCount() == 1) { ?>
         <div class="user-publication-middle-one-view">
             <?php
-            $publication_media_row=mysqli_fetch_assoc($publication_media_result);
+            $publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC);
             if ($publication_media_row['media_type'] == 'v') { ?>
             <video controls><source src="./<?php echo $publication_media_row['media_url'] ?>"></video>
             <?php }else if($publication_media_row['media_type'] == 'i'){ ?>
             <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
             <?php } ?>
+            <input type="hidden" id="media_updt_<?php echo $id ?>_1" value="<?php echo $publication_media_row['media_url'] ?>">
+            <input type="hidden" id="media_type_<?php echo $id ?>_1" value="<?php echo $publication_media_row['media_type'] ?>">
         </div>
-        <?php } else if (mysqli_num_rows($publication_media_result) == 2) { ?>
+        <?php } else if ($publication_media_query->rowCount() == 2) { ?>
         <div class="user-publication-middle-two-view">
-        <?php while($publication_media_row=mysqli_fetch_assoc($publication_media_result)){ ?>
+        <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
             <div>
+                <input type="hidden" id="media_updt_<?php echo $id ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                 <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
             </div>
         <?php } ?>
         </div>
-        <?php } else if (mysqli_num_rows($publication_media_result) == 3) { ?>
+        <?php } else if ($publication_media_query->rowCount() == 3) { ?>
         <div class="user-publication-middle-three-view">
-        <?php while($publication_media_row=mysqli_fetch_assoc($publication_media_result)){ ?>
+        <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
             <div>
+                <input type="hidden" id="media_updt_<?php echo $id ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                 <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
             </div>
         <?php } ?>
         </div>
-        <?php } else if (mysqli_num_rows($publication_media_result) == 4) { ?>
+        <?php } else if ($publication_media_query->rowCount() == 4) { ?>
         <div class="user-publication-middle-four-view">
-        <?php while($publication_media_row=mysqli_fetch_assoc($publication_media_result)){ ?>
+        <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
             <div>
+                <input type="hidden" id="media_updt_<?php echo $id ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                 <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
             </div>
         <?php } ?>
@@ -118,14 +123,14 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     </div>
     <div class="user-publication-bottom">
         <?php
-        $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = {$publication_row['id_pub']}"); 
-         $publication_comment_query->execute();
+        $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
+        $publication_comment_query->execute();
         $publication_comment_count = $publication_comment_query->rowCount();
         ?>
         <div class="user-publication-bottom-top" id="user_publication_bottom_top_<?php echo $id ?>">
             <div>
                 <?php
-                $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = {$publication_row['id_pub']}"); 
+                $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                 $num_like_pub_query->execute();
                 $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
                 $num_like_pub_count = $num_like_pub_query->rowCount();
@@ -159,7 +164,7 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
         <div class="user-publication-bottom-comment" id="user_publication_bottom_comment_<?php echo $id ?>">
         <?php 
         while($publication_comment_row = $publication_comment_query->fetch(PDO::FETCH_ASSOC)){
-        $publication_comment_user_query = $conn->prepare("SELECT img_user,nom_user FROM utilisateurs WHERE id_user = {$publication_comment_row['id_user']}"); 
+        $publication_comment_user_query = $conn->prepare("SELECT img_user,nom_user FROM utilisateurs WHERE id_user = '{$publication_comment_row["id_user"]}'");
         $publication_comment_user_query->execute();
         $publication_comment_user_row = $publication_comment_user_query->fetch(PDO::FETCH_ASSOC);
         ?>

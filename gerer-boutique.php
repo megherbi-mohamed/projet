@@ -2,17 +2,17 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
+    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
+    $result = mysqli_query($conn, $cnx_user_query);
+    $row = mysqli_fetch_assoc($result);
     $id_user = $row['id_user'];
 }
 if (!empty($_GET['btq'])) {
     if (empty($_SESSION['user'])) {
         if (isset($_SESSION['btq']) && $_SESSION['btq'] == $_GET['btq']){
-            $get_btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}");    
-            $get_btq_query->execute();
-            $get_btq_row = $get_btq_query->fetch(PDO::FETCH_ASSOC);
+            $get_btq_query = "SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}";    
+            $get_btq_result = mysqli_query($conn,$get_btq_query);
+            $get_btq_row = mysqli_fetch_assoc($get_btq_result);
         }
         else{
             session_unset();
@@ -456,7 +456,7 @@ if (!empty($_GET['btq'])) {
                 <div class="cancel-create-product" id="cancel_create_product">
                     <i class="fas fa-times"></i>
                 </div>
-                <button id="create_product_button">Créer</button>
+                <button id="create_product_button_resp">Créer</button>
             </div>
             <div class="create-product-bottom">
                 <div class="product-input">
@@ -521,7 +521,7 @@ if (!empty($_GET['btq'])) {
                 <div class="cancel-update-product" id="cancel_update_product">
                     <i class="fas fa-times"></i>
                 </div>
-                <button id="update_product_button">Modifier</button>
+                <button id="update_product_button_resp">Modifier</button>
             </div>
             <div class="update-product-bottom">
                 <input type="hidden" id="id_product_updt">
@@ -1761,6 +1761,102 @@ if (!empty($_GET['btq'])) {
             }
         });
 
+        $('#create_product_button_resp').click(function(){
+            var idBtq = $('#id_boutique_product').val();
+            var idPrd = $('#id_product').val();
+            var namePrd = $('#name_product').val();
+            var referencePrd = $('#reference_product').val();
+            var categoriePrd = $('#categorie_product').val();
+            var descriptionPrd = $('#description_product').val();
+            var caracteristiquePrd = $('#caracteristique_product').val();
+            var fonctionnalitePrd = $('#fonctionnalite_product').val();
+            var avantagePrd = $('#avantage_product').val();
+            var quantityPrd = $('#quantity_product').val();
+            var pricePrd = $('#price_product').val();
+
+            if (namePrd == ''){
+                $('#name_product').css('border','2px solid red');
+            }
+            // else if(referencePrd == ''){
+            //     $('#name_product').css('border','');
+            //     $('#reference_product').css('border','2px solid red');
+            // }
+            else if(categoriePrd == ''){
+                $('#name_product').css('border','');
+                // $('#reference_product').css('border','');
+                $('#categorie_product').css('border','2px solid red');
+            }
+            else if(descriptionPrd == ''){
+                $('#name_product').css('border','');
+                // $('#reference_product').css('border','');
+                $('#categorie_product').css('border','');
+                $('#description_product').css('border','2px solid red');
+            }
+            else if(quantityPrd == ''){
+                $('#name_product').css('border','');
+                // $('#reference_product').css('border','');
+                $('#categorie_product').css('border','');
+                $('#description_product').css('border','');
+                $('#quantity_product').css('border','2px solid red');
+            }
+            else if(pricePrd == ''){
+                $('#name_product').css('border','');
+                // $('#reference_product').css('border','');
+                $('#categorie_product').css('border','');
+                $('#description_product').css('border','');
+                $('#quantity_product').css('border','');
+                $('#price_product').css('border','2px solid red');
+            }
+            else if(namePrd != '' && categoriePrd != '' && descriptionPrd != '' &&
+                    quantityPrd != '' && pricePrd != ''){
+                var fd = new FormData();
+                fd.append('id_prd',idPrd);
+                fd.append('id_btq',idBtq);
+                fd.append('name_prd',namePrd);
+                fd.append('reference_prd',referencePrd);
+                fd.append('categorie_prd',categoriePrd);
+                fd.append('description_prd',descriptionPrd);
+                fd.append('caracteristique_prd',caracteristiquePrd);
+                fd.append('fonctionnalite_prd',fonctionnalitePrd);
+                fd.append('avantage_prd',avantagePrd);
+                fd.append('quantity_prd',quantityPrd);
+                fd.append('price_prd',pricePrd);
+                $.ajax({
+                    url: 'create-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $('.create-product-top').hide();
+                        $('.create-product-bottom').hide();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        if(response != 0){
+                            // console.log(response);
+                            $('.boutique-bottom').prepend(response);
+                        }
+                    },
+                    complete: function(){
+                        $("#loader_load").hide();
+                        $(".create-product").hide();
+                        $("body").removeClass('body-after');
+                        $('.create-product-container').css({'top':'','transform':''});
+                        $('.create-product-top').show();
+                        $('.create-product-bottom').show();
+                        $('#name_product').val('');
+                        $('#reference_product').val('');
+                        $('#categorie_product').val('');
+                        $('#description_product').val('');
+                        $('#quantity_product').val('');
+                        $('#price_product').val('');
+                        $('.product-images-preview').empty();
+                    }
+                });
+            }
+        });
+
         // product options
         $(document).on('click','[id^="display_prd_options_button_"]',function(e){
             e.stopPropagation();
@@ -2122,7 +2218,6 @@ if (!empty($_GET['btq'])) {
             $("#overview_product_button").addClass('product-details-bottom-top-active');
             
             $("#comments_product").removeClass('product-details-bottom-bottom-active');
-            // $("#informations_product").removeClass('product-details-bottom-bottom-active');
             $("#overview_product").addClass('product-details-bottom-bottom-active');
             $("#informations_product").css('display','');
             
@@ -2134,7 +2229,6 @@ if (!empty($_GET['btq'])) {
             $("#comment_product_button").removeClass('product-details-bottom-top-active');
 
             $("#overview_product").removeClass('product-details-bottom-bottom-active');
-            // $("#informations_product").addClass('product-details-bottom-bottom-active');
             $("#comments_product").removeClass('product-details-bottom-bottom-active');
             $("#informations_product").css('display','grid');
         })
@@ -2807,7 +2901,7 @@ if (!empty($_GET['btq'])) {
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
                 $.ajax({
-                    url: 'recherche-boutique-product.php',
+                    url: 'recherche-gb-boutique-product.php',
                     type: 'post',
                     data: fd,
                     contentType: false,
@@ -2834,7 +2928,7 @@ if (!empty($_GET['btq'])) {
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
                 $.ajax({
-                    url: 'recherche-boutique-product.php',
+                    url: 'recherche-gb-boutique-product.php',
                     type: 'post',
                     data: fd,
                     contentType: false,

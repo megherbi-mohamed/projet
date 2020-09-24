@@ -63,7 +63,6 @@ if(mysqli_query($conn, $update_product_query)){
         </div>
         <div class="product-description-bottom">
             <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
-            <button id="display_product_details_<?php echo $id ?>">Details</button>
         </div>
     </div>
 </div>

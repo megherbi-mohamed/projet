@@ -2,9 +2,9 @@
 include_once './bdd/connexion.php';
 $id_user = htmlspecialchars($_POST['id_user']);
 $code_verification = htmlspecialchars($_POST['code_verification']);
-$query = "SELECT code FROM preutilisateurs WHERE id_user = '$id_user'";
-if($result = mysqli_query($conn,$query)){
-    $row = mysqli_fetch_assoc($result);
+$query = $conn->prepare("SELECT code FROM preutilisateurs WHERE id_user = '$id_user'");
+if($query->execute()){
+    $row = $query->fetch(PDO::FETCH_ASSOC);
     if ($row['code'] == $code_verification) {
     ?>
     <div class="inscription-details-container">

@@ -34,13 +34,13 @@
 
     if (isset($_SESSION['user'])) {
 
-        $msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC");
-        $navbar_msg_result = $msg_query->execute();
+        $msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '{$row["id_user"]}' GROUP BY id_sender) ORDER BY id_msg DESC");
+        $msg_query->execute();
 
-        $notification_query = $conn->prepare("SELECT * FROM notifications WHERE id_recever_ntf = {$_SESSION['user']} ORDER BY id_ntf DESC");
-        $notification_result = $notification_query->execute();
+        $notification_query = $conn->prepare("SELECT * FROM notifications WHERE id_recever_ntf = '{$_SESSION["user"]}' ORDER BY id_ntf DESC");
+        $notification_query->execute();
 
-        $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = $id_user AND etat_sender_msg = $id_user GROUP BY id_recever");    
+        $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = '$id_user' AND etat_sender_msg = '$id_user' GROUP BY id_recever");    
         $num_msg_query->execute();
         $num_msg_row = $num_msg_query->rowCount();
         $show_message = '';
@@ -48,7 +48,7 @@
             $show_message = 'style="display:block"';
         }
 
-        $num_notf_query = $conn->prepare("SELECT id_ntf FROM notifications WHERE id_recever_ntf = {$row['id_user']} AND etat_ntf = 1");    
+        $num_notf_query = $conn->prepare("SELECT id_ntf FROM notifications WHERE id_recever_ntf = '{$row["id_user"]}' AND etat_ntf = 1");    
         $num_notf_query->execute();
         $num_notification = 0;
         while ($num_ntf_row = $num_notf_query->fetch(PDO::FETCH_ASSOC)) {
@@ -59,7 +59,7 @@
             $etat_notification = 'active-notification-num';
         }else{ $etat_notification = '';}
 
-        $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = {$row['id_user']}");    
+        $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = '{$row["id_user"]}'");    
         $num_prd_query->execute();
         $num_prd = $num_prd_query->rowCount();
         $etat_panier = '';
@@ -147,9 +147,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'services'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'services'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -162,9 +162,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'artisants'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -177,9 +177,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'transports'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -192,9 +192,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'locations'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -207,9 +207,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -222,9 +222,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -237,9 +237,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -252,9 +252,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -267,9 +267,9 @@
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -315,28 +315,8 @@
     <div id="loader_list_message" class="center-loader-list-message"></div>
 </div>
 <div class="user-list-notifications">
-    <div class="user-list-top-notifications">
-        <?php
-        while ($notification_row = mysqli_fetch_assoc($notification_result)) {
-        $notification_user_query = "SELECT * FROM utilisateurs WHERE id_user = {$notification_row['id_sender_n']}";
-        $notification_user_result = mysqli_query($conn,$notification_user_query);
-        $notification_user_row = mysqli_fetch_assoc($notification_user_result);
-        $new_notification = '';
-        if ($notification_row['etat_n'] == 1) { $new_notification = 'new-notification'; }
-        else{ $new_notification= ''; }
-        if ($notification_row['id_offre'] == 0) { ?>
-        <a href="./utilisateur.php?a=<?php echo $notification_row['id_activity']; ?>">
-        <?php }else{ ?>
-        <a href="./offre.php?r=<?php echo $notification_row['id_offre']; ?>">
-        <?php } ?>
-        <div class="notification <?php echo $new_notification; ?>">
-            <p><?php echo $notification_row['text_n'] ?></p>
-            <p><?php echo 'Le '.$notification_row['date_n'].' '; ?><span><?php echo $notification_user_row['nom_user'] ?></span></p>
-        </div>
-        </a>
-        <?php } ?>
-    </div>
-    <div class="user-list-bottom-notifications"></div>
+    <div class="user-list-top-notifications"></div>
+    <div id="loader_list_message" class="center-loader-list-message"></div>
 </div>
 <div class="user-create-options">
     <h4>Créer</h4>
@@ -426,9 +406,9 @@
             </div>
             <div class="publication-preview-location">
                 <?php 
-                   $ville_query = "SELECT * FROM villes";
-                   $ville_result = mysqli_query($conn, $ville_query); 
-                   while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                   $ville_query = $conn->prepare("SELECT * FROM villes");
+                   $ville_query->execute(); 
+                   while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <div id="publication_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
                 <?php } ?>    
@@ -512,9 +492,9 @@
                 <select id="ville_boutique">
                     <option value="">Ville</option>
                     <?php 
-                    $ville_query = "SELECT * FROM villes";
-                    $ville_result = mysqli_query($conn, $ville_query); 
-                    while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                    $ville_query = $conn->prepare("SELECT * FROM villes");
+                    $ville_query->execute(); 
+                    while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
                     <?php } ?>
@@ -563,9 +543,9 @@
             </div>
             <div class="bt-prd-preview-location">
                 <?php 
-                $ville_query = "SELECT ville FROM villes UNION SELECT commune AS ville FROM communes";
-                $ville_result = mysqli_query($conn, $ville_query); 
-                while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                $ville_query = $conn->prepare("SELECT * FROM villes");
+                $ville_query->execute(); 
+                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <div id="bt_prd_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
                 <?php } ?>    
@@ -701,9 +681,9 @@
             </div>
             <div class="publication-preview-location">
                 <?php 
-                $ville_query = "SELECT * FROM villes";
-                $ville_result = mysqli_query($conn, $ville_query); 
-                while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                $ville_query = $conn->prepare("SELECT * FROM villes");
+                $ville_query->execute(); 
+                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <div id="publication_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
                 <?php } ?>    
@@ -804,9 +784,9 @@
     </div>
 </div>
 <?php } else if (isset($_SESSION['btq'])) {
-$get_btq_auth_query = "SELECT * FROM admin_boutique WHERE id_btq = {$_SESSION['btq']}";    
-$get_btq_auth_result = mysqli_query($conn,$get_btq_auth_query);
-$get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
+$get_btq_auth_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = '{$_SESSION["btq"]}'");    
+$get_btq_auth_query->execute();
+$get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <div class="navbar">
     <div class="navbar-container">
@@ -831,7 +811,7 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
 <input type="hidden" id="ville_boutique">
 <input type="hidden" id="categorie_boutique">
 <input type="hidden" id="sous_categorie_boutique">
-<?php }else{ ?>
+<?php }else{?>
     <div class="hide-menu">
     <div class="hide-menu-left">
         <div class="hide-menu-logo">
@@ -909,16 +889,16 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
     </div>
     <div class="categorie-professionnel-bottom">
         <div class="categorie-professionnel-bottom-top">
-            <div class="categorie-profss">
+        <div class="categorie-profss">
                 <div class="categorie-profss-top">
                     <img src="./icons/bureau-icon.png" alt="">
                     <p>Services</p>
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'services'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'services'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -931,9 +911,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'artisants'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -946,9 +926,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'transports'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -961,9 +941,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                    $categories_query = "SELECT * FROM categories WHERE categories = 'locations'";
-                    $categories_result = mysqli_query($conn,$categories_query);
-                    while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
+                    $categories_query->execute();
+                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                     ?>
                     <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -976,9 +956,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -991,9 +971,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -1006,9 +986,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -1021,9 +1001,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>
@@ -1036,9 +1016,9 @@ $get_btq_auth_row = mysqli_fetch_assoc($get_btq_auth_result);
                 </div>
                 <div class="categorie-profss-bottom">
                     <?php 
-                        $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
-                        $categories_result = mysqli_query($conn,$categories_query);
-                        while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
+                        $categories_query->execute();
+                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
                         <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
                     <?php } ?>

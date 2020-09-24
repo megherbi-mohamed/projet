@@ -587,16 +587,16 @@ $(".create-publication-bottom form").click(function(e){
     e.stopPropagation();
 })
 
-$('#publication_description').bind('input propertychange', function() {
-    if ($('#publication_description').val() !== '') {
-        $('.create-publication-bottom button').css('background','rgb(137, 218, 238)');
-        $('.create-publication-bottom button').css('cursor','pointer');
-    }
-    else{
-        $('.create-publication-bottom button').css('background','');
-        $('.create-publication-bottom button').css('cursor','');
-    }
-});
+// $('#publication_description').bind('input propertychange', function() {
+//     if ($('#publication_description').val() !== '') {
+//         $('.create-publication-bottom button').css('background','rgb(137, 218, 238)');
+//         $('.create-publication-bottom button').css('cursor','pointer');
+//     }
+//     else{
+//         $('.create-publication-bottom button').css('background','');
+//         $('.create-publication-bottom button').css('cursor','');
+//     }
+// });
 
 // upload publication image 
 $('#add_publication_image').click(function(){
@@ -612,7 +612,6 @@ $('#image').on('change', function () {
 });
 
 $('#add_publication_image_button').click(function(){
-    console.log('click');
     var form_data = new FormData();
     var idPub = $('#id_publication').val();
     form_data.append('id_pub',idPub);
@@ -631,7 +630,6 @@ $('#add_publication_image_button').click(function(){
             $("#loader_pub_img").show();
         },
         success: function (response) {
-            console.log(response);
             if (windowWidth > 768) {
                 $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
             }
@@ -901,7 +899,7 @@ $('#cancel_update_publication').click(function(){
 
 // valide create publication
 $('#create_publication_button').click(function(){
-    if ($('#publication_description').val() !== '') {
+    // if ($('#publication_description').val() !== '') {
         var fd = new FormData();
         var idPubLieu = $('#publication_location_text').val();
         fd.append('lieu_pub',idPubLieu);
@@ -916,6 +914,7 @@ $('#create_publication_button').click(function(){
             contentType: false,
             processData: false,
             success: function(response){
+                console.log(response);
                 if(response != 0){
                     $("body").removeClass('body-after');
                     hideCreatePublication();
@@ -926,11 +925,11 @@ $('#create_publication_button').click(function(){
                 }
             }
         });
-    }
+    // }
 });
 
 $('#create_publication_button_resp').click(function(){
-    if ($('#publication_description').val() !== '') {
+    // if ($('#publication_description').val() !== '') {
         var fd = new FormData();
         var idPubLieu = $('#publication_location_text').val();
         fd.append('lieu_pub',idPubLieu);
@@ -955,68 +954,72 @@ $('#create_publication_button_resp').click(function(){
                 }
             }
         });
-    }
+    // }
 });
 
 // valide update publication
 $('#update_publication_button').click(function(){
-    var fd = new FormData();
-    var idPubLieu = $('#publication_location_text_updt').val();
-    fd.append('lieu_pub',idPubLieu);
-    var idPub = $('#id_publication_updt').val();
-    fd.append('id_pub',idPub);
-    var id = $('#publication_tail_updt').val();
-    fd.append('id',id);
-    var descriptionPub = $('#publication_description_updt').val();
-    fd.append('description_pub',descriptionPub);
-    var etatCommentaire = $('#etat_commentaire_updt').val();
-    fd.append('etat_commentaire',etatCommentaire);
+    // if ($('#publication_description').val() !== '') {
+        var fd = new FormData();
+        var idPubLieu = $('#publication_location_text_updt').val();
+        fd.append('lieu_pub',idPubLieu);
+        var idPub = $('#id_publication_updt').val();
+        fd.append('id_pub',idPub);
+        var id = $('#publication_tail_updt').val();
+        fd.append('id',id);
+        var descriptionPub = $('#publication_description_updt').val();
+        fd.append('description_pub',descriptionPub);
+        var etatCommentaire = $('#etat_commentaire_updt').val();
+        fd.append('etat_commentaire',etatCommentaire);
 
-    $.ajax({
-        url: 'update-publication.php',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                $("body").removeClass('body-after');
-                $('.update-publication').hide();
-                $('.update-publication-container').css({'top':'','transform':''});
-                $('#user_publication_'+id).replaceWith(response);
+        $.ajax({
+            url: 'update-publication.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    $("body").removeClass('body-after');
+                    $('.update-publication').hide();
+                    $('.update-publication-container').css({'top':'','transform':''});
+                    $('#user_publication_'+id).replaceWith(response);
+                }
             }
-        }
-    });
+        });
+    // }
 });
 
 $('#update_publication_button_resp').click(function(){
-    var fd = new FormData();
-    var idPubLieu = $('#publication_location_text_updt').val();
-    fd.append('lieu_pub',idPubLieu);
-    var idPub = $('#id_publication_updt').val();
-    fd.append('id_pub',idPub);
-    var id = $('#publication_tail_updt').val();
-    fd.append('id',id);
-    var descriptionPub = $('#publication_description_updt').val();
-    fd.append('description_pub',descriptionPub);
-    var etatCommentaire = $('#etat_commentaire_updt').val();
-    fd.append('etat_commentaire',etatCommentaire);
+    // if ($('#publication_description').val() !== '') {
+        var fd = new FormData();
+        var idPubLieu = $('#publication_location_text_updt').val();
+        fd.append('lieu_pub',idPubLieu);
+        var idPub = $('#id_publication_updt').val();
+        fd.append('id_pub',idPub);
+        var id = $('#publication_tail_updt').val();
+        fd.append('id',id);
+        var descriptionPub = $('#publication_description_updt').val();
+        fd.append('description_pub',descriptionPub);
+        var etatCommentaire = $('#etat_commentaire_updt').val();
+        fd.append('etat_commentaire',etatCommentaire);
 
-    $.ajax({
-        url: 'update-publication.php',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                $("body").removeClass('body-after');
-                $('.update-publication').hide();
-                $('.update-publication-container').css({'top':'','transform':''});
-                $('#user_publication_'+id).replaceWith(response);
+        $.ajax({
+            url: 'update-publication.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    $("body").removeClass('body-after');
+                    $('.update-publication').hide();
+                    $('.update-publication-container').css({'top':'','transform':''});
+                    $('#user_publication_'+id).replaceWith(response);
+                }
             }
-        }
-    });
+        });
+    // }
 });
 
 // publication options

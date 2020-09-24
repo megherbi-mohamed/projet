@@ -1,5 +1,5 @@
 <?php 
-    $user_total_rating_query = $conn->prepare("SELECT * FROM user_rating WHERE id_user =  $id_user"); 
+    $user_total_rating_query = $conn->prepare("SELECT * FROM user_rating WHERE id_user =  '$id_user'"); 
     $user_total_rating_query->execute();
 
     $tr = 0;$tt = 0;$tc = 0;$td = 0;$trp = 0;$n=1;
@@ -119,9 +119,9 @@
                     <i class="fas fa-arrow-right"></i>
                 </div>
             <?php 
-                $get_profile_query = $conn->prepare("SELECT * FROM utilisateurs WHERE type_user =  'professionnel'"); 
-                 $get_profile_query->execute();
-                while($get_profile_row=$get_profile_query->fetch(PDO::FETCH_ASSOC)){
+            $get_profile_query = $conn->prepare("SELECT * FROM utilisateurs WHERE type_user =  'professionnel'"); 
+            $get_profile_query->execute();
+            while($get_profile_row = $get_profile_query->fetch(PDO::FETCH_ASSOC)){
             ?>
             <div class="user-profile-middle-content-pub-profile">
                 <img src="<?php if($get_profile_row['couverture_user']==''){echo'./images/logo.png';}else{echo './'.$get_profile_row['couverture_user'];}?>" alt="logo">
@@ -145,11 +145,11 @@
         </div>
         <div class="user-profile-publications">
             <?php 
-                $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = {$_SESSION['user']} AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1"); 
-                 $publication_query->execute();
-                $i=0;
-                while($publication_row=$publication_query->fetch(PDO::FETCH_ASSOC)){
-                $i++; 
+            $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '{$_SESSION["user"]}' AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1"); 
+            $publication_query->execute();
+            $i=0;
+            while($publication_row=$publication_query->fetch(PDO::FETCH_ASSOC)){
+            $i++; 
             ?>
             <input type="hidden" id="publication_tail_<?php echo $i ?>" value="<?php echo $i ?>">
             <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>">
@@ -217,12 +217,12 @@
                         <p><?php echo $publication_row['description_pub'] ?></p>
                     </div>
                     <?php 
-                    $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = {$publication_row['id_pub']}"); 
+                    $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                     $publication_media_query->execute();
                     if ($publication_media_query->rowCount() == 1) { ?>
                     <div class="user-publication-middle-one-view">
                         <?php
-                        $publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC);
+                        $publication_media_row = $publication_media_query->fetch(PDO::FETCH_ASSOC);
                         if ($publication_media_row['media_type'] == 'v') { ?>
                         <video controls><source src="./<?php echo $publication_media_row['media_url'] ?>"></video>
                         <?php }else if($publication_media_row['media_type'] == 'i'){ ?>
@@ -249,7 +249,7 @@
                         </div>
                     <?php } ?>
                     </div>
-                    <?php } else if ($publication_media_query->rowCount()== 4) { ?>
+                    <?php } else if ($publication_media_query->rowCount() == 4) { ?>
                     <div class="user-publication-middle-four-view">
                     <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
                         <div>
@@ -262,14 +262,14 @@
                 </div>
                 <div class="user-publication-bottom">
                     <?php
-                    $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = {$publication_row['id_pub']}"); 
+                    $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                     $publication_comment_query->execute();
                     $publication_comment_count = $publication_comment_query->rowCount();
                     ?>
                     <div class="user-publication-bottom-top" id="user_publication_bottom_top_<?php echo $i ?>">
                         <div>
                             <?php
-                            $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = {$publication_row['id_pub']}"); 
+                            $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                             $num_like_pub_query->execute();
                             $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
                             $num_like_pub_count = $num_like_pub_query->rowCount();
@@ -303,7 +303,7 @@
                     <div class="user-publication-bottom-comment" id="user_publication_bottom_comment_<?php echo $i ?>">
                     <?php 
                     while($publication_comment_row = $publication_comment_query->fetch(PDO::FETCH_ASSOC)){
-                    $publication_comment_user_query = $conn->prepare("SELECT img_user,nom_user FROM utilisateurs WHERE id_user = {$publication_comment_row['id_user']}"); 
+                    $publication_comment_user_query = $conn->prepare("SELECT img_user,nom_user FROM utilisateurs WHERE id_user = '{$publication_comment_row["id_user"]}'");
                     $publication_comment_user_query->execute();
                     $publication_comment_user_row = $publication_comment_user_query->fetch(PDO::FETCH_ASSOC);
                     ?>
@@ -363,11 +363,11 @@
                             <p>Messages</p>
                             <i class="fab fa-facebook-messenger"></i>
                             <?php 
-                            $num_btq_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = {$btq_row['id_btq']} AND etat_sender_msg = {$btq_row['id_btq']} GROUP BY id_recever");    
+                            $num_btq_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = '{$btq_row["id_btq"]}' AND etat_sender_msg = '{$btq_row["id_btq"]}' GROUP BY id_recever");    
                             $num_btq_msg_query->execute();
-                            $num_btq_msg_row = $num_btq_msg_query->rowCount();
+                            $num_btq_msg_count = $num_btq_msg_query->rowCount();
                             $show_btq_message = '';
-                            if ($num_btq_msg_row > 0) {
+                            if ($num_btq_msg_count > 0) {
                                 $show_btq_message = 'style="display:block"';
                             }
                             ?>
@@ -378,9 +378,6 @@
                             <i class="fas fa-bell"></i>
                             <div><span></span></div>
                         </div>
-                        <!-- <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>" onclick="pushState(<?php echo $btq_row['id_btq']?>)">Voir la boutiqe</a> -->
-                        <!-- <p>Récuperer la boutque avant le <span>(<?php echo $btq_row['date_recuperation'] ?>)</span></p> -->
-                        <!-- <button class="recover-boutique-btn" id="recover_boutique_btn_<?php echo $j ?>">Récupérer</button> -->
                     </div>
                 </div>
             </div>

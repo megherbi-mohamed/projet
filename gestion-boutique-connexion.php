@@ -1,5 +1,6 @@
 <?php 
 session_start();
+include_once './bdd/connexion.php';
 if (!empty( $_SESSION['btq'])) {
     header('Location: index.php');
     exit;
@@ -48,7 +49,7 @@ if (!empty( $_SESSION['btq'])) {
                 document.querySelector("body").style.visibility = "hidden"; 
                 document.querySelector("#loader").style.visibility = "visible"; 
             } 
-            else { 
+            else {
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
             } 

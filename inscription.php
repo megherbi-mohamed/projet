@@ -2,41 +2,52 @@
 include_once './bdd/connexion.php';
 
 $nom_user = htmlspecialchars($_POST['nom_user']);
-// $type_user = htmlspecialchars($_POST['type_user']);
 $email_tlph_user = htmlspecialchars($_POST['email_tlph_user']);
 $mtp_user = htmlspecialchars($_POST['mtp_user']);
 
 $code = rand(111111,999999);
 
 if (filter_var($email_tlph_user, FILTER_VALIDATE_EMAIL)) {
-    $find_tlph_user_query = "SELECT * FROM utilisateurs WHERE email_user = '$email_tlph_user'";
+    $find_tlph_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE email_user = '$email_tlph_user'");
 }
 else{
-    $find_tlph_user_query = "SELECT * FROM utilisateurs WHERE tlph_user = '$email_tlph_user'";
+    $find_tlph_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE tlph_user = '$email_tlph_user'");
 }
-$find_tlph_user_result = mysqli_query($conn, $find_tlph_user_query);
-$find_tlph_user_count = mysqli_num_rows($find_tlph_user_result);
+$find_tlph_user_query->execute();
+$find_tlph_user_count = $find_tlph_user_query->rowCount();
 
 $hash_mtp_user = hash('sha256', $mtp_user);
 
 if (filter_var($email_tlph_user, FILTER_VALIDATE_EMAIL)) {
-    $inscr_user_query = "INSERT INTO preutilisateurs (nom_user,tlph_user,email_user,code,mtp_user) 
-                VALUES ('$nom_user',0,'$email_tlph_user','$code','$hash_mtp_user')";
+    $inscr_user_query = $conn->prepare("INSERT INTO preutilisateurs (nom_user,tlph_user,email_user,code,mtp_user) 
+                VALUES (:nom_user, :num, :email_tlph_user, :code, :hash_mtp_user)");
+                $inscr_user_query->bindParam(':nom_user', $nom_user);
+                $inscr_user_query->bindParam(':num', $num); 
+                $inscr_user_query->bindParam(':email_tlph_user', $email_tlph_user);
+                $inscr_user_query->bindParam(':code', $code);
+                $inscr_user_query->bindParam(':hash_mtp_user', $hash_mtp_user);
+                $num = 0;
 } 
 else {
-    $inscr_user_query = "INSERT INTO preutilisateurs (nom_user,tlph_user,email_user,code,mtp_user) 
-                VALUES ('$nom_user','$email_tlph_user','','$code','$hash_mtp_user')";
+    $inscr_user_query = $conn->prepare("INSERT INTO preutilisateurs (nom_user,tlph_user,email_user,code,mtp_user) 
+                VALUES (:nom_user, :email_tlph_user, :num, :code, :hash_mtp_user)");
+                $inscr_user_query->bindParam(':nom_user', $nom_user);
+                $inscr_user_query->bindParam(':num', $num); 
+                $inscr_user_query->bindParam(':email_tlph_user', $email_tlph_user);
+                $inscr_user_query->bindParam(':code', $code);
+                $inscr_user_query->bindParam(':hash_mtp_user', $hash_mtp_user);
+                $num = '';
 }
 
 if ($find_tlph_user_count > 0) {
     echo 2;
 }
 else if ($find_tlph_user_count == 0) {
-    if(mysqli_query($conn,$inscr_user_query)){
+    if($inscr_user_query->execute()){
         if (filter_var($email_tlph_user, FILTER_VALIDATE_EMAIL)) {
-            $get_userid_query = "SELECT id_user,email_user FROM preutilisateurs WHERE email_user = '$email_tlph_user'";
-            $get_userid_result = mysqli_query($conn, $get_userid_query);
-            $get_userid_row = mysqli_fetch_assoc($get_userid_result);
+            $get_userid_query = $conn->prepare("SELECT id_user,email_user FROM preutilisateurs WHERE email_user = '$email_tlph_user'");
+            $get_userid_query->execute();
+            $get_userid_row = $get_userid_query->fetch(PDO::FETCH_ASSOC);
         ?>
         <div class="alert-inscription-connexion">
             <div>
@@ -62,9 +73,9 @@ else if ($find_tlph_user_count == 0) {
         <?php
         }
         else{
-            $get_userid_query = "SELECT id_user,tlph_user FROM preutilisateurs WHERE tlph_user = '$email_tlph_user'";
-            $get_userid_result = mysqli_query($conn, $get_userid_query);
-            $get_userid_row = mysqli_fetch_assoc($get_userid_result);
+            $get_userid_query = $conn->prepare("SELECT id_user,tlph_user FROM preutilisateurs WHERE tlph_user = '$email_tlph_user'");
+            $get_userid_query->execute();
+            $get_userid_row =$get_userid_query->fetch(PDO::FETCH_ASSOC);
         ?>
         <div class="alert-inscription-connexion">
             <div>

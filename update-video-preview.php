@@ -3,8 +3,8 @@ session_start();
 include_once './bdd/connexion.php';
 $id_pub = htmlspecialchars($_POST['id_pub']);
 $media_url = htmlspecialchars($_POST['media_url']);
-$update_preview_query = "DELETE FROM publications_media WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']} AND media_url = '$media_url'";
-if (mysqli_query($conn, $update_preview_query)) {
+$update_preview_query = $conn->prepare("DELETE FROM publications_media WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']} AND media_url = '$media_url'");
+if ($update_preview_query->execute()) {
     if (unlink($media_url)) {  
         echo 1;  
     }  

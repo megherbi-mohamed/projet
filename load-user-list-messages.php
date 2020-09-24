@@ -2,21 +2,21 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_user= htmlspecialchars($_POST['id_user']);
-$get_msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' GROUP BY id_sender) ORDER BY id_msg DESC";
-$get_msg_result = mysqli_query($conn, $get_msg_query);
+$get_msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' GROUP BY id_sender) ORDER BY id_msg DESC");
+$get_msg_query->execute();
 
 $i=0;
-while ($get_msg_row = mysqli_fetch_assoc($get_msg_result)) {
+while ($get_msg_row = $get_msg_query->fetch(PDO::FETCH_ASSOC)) {
 $i++;
-$get_sender_info_query = "SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
-                        UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}";
-$get_sender_info_result = mysqli_query($conn, $get_sender_info_query);
-$get_sender_info_row = mysqli_fetch_assoc($get_sender_info_result);
+$get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
+                        UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}");
+$get_sender_info_query->execute();
+$get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
 
-$last_msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' AND id_sender = {$get_sender_info_row['id']}
-                    OR id_recever = {$get_sender_info_row['id']} AND id_sender = '$id_user')";
-$last_msg_result = mysqli_query($conn,$last_msg_query);
-$last_msg_row = mysqli_fetch_assoc($last_msg_result);
+$last_msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' AND id_sender = {$get_sender_info_row['id']}
+                    OR id_recever = {$get_sender_info_row['id']} AND id_sender = '$id_user')");
+$last_msg_query->execute();
+$last_msg_row = $last_msg_query->fetch(PDO::FETCH_ASSOC);
 
 $new_msg = '';
 if ($last_msg_row['etat_recever_msg'] == $id_user || $last_msg_row['etat_sender_msg'] == $id_user) {

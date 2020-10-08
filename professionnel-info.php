@@ -39,7 +39,6 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
         </div>
     </div>
     <div class="user-rating">
-        <div></div>
         <p><?php echo $user_info_row['nom_user']?></p>
         <div>
             <i class="<?php echo $tr1 ?>"></i>
@@ -47,6 +46,25 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
             <i class="<?php echo $tr3 ?>"></i>
             <i class="<?php echo $tr4 ?>"></i>
             <i class="<?php echo $tr5 ?>"></i>
+        </div>
+        <?php 
+        $abonne_query = $conn->prepare("SELECT id_a FROM abonnes WHERE id_user = '$id_user' AND id_abn_user = '{$user_info_row['id_user']}'");
+        $abonne_query->execute();
+        if($abonne_query->rowCount() > 0){
+        ?>
+        <div id="disfollow_button">
+            <p>Disabonner</p>
+            <i class="fas fa-user-slash"></i>
+        </div>
+        <?php }else{?>
+        <div id="follow_button">
+            <p>Abonner</p>
+            <i class="fas fa-user-plus"></i>
+        </div> 
+        <?php }?>
+        <div id="message_button">
+            <p>Envoyer un message</p>
+            <i class="fab fa-facebook-messenger"></i>
         </div>
     </div>
     <div class="user-map">
@@ -68,11 +86,11 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
     <div class="user-profile-middle-container">
         <div class="user-profile-publications">
             <?php 
-                $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = {$user_info_row['id_user']} AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1"); 
-                $publication_query->execute();
-                $i=0;
-                while($publication_row=$publication_query->fetch(PDO::FETCH_ASSOC)){
-                $i++; 
+            $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = {$user_info_row['id_user']} AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 4"); 
+            $publication_query->execute();
+            $i=0;
+            while($publication_row = $publication_query->fetch(PDO::FETCH_ASSOC)){
+            $i++; 
             ?>
             <!-- <input type="hidden" id="publication_tail_<?php echo $i ?>" value="<?php echo $i ?>"> -->
             <!-- <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>"> -->
@@ -223,17 +241,12 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
         <h4>Boutiques</h4>
         <div class="user-boutiques">
             <?php 
-            $j = 0;
-            $class_btq = '';
-            $btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = {$user_info_row['id_user']}");
+            $btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = {$user_info_row['id_user']} AND etat_btq = 1");
             $btq_query->execute();
             while($btq_row = $btq_query->fetch(PDO::FETCH_ASSOC)){
-            $j++;
-            if ($btq_row['etat_btq'] == 1) { $class_btq = 'unset-btq'; }
-            else{ $class_btq = ''; }
             ?>
-            <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>">
-            <div class="user-boutique <?php echo $class_btq?>" id="user_boutique_<?php echo $j ?>">
+            <a href="./boutique.php?btq=<?php echo $btq_row['id_btq'] ?>">
+            <div class="user-boutique">
                 <?php if ($btq_row['logo_btq'] != '') { ?>
                     <img src="./<?php echo $btq_row['logo_btq'] ?>" alt="">
                 <?php }else if($btq_row['logo_btq'] == ''){ ?>
@@ -242,27 +255,15 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
                 <div class="user-boutique-options">
                     <h4><?php echo $btq_row['nom_btq'] ?></h4>
                     <div class="user-boutique-option">
-                        <input type="hidden" id="nom_btq_<?php echo $j ?>" value="<?php echo $btq_row['nom_btq'] ?>">
-                        <input type="hidden" id="id_btq_<?php echo $j ?>" value="<?php echo $btq_row['id_btq'] ?>">
                         <div class="user-boutique-messages">
-                            <p>Messages</p>
-                            <i class="fab fa-facebook-messenger"></i>
                             <?php 
-                            $num_btq_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = {$btq_row['id_btq']} AND etat_sender_msg = {$btq_row['id_btq']} GROUP BY id_recever");    
-                            $num_btq_msg_query->execute();
-                            $num_btq_msg_count = $num_btq_msg_query->rowCount();
-                            $show_btq_message = '';
-                            if ($num_btq_msg_count > 0) {
-                                $show_btq_message = 'style="display:block"';
-                            }
+                            $num_btq_abn_query = $conn->prepare("SELECT id_a FROM abonnes WHERE id_abn_user = {$btq_row['id_btq']}");    
+                            $num_btq_abn_query->execute();
+                            $num_btq_abn_count = $num_btq_abn_query->rowCount();
                             ?>
-                            <div <?php echo $show_btq_message ?>><span><?php echo $num_btq_msg_row ?></span></div>
+                            <p>Abonnés (<?php echo $num_btq_abn_count; ?>)</p>
                         </div>
-                        <div class="user-boutique-notifications">
-                            <p>Notifications</p>
-                            <i class="fas fa-bell"></i>
-                            <div><span></span></div>
-                        </div>
+                        <div></div>
                     </div>
                 </div>
             </div>
@@ -271,3 +272,68 @@ if ($total_r == 100) {$tr5 = 'fas fa-star';}
         </div>
     </div>
 </div> 
+<div class="abonne-user" id="abonne_user">
+    <div class="abonne-user-container" id="abonne_user_container">
+        <div class="abonne-user-top">
+            <h4>Abonner a <?php echo $user_info_row['nom_user'] ?></h4>
+            <div class="cancel-abonne-user" id="cancel_abonne_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="abonne-user-middle">
+            <div id="ntf_user_btn">
+                <i class="fas fa-check etat"></i>
+                <input type="hidden" id="notifications_user" value="1">
+            </div>
+            <p>Recever des nouveautées de <?php echo $user_info_row['nom_user'] ?> ?</p>
+        </div>
+        <div class="abonne-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_abonne_user_button">Annuler</button>
+            <button id="abonne_user_button">Abonner</button>
+        </div>
+    </div>
+    <div id="loader_abn_user" class="center"></div>
+</div>
+<div class="abonne-user" id="disabonne_user">
+    <div class="abonne-user-container" id="disabonne_user_container">
+        <div class="abonne-user-top">
+            <h4>Disabonner a <?php echo $user_info_row['nom_user'] ?> ?</h4>
+            <div class="cancel-abonne-user" id="cancel_disabonne_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="abonne-user-middle">
+            <p>Voulez vous disabonner a <?php echo $user_info_row['nom_user'] ?> ?</p>
+        </div>
+        <div class="abonne-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_disabonne_user_button">Annuler</button>
+            <button id="disabonne_user_button">Disbonner</button>
+        </div>
+    </div>
+    <div id="loader_disabn_user" class="center"></div>
+</div>
+<div class="message-user" id="message_user">
+    <div class="message-user-container" id="message_user_container">
+        <div class="message-user-top">
+            <h4>Envoyer un message a <?php echo $user_info_row['nom_user'] ?></h4>
+            <div class="cancel-message-user" id="cancel_message_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="message-user-middle">
+            <p>Message</p>
+            <textarea id="message_text"></textarea>
+        </div>
+        <div class="message-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_message_user_button">Annuler</button>
+            <button id="message_user_button">Envoyer</button>
+        </div>
+    </div>
+    <div id="loader_msg_user" class="center"></div>
+</div>

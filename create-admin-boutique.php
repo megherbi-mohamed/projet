@@ -17,12 +17,25 @@ $creation_ctg = htmlspecialchars($_POST['creation_ctg']);
 $modification_ctg = htmlspecialchars($_POST['modification_ctg']);
 $suppression_ctg = htmlspecialchars($_POST['suppression_ctg']);
 
-$creat_madmin_query = "INSERT INTO admin_boutique (id_btq,matricule_adm,nom_adm,mtp_adm,messagerie,notifications,modification,creation_prd,modification_prd,suppression_prd,creation_ctg,modification_ctg,suppression_ctg) 
-VALUES ('$id_btq','$matricule_adm','$nom_adm','$hash_mtp_adm','$messagerie','$notifications','$modification','$creation_prd','$modification_prd','$suppression_prd','$creation_ctg','$creation_ctg','$creation_ctg')";
-if(mysqli_query($conn,$creat_madmin_query)){
-    $get_btq_admin_query = "SELECT * FROM admin_boutique WHERE id_btq = $id_btq";
-    if ($get_btq_admin_result = mysqli_query($conn,$get_btq_admin_query)) {
-        $get_btq_admin_row = mysqli_fetch_assoc($get_btq_admin_result);
+$creat_madmin_query = $conn->prepare("INSERT INTO admin_boutique (id_btq,matricule_adm,nom_adm,mtp_adm,messagerie,notifications,modification,creation_prd,modification_prd,suppression_prd,creation_ctg,modification_ctg,suppression_ctg) 
+VALUES (:id_btq,:matricule_adm,:nom_adm,:mtp_adm,:messagerie,:notifications,:modification,:creation_prd,:modification_prd,:suppression_prd,:creation_ctg,:modification_ctg,:suppression_ctg)");
+$creat_madmin_query->bindParam(':id_btq', $id_btq);
+$creat_madmin_query->bindParam(':matricule_adm', $matricule_adm);
+$creat_madmin_query->bindParam(':nom_adm', $nom_adm);
+$creat_madmin_query->bindParam(':mtp_adm', $hash_mtp_adm);
+$creat_madmin_query->bindParam(':messagerie', $messagerie);
+$creat_madmin_query->bindParam(':notifications', $notifications);
+$creat_madmin_query->bindParam(':modification', $modification);
+$creat_madmin_query->bindParam(':creation_prd', $creation_prd);
+$creat_madmin_query->bindParam(':modification_prd', $modification_prd);
+$creat_madmin_query->bindParam(':suppression_prd', $suppression_prd);
+$creat_madmin_query->bindParam(':creation_ctg', $creation_ctg);
+$creat_madmin_query->bindParam(':modification_ctg', $modification_ctg);
+$creat_madmin_query->bindParam(':suppression_ctg', $suppression_ctg);
+if($creat_madmin_query->execute()){
+    $get_btq_admin_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = $id_btq");
+    if ($get_btq_admin_query->execute()) {
+        $get_btq_admin_row = $get_btq_admin_query->fetch(PDO::FETCH_ASSOC);
     ?>
 <div class="boutique-admin-info">
     <div class="boutique-admin-info-top">

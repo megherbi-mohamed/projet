@@ -1,7 +1,7 @@
 <?php
 include_once './bdd/connexion.php';
-$get_matricule_query = "SELECT matricule_adm FROM admin_boutique";
-$get_matricule_result = mysqli_query($conn,$get_matricule_query);
+$get_matricule_query = $conn->prepare("SELECT matricule_adm FROM admin_boutique");
+$get_matricule_query->execute();
 function generateRandomString($length = 10) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -11,8 +11,8 @@ function generateRandomString($length = 10) {
     }
     return $randomString;
 }
-if (mysqli_num_rows($get_matricule_result) > 0) {
-    while ($get_matricule_row = mysqli_fetch_assoc($get_matricule_result)) {
+if ($get_matricule_query->rowCount() > 0) {
+    while ($get_matricule_row = $get_matricule_query->fetch(PDO::FETCH_ASSOC)) {
         if ($get_matricule_row['matricule_adm'] == generateRandomString()) {
             generateRandomString();
         }else{

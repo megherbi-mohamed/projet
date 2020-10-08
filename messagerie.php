@@ -1,32 +1,28 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
-
-// if (!isset($_SESSION['senderinfo'])) {
-//     header('location : utilisateur.php');
-// }
 if (!empty($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
     if (!empty($_GET['user'])) {
         $id_sender = $_GET['user'];
-
-        $get_sender_msg_query = "SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE 
-        id_recever = '$id_user' AND id_sender = '$id_sender' OR id_recever = '$id_sender' AND id_sender = '$id_user'";
-        $get_sender_msg_result = mysqli_query($conn, $get_sender_msg_query);
+        $get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE 
+        id_recever = '$id_user' AND id_sender = '$id_sender' OR id_recever = '$id_sender' AND id_sender = '$id_user'");
+        $get_sender_msg_query->execute();
         
-        $get_last_sender_info_query = "SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = $id_sender";
-        $get_last_sender_info_result = mysqli_query($conn, $get_last_sender_info_query);
-        $get_last_sender_info_row = mysqli_fetch_assoc($get_last_sender_info_result);
+        $get_last_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = $id_sender");
+        $get_last_sender_info_query->execute();
+        $get_last_sender_info_row = $get_last_sender_info_query->fetch(PDO::FETCH_ASSOC);
     }
 }
-else{  header('location : insecription-connexion.php');  }
+else{header('location : insecription-connexion.php');}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -52,30 +48,40 @@ else{  header('location : insecription-connexion.php');  }
                 <div></div>
             </div>
             <?php
-            $get_msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' GROUP BY id_sender) ORDER BY id_msg DESC";
-            $get_msg_result = mysqli_query($conn, $get_msg_query);
+            $get_msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN (SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' OR id_sender = '$id_user' GROUP BY msg_cle) ORDER BY id_msg DESC");
+            $get_msg_query->execute();
             $i=0;
-            while($get_msg_row = mysqli_fetch_assoc($get_msg_result)){
+            while($get_msg_row = $get_msg_query->fetch(PDO::FETCH_ASSOC)){
             $i++;
+            if ($get_msg_row['id_recever'] == $id_user) {
+                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
+                                    UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}");
+                $get_sender_info_query->execute();
+                $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
+            }
+            else if ($get_msg_row['id_sender'] == $id_user) {
+                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_recever']} 
+                                    UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_recever']}");
+                $get_sender_info_query->execute();
+                $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
+            }
             
-            // $get_sender_info_query = "SELECT id_user,nom_user,img_user FROM utilisateurs WHERE id_user =".$get_msg_row['id_sender'];
-            $get_sender_info_query = "SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
-                                    UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}";
-            $get_sender_info_result = mysqli_query($conn, $get_sender_info_query);
-            $get_sender_info_row = mysqli_fetch_assoc($get_sender_info_result);
-            
-            $last_msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' AND id_sender = {$get_sender_info_row['id']}
-                                OR id_recever = {$get_sender_info_row['id']} AND id_sender = '$id_user')";
-            $last_msg_result = mysqli_query($conn,$last_msg_query);
-            $last_msg_row = mysqli_fetch_assoc($last_msg_result);
+            $last_msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' AND id_sender = {$get_sender_info_row['id']}
+                                OR id_recever = {$get_sender_info_row['id']} AND id_sender = '$id_user')");
+            $last_msg_query->execute();
+            $last_msg_row = $last_msg_query->fetch(PDO::FETCH_ASSOC);
             $new_msg = '';
             if ($last_msg_row['etat_recever_msg'] == $id_user || $last_msg_row['etat_sender_msg'] == $id_user) {
                 $new_msg = 'style="background:#ecedee"';
             }
             ?>
-            <input type="hidden" id="id_corresponder_<?php echo $i?>" value="<?php echo $get_msg_row['id_sender'] ?>">
+            <input type="hidden" id="id_corresponder_<?php echo $i?>" value="<?php echo $get_sender_info_row['id'] ?>">
             <div <?php echo $new_msg; ?> class="messagerie-corresponder" id="messagerie_corresponder_<?php echo $i?>">
+                <?php if ($get_sender_info_row['img'] == '') { ?>
+                <img src="./images/profile.png" alt="">
+                <?php }else{ ?>
                 <img src="<?php echo $get_sender_info_row['img'] ?>" alt="">
+                <?php } ?>
                 <div class="messagerie-corresponder-message">
                     <h4><?php echo $get_sender_info_row['nom'] ?></h4>
                     <p><?php echo $last_msg_row['message']; ?></p>
@@ -92,7 +98,11 @@ else{  header('location : insecription-connexion.php');  }
                     </div>
                     <div class="corresponder-info">
                         <input type="hidden" id="id_corresponder" value="<?php echo $get_last_sender_info_row['id'] ?>">
+                        <?php if ($get_last_sender_info_row['img'] == '') { ?>
+                        <img src="./images/profile.png" alt="">
+                        <?php }else{ ?>
                         <img src="<?php echo $get_last_sender_info_row['img'] ?>" alt="">
+                        <?php } ?>
                         <h5><?php echo $get_last_sender_info_row['nom'] ?></h5>
                     </div>
                     <div id="display_corresponder_info">
@@ -101,7 +111,7 @@ else{  header('location : insecription-connexion.php');  }
                 </div>
                 <div class="messagerie-middle-bottom" id="message_box">
                 <?php
-                while($get_sender_msg_row = mysqli_fetch_assoc($get_sender_msg_result)){
+                while($get_sender_msg_row = $get_sender_msg_query->fetch(PDO::FETCH_ASSOC)){
                     if ($get_sender_msg_row['id_recever'] == $id_user) { ?>
                         <div class="message-right">
                             <div>
@@ -119,20 +129,23 @@ else{  header('location : insecription-connexion.php');  }
                 </div>
                 <div class="send-message-messagerie">
                     <input type="text" id="message_text" placeholder="Ecriver un message ..">
+                    <div id="send_message_button">
+                        <img src="./icons/send-message-icon.png" alt="">
+                    </div>
                 </div>
                 <?php 
-                $get_message_key_query = "SELECT message_cle FROM messages_cles WHERE id_recever = $id_user AND id_sender = $id_sender OR id_recever = $id_sender AND id_sender = $id_user";
-                $get_message_key_result = mysqli_query($conn,$get_message_key_query);
-                $get_message_key_row = mysqli_fetch_assoc($get_message_key_result);
+                $get_message_key_query = $conn->prepare("SELECT message_cle FROM messages_cles WHERE id_recever = $id_user AND id_sender = $id_sender OR id_recever = $id_sender AND id_sender = $id_user");
+                $get_message_key_query->execute();
+                $get_message_key_row = $get_message_key_query->fetch(PDO::FETCH_ASSOC);
                 ?>
                 <input type="hidden" id="msgCle" value="<?php echo $get_message_key_row['message_cle']; ?>">
                 <?php
-                $verify_user_query = "SELECT id_user FROM utilisateurs WHERE id_user = $id_sender";
-                $verify_user_result = mysqli_query($conn,$verify_user_query);
-                if(mysqli_fetch_assoc($verify_user_result) > 0){
+                $verify_user_query = $conn->prepare("SELECT id_user FROM utilisateurs WHERE id_user = $id_sender");
+                $verify_user_query->execute();
+                if ($verify_user_query->rowCount() > 0) {
                 ?>
                 <input type="hidden" id="type_messagerie" value="userUser">
-                <?php }else{ ?>
+                <?php } else { ?>
                 <input type="hidden" id="type_messagerie" value="boutiqueUser">
                 <?php } ?>
                 <input type="hidden" id="messagerie" value="messagerie">
@@ -246,12 +259,15 @@ else{  header('location : insecription-connexion.php');  }
                 },
                 success: function(response){
                     if(response != 0){
-                        history.replaceState(null,'', '/projet/messagerie.php?user='+idCrsp);
+                        history.replaceState(null,'', '/projet/messagerie/'+idCrsp);
                         updateSenderMessage(idCrsp,idUser);
                         $('.user-new-msg').load('load-user-new-msg.php');
                         $('.messagerie-middle-container').append(response);
                         if (windowWidth <= 786) {
                             $('.messagerie-left').css('transform','');
+                            setTimeout(() => {
+                                $('.messagerie-middle').css('z-index','150');
+                            }, 200);
                         }
                     }
                 },
@@ -263,35 +279,42 @@ else{  header('location : insecription-connexion.php');  }
         })
 
         $(document).on('click','#display_list_chat_resp',function(){
+            $('.messagerie-middle').css('z-index','10');
             $('.messagerie-left').css('transform','translateX(0)');
         })
 
         $(document).on('click','#display_corresponder_info',function(){
+            $('.messagerie-middle').css('z-index','10');
             $('.messagerie-right').css('transform','translateX(0)');
         })
 
         $(document).on('click','#back_messagerie_sender',function(){
+            setTimeout(() => {
+                $('.messagerie-middle').css('z-index','150');
+            }, 200);
             $('.messagerie-left').css('transform','');
         })
 
         $(document).on('click','#back_messagerie_info_sender',function(){
+            setTimeout(() => {
+                $('.messagerie-middle').css('z-index','150');
+            }, 200);
             $('.messagerie-right').css('transform','');
         })
-        if (windowWidth <= 768) {
-            $(document).on('focus','#message_text',function(){
-                $('.navbar-right').hide();
-                $('.messagerie-middle-bottom').css('height','calc(100vh - 202px)');
-            })
+        // if (windowWidth <= 768) {
+        //     $(document).on('focus','#message_text',function(){
+        //         // $('.navbar-right').hide();
+        //         $('.messagerie-middle-bottom').css('height','calc(100vh - 202px)');
+        //     })
 
-            $(document).on('click','.messagerie-middle-bottom',function(){
-                setTimeout(() => {
-                    $('.navbar-right').show();
-                }, 200);
-                $('.messagerie-middle-bottom').css('height','');
-            })
-        }
+        //     $(document).on('click','.messagerie-middle-bottom',function(){
+        //         setTimeout(() => {
+        //             $('.navbar-right').show();
+        //         }, 200);
+        //         $('.messagerie-middle-bottom').css('height','');
+        //     })
+        // }
         
-
         var uid = <?php echo $id_user; ?>;
         $(document).on('beforunload',function(){
             $('.messagerie-left').load('load-messagerie-sender.php?id_user='+uid);

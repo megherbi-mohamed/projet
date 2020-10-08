@@ -1,0 +1,19 @@
+RewriteEngine On
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^utilisateur/(\d+)?$ utilisateur.php?user=$1 [L]
+RewriteRule ^utilisateur/([^/]+)(/([^/]+))?$ utilisateur.php?user=$1&pub=$3 [L]
+
+RewriteRule ^boutique/(.*)$ boutique.php?btq=$1 [L]
+
+RewriteRule ^gerer-boutique/(\d+)?$ gerer-boutique.php?btq=$1 [L]
+
+RewriteRule ^gerer-boutique/([^/]+)(/([^/]+))?$ gerer-boutique.php?btq=$1&crp=$3 [L]
+RewriteRule ^gerer-boutique/([^/]+)(/([^/]+))?$ gerer-boutique.php?btq=$1&ntf=$3 [L]
+RewriteRule ^gerer-boutique/([^/]+)(/([^/]+))?$ gerer-boutique.php?btq=$1&admin=$3 [L]
+RewriteRule ^gerer-boutique/([^/]+)(/([^/]+))?$ gerer-boutique.php?btq=$1&updt=$3 [L]
+
+RewriteRule ^messagerie/(.*)$ messagerie.php?user=$1 [L]
+
+RewriteRule ^recherche/(.*)$ recherche.php?r=$1 [L]

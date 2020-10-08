@@ -2,28 +2,28 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
 }
 if (!empty($_GET['btq'])) {
     if (empty($_SESSION['user'])) {
         if (isset($_SESSION['btq']) && $_SESSION['btq'] == $_GET['btq']){
-            $get_btq_query = "SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}";    
-            $get_btq_result = mysqli_query($conn,$get_btq_query);
-            $get_btq_row = mysqli_fetch_assoc($get_btq_result);
+            $get_btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$_SESSION['btq']}");    
+            $get_btq_query->execute();
+            $get_btq_row = $get_btq_query->fetch(PDO::FETCH_ASSOC);
         }
         else{
             session_unset();
             session_destroy();
             ob_start();
-            header('location: ./gestion-boutique-connexion.php');
+            header('location: gestion-boutique-connexion.php');
         }
     }
-    $btq_inf_query = "SELECT * FROM boutiques WHERE id_btq = {$_GET['btq']}";
-    $btq_inf_result = mysqli_query($conn, $btq_inf_query);
-    $btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
+    $btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$_GET['btq']}");
+    $btq_inf_query->execute();
+    $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
     $id_createur = $btq_inf_row['id_createur'];
     $id_btq = $btq_inf_row['id_btq'];
     if (empty($_SESSION['btq'])){
@@ -34,26 +34,35 @@ if (!empty($_GET['btq'])) {
             header('location: ./inscription-connexion.php');
         }
     }
-    $num_btq_msg_query = "SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever";    
-    $num_btq_msg_result = mysqli_query($conn,$num_btq_msg_query);
-    $num_btq_msg_row = mysqli_num_rows($num_btq_msg_result);
-    // echo $num_btq_msg_row;
+
+    $num_btq_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever");    
+    $num_btq_msg_query->execute();
+    $num_btq_msg_num = $num_btq_msg_query->rowCount();
     $show_btq_message = '';
-    if ($num_btq_msg_row > 0) {
+    if ($num_btq_msg_num > 0) {
         $show_btq_message = 'style="display:block"';
+    }
+
+    $num_btq_ntf_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE id_recever_ntf = $id_btq AND etat_ntf = 1");    
+    $num_btq_ntf_query->execute();
+    $num_btq_ntf_num = $num_btq_ntf_query->rowCount();
+    $show_btq_notification = '';
+    if ($num_btq_ntf_num > 0) {
+        $show_btq_notification = 'style="display:block"';
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css-js/style.css">
-    <link rel="stylesheet" href="./css-js/gerer-boutique.css">
-    <link rel="stylesheet" href="./css-js/croppie.css">
-    <link href="./css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css-js/style.css">
+    <link rel="stylesheet" href="css-js/gerer-boutique.css">
+    <link rel="stylesheet" href="css-js/croppie.css">
+    <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
     <title>Gerer bouique</title>
 </head>
@@ -118,7 +127,7 @@ if (!empty($_GET['btq'])) {
                 <p>Messages</p>
                 <div class="btq-new-msg">
                     <div id="btq_new_msg" <?php echo $show_btq_message ?>>
-                        <span><?php echo $num_btq_msg_row; ?></span>
+                        <span><?php echo $num_btq_msg_num; ?></span>
                     </div>
                 </div>
             </div>
@@ -133,7 +142,7 @@ if (!empty($_GET['btq'])) {
                 <p>Messages</p>
                 <div class="btq-new-msg">
                     <div id="btq_new_msg" <?php echo $show_btq_message ?>>
-                        <span><?php echo $num_btq_msg_row; ?></span>
+                        <span><?php echo $num_btq_msg_num; ?></span>
                     </div>
                 </div>
             </div>
@@ -146,11 +155,11 @@ if (!empty($_GET['btq'])) {
                     <i class="fas fa-bell"></i>
                 </div>
                 <p>Notifications</p>
-                <!-- <div class="btq-new-ntf">
+                <div class="btq-new-ntf">
                     <div id="btq_new_ntf" <?php echo $show_btq_notification ?>>
-                        <span><?php echo $num_btq_ntf_row; ?></span>
+                        <span><?php echo $num_btq_ntf_num; ?></span>
                     </div>
-                </div> -->
+                </div>
             </div>
             <?php } ?>
             <?php 
@@ -161,11 +170,11 @@ if (!empty($_GET['btq'])) {
                     <i class="fas fa-bell"></i>
                 </div>
                 <p>Notifications</p>
-                <!-- <div class="btq-new-ntf">
+                <div class="btq-new-ntf">
                     <div id="btq_new_ntf" <?php echo $show_btq_notification ?>>
-                        <span><?php echo $num_btq_ntf_row; ?></span>
+                        <span><?php echo $num_btq_ntf_num; ?></span>
                     </div>
-                </div> -->
+                </div>
             </div>
             <?php } ?>
             <?php 
@@ -259,10 +268,10 @@ if (!empty($_GET['btq'])) {
            
             <h3>Vos boutiques</h3>
             <?php 
-                $get_list_btq_query = "SELECT * FROM boutiques WHERE id_createur = $id_user";
-                $get_list_btq_result = mysqli_query($conn,$get_list_btq_query);
+                $get_list_btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = $id_user");
+                $get_list_btq_query->execute();
                 $i=0;
-                while($get_list_btq_row = mysqli_fetch_assoc($get_list_btq_result)){
+                while($get_list_btq_row = $get_list_btq_query->fetch(PDO::FETCH_ASSOC)){
                 $i++;
             ?>
             <input type="hidden" id="id_gb_btq_<?php echo $i ?>" value="<?php echo $get_list_btq_row['id_btq'] ?>">
@@ -284,10 +293,10 @@ if (!empty($_GET['btq'])) {
             </div>
             <div class="gerer-boutique-categorie-bottom">
                 <?php 
-                $get_btq_ctg_query = "SELECT * FROM boutique_categorie WHERE id_btq = {$btq_inf_row['id_btq']}";
-                $get_btq_ctg_result = mysqli_query($conn,$get_btq_ctg_query);
+                $get_btq_ctg_query = $conn->prepare("SELECT * FROM boutique_categorie WHERE id_btq = {$btq_inf_row['id_btq']}");
+                $get_btq_ctg_query->execute();
                 $i=0;
-                while ($get_btq_ctg_row = mysqli_fetch_assoc($get_btq_ctg_result)) {
+                while ($get_btq_ctg_row = $get_btq_ctg_query->fetch(PDO::FETCH_ASSOC)) {
                 $i++;
                 ?>
                 <div class="gerer-boutique-categorie">
@@ -387,19 +396,20 @@ if (!empty($_GET['btq'])) {
                     </div>
                 </div>
                 <div class="boutique-options">
+                    <a href="boutique/<?php echo $btq_inf_row['id_btq'] ?>">Voir en tant que visiteur</a>
                     <h3><?php echo $btq_inf_row['nom_btq'] ?></h3>
                 </div>   
             </div>
             <div class="boutique-bottom">
             <?php 
-            $get_product_query = "SELECT * FROM produit_boutique WHERE id_btq = '{$btq_inf_row['id_btq']}' ORDER BY id_prd DESC";
-            $get_product_result = mysqli_query($conn,$get_product_query);
+            $get_product_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_btq = '{$btq_inf_row['id_btq']}' ORDER BY id_prd DESC");
+            $get_product_query->execute();
             $i = 0;
-            while ($get_product_row = mysqli_fetch_assoc($get_product_result)){
+            while ($get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC)){
             $i++;
-            $get_product_media_query = "SELECT * FROM produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1";
-            $get_product_media_result = mysqli_query($conn,$get_product_media_query);
-            $get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
+            $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1");
+            $get_product_media_query->execute();
+            $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
             ?>
             <input type="hidden" id="id_prd_<?php echo $i ?>" value="<?php echo $get_product_row['id_prd'] ?>">
             <input type="hidden" id="product_tail_<?php echo $i ?>" value="<?php echo $i ?>">
@@ -702,6 +712,13 @@ if (!empty($_GET['btq'])) {
                 <button id="delete_boutique_button">Supprimer</button>
             </div>
         </div>
+        <div id="loader_delete_btq" class="center"></div>
+    </div>
+    <div class="gb-delete-alert">
+        <p>La suppresion de boutique est en attente de validation par l'administration de NHANNIK!</p>
+        <div class="cancel-alert-message">
+            <i class="fas fa-times"></i>
+        </div>
     </div>
     <div class="delete-categorie" id="delete_categorie">
         <div class="delete-categorie-container" id="delete_categorie_container">
@@ -729,22 +746,28 @@ if (!empty($_GET['btq'])) {
         <div id="loader_product" class="center-loader-product"></div>
     </div>
     <?php
-    $get_last_sender_query = "SELECT id_sender FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_btq' GROUP BY id_sender) ORDER BY id_msg DESC";
-    $get_last_sender_result = mysqli_query($conn, $get_last_sender_query);
-    $get_last_sender_num = mysqli_num_rows($get_last_sender_result);
-    if ($get_last_sender_num > 0) {
-    $get_last_sender_row = mysqli_fetch_assoc($get_last_sender_result);
+    $get_senders_query = $conn->prepare("SELECT id_recever,id_sender FROM messages WHERE id_msg IN (SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_btq' OR id_sender = '$id_btq' GROUP BY msg_cle) ORDER BY id_msg DESC");
+    $get_senders_query->execute();
+    $get_senders_num = $get_senders_query->rowCount();
+    if ($get_senders_num > 0) {
+    $get_senders_row = $get_senders_query->fetch(PDO::FETCH_ASSOC);
+    if ($get_senders_row['id_sender'] == $id_btq) {
+        $last_sender_row = $get_senders_row['id_recever'];
     ?>
-    <input type="hidden" id="last_corresponder" value="<?php echo $get_last_sender_row['id_sender']?>">
-    <?php }else{ ?>
+    <input type="hidden" id="last_corresponder" value="<?php echo $last_sender_row; ?>">
+    <?php } else if ($get_senders_row['id_recever'] == $id_btq){ 
+        $last_sender_row = $get_senders_row['id_sender'];
+    ?>
+    <input type="hidden" id="last_corresponder" value="<?php echo $last_sender_row; ?>">
+    <?php }} else { ?>
     <input type="hidden" id="last_corresponder" value="0">
     <?php } ?>
     <input type="hidden" id="type_messagerie" value="boutiqueUser">
     <div id="loader" class="center"></div>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initBoutiqueMap"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="./css-js/main.js"></script>
-    <script src="./css-js/croppie.js"></script>
+    <script src="css-js/main.js"></script>
+    <script src="css-js/croppie.js"></script>
     <script>
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
@@ -767,6 +790,7 @@ if (!empty($_GET['btq'])) {
         }, 2000);
         
         $(window).on('load',function(){
+            // console.log();
             if (history.state === 'messagerie') {
                 hideDivNotfBackg();
                 $('#display_gb_messagerie').css('background','#ecedee');
@@ -787,7 +811,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
+                            history.pushState('messagerie','', '/projet/gerer-boutique/'+idBtq+'/'+idCrsp);
                             $('.boutique-container').append(response);
                             scrolldiv();
                         }
@@ -816,7 +840,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('notifications','', '/projet/gerer-boutique.php?btq='+idBtq+'&ntf');
+                            history.pushState('notifications','', '/projet/gerer-boutique/'+idBtq+'/notifications');
                             $('.boutique-container').append(response);
                         }
                     },
@@ -843,7 +867,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('admin','', '/projet/gerer-boutique.php?btq='+idBtq+'&admin');
+                            history.pushState('admin','', '/projet/gerer-boutique/'+idBtq+'/admin');
                             $('.boutique-container').append(response);
                         }
                     },
@@ -853,12 +877,10 @@ if (!empty($_GET['btq'])) {
                 });
             }
             if(history.state === 'boutique'){
-                // hideDivNotfBackg();
-                // $('#display_gb_messagerie').css('background','#ecedee');
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
-                setTimeout(() => {
+                // setTimeout(() => {
                     $.ajax({
                         url: 'load-boutique.php',
                         type: 'post',
@@ -871,7 +893,7 @@ if (!empty($_GET['btq'])) {
                         },
                         success: function(response){
                             if(response != 0){
-                                history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
+                                history.pushState('boutique','', '/projet/gerer-boutique/'+idBtq);
                                 $('.boutique-container').append(response);
                                 $('#id_boutique_product').val(idBtq);
                             }
@@ -880,7 +902,7 @@ if (!empty($_GET['btq'])) {
                             $("#loader_gb_right").hide();
                         }
                     });
-                }, 0);
+                // }, 0);
             }
             if(history.state === 'informations'){
                 hideDivNotfBackg();
@@ -888,7 +910,7 @@ if (!empty($_GET['btq'])) {
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
-                setTimeout(() => {
+                // setTimeout(() => {
                     $.ajax({
                         url: 'load-boutique-informations.php',
                         type: 'post',
@@ -901,7 +923,7 @@ if (!empty($_GET['btq'])) {
                         },
                         success: function(response){
                             if(response != 0){
-                                history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                                history.pushState('informations','', '/projet/gerer-boutique/'+idBtq+'/modifications');
                                 $('.boutique-container').append(response);
                             }
                         },
@@ -909,11 +931,12 @@ if (!empty($_GET['btq'])) {
                             $("#loader_gb_right").hide();
                         }
                     });
-                }, 0);
+                // }, 0);
             }
         })
 
         $(window).on('popstate',function(){
+            console.log(history.state);
             if (history.state === 'messagerie') {
                 hideDivNotfBackg();
                 $('#display_gb_messagerie').css('background','#ecedee');
@@ -934,7 +957,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
+                            history.pushState('messagerie','', '/projet/gerer-boutique/'+idBtq+'/'+idCrsp);
                             $('.boutique-container').append(response);
                             scrolldiv();
                         }
@@ -962,7 +985,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('notifications','', '/projet/gerer-boutique.php?btq='+idBtq+'&ntf');
+                            history.pushState('notifications','', '/projet/gerer-boutique/'+idBtq+'/notifications');
                             $('.boutique-container').append(response);
                         }
                     },
@@ -989,7 +1012,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('admin','', '/projet/gerer-boutique.php?btq='+idBtq+'&admin');
+                            history.pushState('admin','', '/projet/gerer-boutique/'+idBtq+'/admin');
                             $('.boutique-container').append(response);
                         }
                     },
@@ -1017,7 +1040,7 @@ if (!empty($_GET['btq'])) {
                         },
                         success: function(response){
                             if(response != 0){
-                                history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
+                                history.pushState('boutique','', '/projet/gerer-boutique/'+idBtq);
                                 $('.boutique-container').append(response);
                                 $('#id_boutique_product').val(idBtq);
                             }
@@ -1047,7 +1070,7 @@ if (!empty($_GET['btq'])) {
                         },
                         success: function(response){
                             if(response != 0){
-                                history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                                history.pushState('informations','', '/projet/gerer-boutique/'+idBtq+'/modifications');
                                 $('.boutique-container').append(response);
                             }
                         },
@@ -1058,19 +1081,6 @@ if (!empty($_GET['btq'])) {
                 }, 0);
             }
         })
-
-        // var windowWidth = window.innerWidth;
-        // if (windowWidth <= 768) {
-        //     $('.footer').css('display','none');
-        //     var session = $('#session').val();
-        //     if (session != 0) {
-        //         $('.navbar-right').hide();
-        //     }
-        //     else{}
-        // }
-        // else{
-        //     $('.clear-session').css('height','60px');
-        // }
 
         $("#but_updt_img_logo").click(function(){
             $('body').addClass('body-after');
@@ -2206,10 +2216,12 @@ if (!empty($_GET['btq'])) {
         })
 
         $(document).on('click','#cancel_product_details_resp',function(e){
-            e.stopPropagation();
+            // e.stopPropagation();
             $("body").removeClass('body-after');
             $(".product-details").css('transform','');
-            $('.product-details-container').empty();
+            setTimeout(() => {
+                $('.product-details-container').empty();
+            }, 400);
         })
 
         $(document).on('click','#overview_product_button',function(){
@@ -2284,7 +2296,7 @@ if (!empty($_GET['btq'])) {
                 },
                 success: function(response){
                     if(response != 0){
-                        history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
+                        history.pushState('messagerie','', '/projet/gerer-boutique/'+idBtq+'/'+idCrsp);
                         $('.boutique-container').append(response);
                         scrolldiv();
                     }
@@ -2351,7 +2363,7 @@ if (!empty($_GET['btq'])) {
                 },
                 success: function(response){
                     if(response != 0){
-                        history.pushState('messagerie','', '/projet/gerer-boutique.php?btq='+idBtq+'&crp='+idCrsp);
+                        history.pushState('messagerie','', '/projet/gerer-boutique/'+idBtq+'/'+idCrsp);
                         updateSenderMessage(idCrsp,idBtq);
                         $('.btq-new-msg').load('load-btq-new-msg.php?btq='+idBtq);
                         $('.boutique-message-right-container').append(response);
@@ -2386,7 +2398,7 @@ if (!empty($_GET['btq'])) {
                 },
                 success: function(response){
                     if(response != 0){
-                        history.pushState('notifications','', '/projet/gerer-boutique.php?btq='+idBtq+'&ntf');
+                        history.pushState('notifications','', '/projet/gerer-boutique/'+idBtq+'/notifications');
                         $('.boutique-container').append(response);
                         if (numNtf == 0) {
                             $(".boutique-notification").hide();
@@ -2419,7 +2431,7 @@ if (!empty($_GET['btq'])) {
                 },
                 success: function(response){
                     if(response != 0){
-                        history.pushState('informations','', '/projet/gerer-boutique.php?btq='+idBtq+'&updt');
+                        history.pushState('informations','', '/projet/gerer-boutique/'+idBtq+'/modifications');
                         $('.boutique-container').append(response);
                     }
                 },
@@ -2511,7 +2523,7 @@ if (!empty($_GET['btq'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            history.pushState('boutique','', '/projet/gerer-boutique.php?btq='+idBtq);
+                            history.pushState('boutique','', '/projet/gerer-boutique/'+idBtq);
                             setTimeout(() => {
                                 $('.gb-messages-notifications').load('load-boutique-options.php?id_btq='+idBtq);
                                 $('.gerer-boutique-categorie-bottom').load('load-boutique-categorie.php?id_btq='+idBtq);
@@ -2546,7 +2558,7 @@ if (!empty($_GET['btq'])) {
                 },
                 success: function(response){
                     if(response != 0){
-                        history.pushState('admin','', '/projet/gerer-boutique.php?btq='+idBtq+'&admin');
+                        history.pushState('admin','', '/projet/gerer-boutique/'+idBtq+'/admin');
                         $('.boutique-container').append(response);
                     }
                 },
@@ -2750,23 +2762,29 @@ if (!empty($_GET['btq'])) {
                 data: fd,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    $(".delete-boutique").css('opacity','0.5');
+                    $("#loader_delete_btq").show();
+                },
                 success: function(response){
                     if(response != 0){
+                        $('#delete_boutique').hide();
                         $("body").removeClass('body-after');
-                        if (windowWidth > 768) {
-                            $('#delete_product').hide();
-                        }else{
-                            $('#delete_product').css('transform','');
-                        }
-                        $('#boutique_product_'+prdTail).remove();
+                        $('.gb-delete-alert').css('transform','translateY(0)');
                     }
+                },
+                complete: function(){
+                    $("#loader_delete_btq").hide();
+                    $(".delete-boutique").css('opacity','');
+                    setTimeout(() => {
+                        $('.gb-delete-alert').css('transform','');
+                    }, 4000);
                 }
             });
         });
 
         $('#cancel_delete_boutique').click(function(e){
             e.stopPropagation();
-            // console.log('click');
             $("body").removeClass('body-after');
             if (windowWidth > 768) {
                 $('#delete_boutique').hide();

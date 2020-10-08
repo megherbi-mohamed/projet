@@ -3,51 +3,17 @@ session_start();
 include_once './bdd/connexion.php';
 $_SESSION['user-info'] = $_GET['id_user'];
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
-
-    $msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC";
-    $msg_result = mysqli_query($conn,$msg_query);
-
-    // $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND etat_msg = 1 GROUP BY id_sender";    
-    // $num_msg_result = mysqli_query($conn,$num_msg_query);
-    // $num_message = 0;
-    // while ($num_msg_row = mysqli_fetch_assoc($num_msg_result)) {
-    //     $num_message++;
-    // }
-    // $etat_message = '';
-    // if ($num_message > 0) {
-    //     $etat_message = 'active-message-num';
-    // }else{ $etat_message = '';}
-
-    if (isset($_POST['send_message'])) {
-
-        $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND id_sender = {$_GET['id_user']}
-                            OR id_recever = {$_GET['id_user']} AND id_sender = {$row['id_user']}";
-        $num_msg_result = mysqli_query($conn,$num_msg_query);
-
-        if (mysqli_num_rows($num_msg_result) == 0) {
-            $time = date('H:i:s');
-            $send_msg_suery = "INSERT INTO messages (id_sender,id_recever,message,temp_msg,etat_msg) VALUES ({$row['id_user']},{$_GET['id_user']},'Cc','$time',1)";
-            mysqli_query($conn,$send_msg_suery);
-            header('location: messagerie.php?user='.$_GET['id_user']);
-        }
-        else{
-            header('location: messagerie.php?user='.$_GET['id_user']);
-        }
-    }
 }
 // else{ header("location: inscription-connexion.php"); }
-
-$user_info_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user-info'];
-$user_info_rslt = mysqli_query($conn, $user_info_query);
-$user_info_row = mysqli_fetch_assoc($user_info_rslt);
-
+$user_info_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user-info']);
+$user_info_query->execute();
+$user_info_row = $user_info_query->fetch(PDO::FETCH_ASSOC);
 $etat_user = '';
 $etat_line = '';
-
 if ($user_info_row['etat_user'] == 'checked') {
     $etat_user = 'etat-online';
     $etat_line = 'disponible';
@@ -55,7 +21,6 @@ if ($user_info_row['etat_user'] == 'checked') {
     $etat_user = 'etat-offline';
     $etat_line = 'indisponible';
 }
-
 if (isset($_SESSION['user']) && $_SESSION['user'] == $_SESSION['user-info']) {
     header('location: ./utilisateur.php');
 }
@@ -87,6 +52,11 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == $_SESSION['user-info']) {
             include './client-info.php';
         } ?> 
     </div>
+    <input type="hidden" id="id_user" value="<?php echo $user_info_row['id_user'] ?>">
+    <input type="hidden" id="id_corresponder" value="<?php echo $user_info_row['id_user'] ?>">
+    <input type="hidden" id="type_msg" value="userUser">
+    <input type="hidden" id="msg_cle" value="<?php echo $user_info_row['id_user'].$row['id_user'] ?>">
+    <button id="send_message_button"></button>
     <div id="loader" class="center"></div>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initUserMap"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -101,19 +71,6 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == $_SESSION['user-info']) {
                 document.querySelector("body").style.visibility = "visible"; 
             } 
         };
-
-        var windowWidth = window.innerWidth;
-        if (windowWidth <= 768) {
-            if ($('#session').val() == 0) {
-                $('.navbar').height(40);
-                $('.clear').height(40);
-            }
-        }
-        
-        // var backUserButton = document.querySelector('#back_user_button');
-        // backUserButton.addEventListener('click',()=>{
-        //     window.history.back();
-        // })
 
         var latitudeUser = document.querySelector('#latitude_user');
         var longitudeUser = document.querySelector('#longitude_user');
@@ -131,11 +88,271 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == $_SESSION['user-info']) {
             });
         }
 
-        // var userProfileContainer = document.querySelector('.user-profile-container');
-        // userProfileContainer.addEventListener('click', ()=>{
-        //     userListMessages.style.display = '';
-        //     userListNotifications.style.display = '';
-        // });
+        //utilisateur info
+        $("#follow_button").click(function(e){
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").show();
+            }else{
+                $("#abonne_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#ntf_user_btn').click(function(e){
+            e.stopPropagation();
+            var etat = $(this).find('i').attr('class');
+            var etatBtn = $(this).find('i');
+            if (etat == 'fas fa-check etat') {
+                $('#notifications_user').val("0");
+                etatBtn.replaceWith('<i class="fas fa-ban etat"></i>');
+            }
+            else{
+                $('#notifications_user').val("1");
+                etatBtn.replaceWith('<i class="fas fa-check etat"></i>');
+            }
+        })
+
+        $('#cancel_abonne_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#cancel_abonne_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#abonne_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#abonne_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#abonne_user_button').click(function(e){
+            var fd = new FormData();
+            var idUser= $('#id_user').val();
+            fd.append('id_user',idUser);
+            var ntfUser = $('#notifications_user').val();
+            fd.append('notifications_user',ntfUser);
+            $.ajax({
+                url: 'abonne-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#abonne_user').css('opacity','0.5');
+                    $("#loader_abn_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        console.log(response);
+                        $("#follow_button").replaceWith('<div id="disfollow_button"><p>Disabonner</p><i class="fas fa-user-slash"></i></div>');
+                    }
+                },
+                complete: function(){
+                    $('#abonne_user').css('opacity','');
+                    $("#loader_abn_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#abonne_user").hide();
+                    }else{
+                        $("#abonne_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        $("#disfollow_button").click(function(e){
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").show();
+            }else{
+                $("#disabonne_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#cancel_disabonne_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#cancel_disabonne_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#disabonne_user_button').click(function(e){
+            var fd = new FormData();
+            var idUser= $('#id_user').val();
+            fd.append('id_user',idUser);
+            $.ajax({
+                url: 'disabonne-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#disabonne_user').css('opacity','0.5');
+                    $("#loader_disabn_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $("#disfollow_button").replaceWith('<div id="follow_button"><p>Abonner</p><i class="fas fa-user-plus"></i></div>');
+                    }
+                },
+                complete: function(){
+                    $('#disabonne_user').css('opacity','');
+                    $("#loader_disabn_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#disabonne_user").hide();
+                    }else{
+                        $("#disabonne_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click',"#message_button",function() {
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").show();
+            }else{
+                $("#message_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#cancel_message_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#cancel_message_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#message_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#message_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#message_user_button').click(function(e){
+            var fd = new FormData();
+            var idCrsp = $('#id_corresponder').val();
+            fd.append('id_corresponder',idCrsp);
+            var msgCle = $('#msg_cle').val();
+            fd.append('msgCle',msgCle);
+            $.ajax({
+                url: 'send-message-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#message_user').css('opacity','0.5');
+                    $("#loader_msg_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#send_message_button').click();
+                        if (response == 2) {
+                            window.location = 'messagerie.php?user='+idCrsp;
+                        }
+                        else{
+                            console.log(response);
+                        }
+                    }
+                },
+                complete: function(){
+                    $('#message_user').css('opacity','');
+                    $("#loader_msg_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#message_user").hide();
+                    }else{
+                        $("#message_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        function updateReceverMessage(userId,senderId){
+            var fd = new FormData();
+            fd.append('id_user',userId);
+            fd.append('id_sender',senderId);
+            $.ajax({
+                url: 'update-messagerie-recever.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+
+                    }
+                }
+            });
+        } 
 
         $(".user-profile-left-content").mouseover(function(){
             $(this).removeClass('hide-scroll-bar');
@@ -144,7 +361,43 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == $_SESSION['user-info']) {
         $(".user-profile-left-content").mouseout(function(){
             $(this).addClass('hide-scroll-bar');
         })
+
+        // add new publications when scroll bottom
+        var scrollBottom = 0;         
+        $(window).on("scroll", function () {
+            if (window.innerHeight + window.pageYOffset >= document.body.scrollHeight) {
+                scrollBottom++;
+                var fd = new FormData();
+                fd.append('offset', scrollBottom);
+                $.ajax({
+                url: 'load-user-publications.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        // console.log(response);
+                        $('.user-profile-publications').append(response);
+                    }else{
+                        // alert('err');
+                    }
+                },
+            });
+            }
+        });
         
+        <?php if (isset($_SESSION['user'])) { ?>
+        var uid = <?php echo $id_user; ?>;
+        var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
+        var websocket = false;
+        var js_flood = 0;
+        var status_websocket = 0;
+        $(document).ready(function() {
+            start(websocket_server);
+        });
+        <?php } ?>
     </script>
+    <script src="css-js/websocket.js"></script>
 </body>
 </html>

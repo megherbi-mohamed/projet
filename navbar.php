@@ -34,11 +34,11 @@
 
     if (isset($_SESSION['user'])) {
 
-        $msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '{$row["id_user"]}' GROUP BY id_sender) ORDER BY id_msg DESC");
-        $msg_query->execute();
+        // $msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = '{$row["id_user"]}' GROUP BY id_sender) ORDER BY id_msg DESC");
+        // $msg_query->execute();
 
-        $notification_query = $conn->prepare("SELECT * FROM notifications WHERE id_recever_ntf = '{$_SESSION["user"]}' ORDER BY id_ntf DESC");
-        $notification_query->execute();
+        // $notification_query = $conn->prepare("SELECT * FROM notifications WHERE id_recever_ntf = '{$_SESSION["user"]}' ORDER BY id_ntf DESC");
+        // $notification_query->execute();
 
         $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = '$id_user' AND etat_sender_msg = '$id_user' GROUP BY id_recever");    
         $num_msg_query->execute();
@@ -48,16 +48,13 @@
             $show_message = 'style="display:block"';
         }
 
-        $num_notf_query = $conn->prepare("SELECT id_ntf FROM notifications WHERE id_recever_ntf = '{$row["id_user"]}' AND etat_ntf = 1");    
-        $num_notf_query->execute();
-        $num_notification = 0;
-        while ($num_ntf_row = $num_notf_query->fetch(PDO::FETCH_ASSOC)) {
-            $num_notification++;
+        $num_ntf_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE id_recever_ntf = $id_user AND etat_ntf = 1");    
+        $num_ntf_query->execute();
+        $num_ntf_row = $num_ntf_query->rowCount();
+        $show_notification = '';
+        if ($num_ntf_row > 0) {
+            $show_notification = 'style="display:block"';
         }
-        $etat_notification = '';
-        if ($num_notification > 0) {
-            $etat_notification = 'active-notification-num';
-        }else{ $etat_notification = '';}
 
         $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = '{$row["id_user"]}'");    
         $num_prd_query->execute();
@@ -120,7 +117,7 @@
             </div>
             <div class="navbar-right-icon" id="create_new"><i class="fas fa-plus"></i></div>
             <div class="navbar-right-icon" id="user_list_messages"><i class="fab fa-facebook-messenger"></i><div class="user-new-msg"><div <?php echo $show_message ?> id="user_new_msg"><span><?php echo $num_msg_row; ?></span></div></div></div>
-            <div class="navbar-right-icon" id="user_list_notifications"><i class="fas fa-bell"></i></div>
+            <div class="navbar-right-icon" id="user_list_notifications"><i class="fas fa-bell"></i><div class="user-new-ntf"><div <?php echo $show_notification ?> id="user_new_ntf"><span><?php echo $num_ntf_row; ?></span></div></div></div>
             <div class="navbar-right-icon" id="user_list_panier"><i class="fas fa-shopping-basket"></i></div>
             <div class="navbar-right-icon" id="user_list_button" class="user-nav-notifications"><i style="font-size:1.4rem;top:40%" class="fas fa-sort-down"></i></div>
             <input type="hidden" id="id_user_porfile" value="<?php echo $id_user ?>">
@@ -280,7 +277,13 @@
     </div>
 </div>
 <div class="user-list-dropdown">
-    <div class="user-profile">
+    <div class="user-list-dropdown-top">
+        <div id="cancel_user_list_dropdown">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <h4>Profile</h4>
+    </div>
+    <div class="user-profile" id="display_user_profile">
         <img src="<?php if($row['img_user']==''){echo'./images/profile.png';}else{echo './'.$row['img_user'];}?>" alt="profile user">
         <div>
             <p><?php echo $row['nom_user']; ?></p>
@@ -288,6 +291,12 @@
         </div>
     </div>
     <hr>
+    <div class="user-update-profile" id="display_parametres_profile">
+        <div>
+            <i class="fas fa-cog"></i>
+        </div>
+        <p>Paramètres du profile</p>
+    </div>
     <div class="user-feedback">
         <div>
             <i class="fas fa-question-circle"></i>
@@ -297,12 +306,6 @@
             <p>Aidez nous à ameliorer Nhannik</p>
         </div>
     </div>
-    <div class="user-update-profile">
-        <div>
-            <i class="fas fa-cog"></i>
-        </div>
-        <p>Paramètres du profile</p>
-    </div>
     <div class="user-logout">
         <div>
             <i class="fas fa-sign-out-alt"></i>
@@ -311,15 +314,33 @@
     </div>
 </div>
 <div class="user-list-messages">
-    <div class="user-list-top-message"></div>
-    <div id="loader_list_message" class="center-loader-list-message"></div>
+    <div class="user-list-messages-top">
+        <div id="cancel_user_list_messages">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <h4>Messages</h4>
+    </div>
+    <div class="user-list-bottom-message"></div>
+    <div id="loader_list_message" class="center"></div>
 </div>
 <div class="user-list-notifications">
-    <div class="user-list-top-notifications"></div>
-    <div id="loader_list_message" class="center-loader-list-message"></div>
+    <div class="user-list-notifications-top">
+        <div id="cancel_user_list_notifications">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <h4>Notifications</h4>
+    </div>
+    <div class="user-list-bottom-notifications"></div>
+    <div id="loader_list_notification" class="center"></div>
 </div>
 <div class="user-create-options">
-    <h4>Créer</h4>
+    <div class="user-create-options-top">
+        <div id="cancel_user_create_options">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <h4>Créer</h4>
+    </div>
+    <h4 class="create-h4">Créer</h4>
     <div class="create-option" id="create_pub_button">
         <div>
             <i class="far fa-edit"></i>
@@ -825,12 +846,12 @@ $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
         <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
         
         <div class="hide-menu-login">
-            <a href="./gestion-boutique-connexion.php"><div>
+            <div id="gestion_boutique_button_responsive">
                 <p>Gerer boutique</p>
-            </div></a>
-            <a href="./inscription-connexion.php"><div>
+            </div>
+            <div id="inscription_connexion_button_responsive">
                 <p>Inscrire/Connecter</p>
-            </div></a>
+            </div>
         </div>
         
         <div class="hide-menu-footer">

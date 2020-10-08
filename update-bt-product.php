@@ -10,16 +10,16 @@ $type_prd = htmlspecialchars($_POST['type_prd']);
 $prix_prd = htmlspecialchars($_POST['prix_prd']);
 $id = htmlspecialchars($_POST['tail_prd']);
 
-$update_product_query = "UPDATE produit_boutdechantier SET nom_prd = '$nom_prd', categorie_prd = '$categorie_prd', 
-description_prd = '$description_prd', quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', type_prd = '$type_prd' WHERE id_prd = '$id_prd'";
-if(mysqli_query($conn, $update_product_query)){
-    $update_media_query = "UPDATE bt_produits_media SET etat = 0 WHERE id_prd = '$id_prd'";
-    if (mysqli_query($conn,$update_media_query)) {
-        $get_product_query = "SELECT * FROM produit_boutdechantier WHERE id_prd = '$id_prd'";
-        if ($get_product_result = mysqli_query($conn,$get_product_query)) {
-            $get_product_row = mysqli_fetch_assoc($get_product_result); 
-            $get_product_media_query = "SELECT * FROM bt_produits_media WHERE id_prd = '$id_prd'";
-            $get_product_media_result = mysqli_query($conn,$get_product_media_query);
+$update_product_query = $conn->prepare("UPDATE produit_boutdechantier SET nom_prd = '$nom_prd', categorie_prd = '$categorie_prd', 
+description_prd = '$description_prd', quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', type_prd = '$type_prd' WHERE id_prd = '$id_prd'");
+if($update_product_query->execute()){
+    $update_media_query = $conn->prepare("UPDATE bt_produits_media SET etat = 0 WHERE id_prd = '$id_prd'");
+    if ($update_media_query->execute()) {
+        $get_product_query = $conn->prepare("SELECT * FROM produit_boutdechantier WHERE id_prd = '$id_prd'");
+        if ($get_product_query->execute()) {
+            $get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC); 
+            $get_product_media_query = $conn->prepare("SELECT * FROM bt_produits_media WHERE id_prd = '$id_prd'");
+            if($get_product_media_query->execute()){
 ?>
 
 <input type="hidden" id="tail_prd_<?php echo $id ?>" value="<?php echo $id ?>">
@@ -43,7 +43,7 @@ if(mysqli_query($conn, $update_product_query)){
     <div class="user-bt-annonce-middle">
         <div class="user-bt-annonce-middle-left">
             <?php 
-            while ($get_image_row = mysqli_fetch_assoc($get_product_media_result)) {
+            while ($get_image_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC)) {
             ?>
             <img src="<?php echo $get_image_row['media_url'] ?>" alt="">
             <?php } ?>
@@ -57,6 +57,9 @@ if(mysqli_query($conn, $update_product_query)){
 </div>
 
 <?php
+            }else{
+                echo 0;
+            }
         }else{
             echo 0;
         }

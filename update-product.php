@@ -13,19 +13,19 @@ $quantite_prd = htmlspecialchars($_POST['quantite_prd']);
 $prix_prd = htmlspecialchars($_POST['prix_prd']);
 $id = htmlspecialchars($_POST['tail_prd']);
 
-$update_product_query = "UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd',
+$update_product_query = $conn->prepare("UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd',
 categorie_prd = '$categorie_prd',description_prd = '$description_prd', caracteristique_prd = '$caracteristique_prd', 
 fonctionnalite_prd = '$fonctionnalite_prd', avantage_prd = '$avantage_prd',quantite_prd = '$quantite_prd',
-prix_prd = '$prix_prd' WHERE id_prd = '$id_prd'";
-if(mysqli_query($conn, $update_product_query)){
-    $update_media_query = "UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'";
-    if (mysqli_query($conn,$update_media_query)) {
-        $get_product_query = "SELECT * FROM produit_boutique WHERE id_prd = '$id_prd'";
-        if ($get_product_result = mysqli_query($conn,$get_product_query)) {
-            $get_product_row = mysqli_fetch_assoc($get_product_result); 
-            $get_product_media_query = "SELECT * FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1";
-            $get_product_media_result = mysqli_query($conn,$get_product_media_query);
-            $get_product_media_row = mysqli_fetch_assoc($get_product_media_result);       
+prix_prd = '$prix_prd' WHERE id_prd = '$id_prd'");
+if($update_product_query->execute()){
+    $update_media_query = $conn->prepare("UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'");
+    if ($update_media_query->execute()) {
+        $get_product_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_prd = '$id_prd'");
+        if ($get_product_query->execute()) {
+            $get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC); 
+            $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1");
+            $get_product_media_query->execute();
+            $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);       
 ?>
 
 <input type="hidden" id="id_prd_<?php echo $id ?>" value="<?php echo $get_product_row['id_prd'] ?>">

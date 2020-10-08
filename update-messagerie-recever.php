@@ -8,10 +8,10 @@ $id_user = htmlspecialchars($_POST['id_user']);
 // etat_sender_msg = IF(id_recever = $id_sender AND id_sender = $id_user, etat_sender_msg = 0, etat_sender_msg)
 // WHERE id_recever = $id_user AND id_sender = $id_sender OR id_recever = $id_sender AND id_sender = $id_user";
 
-$updt_sender_msg_query = "UPDATE messages SET etat_recever_msg = 0 WHERE id_recever = $id_user AND id_sender = $id_sender";
+$updt_sender_msg_query = $conn->prepare("UPDATE messages SET etat_recever_msg = 0 WHERE id_recever = $id_user AND id_sender = $id_sender");
 
 // $updt_recever_msg_query = "UPDATE  messages SET etat_sender_msg = 0 WHERE id_recever = $id_sender AND id_sender = $id_user";
-if (mysqli_query($conn, $updt_sender_msg_query)) {
+if ($updt_sender_msg_query->execute()) {
     // if (mysqli_query($conn, $updt_recever_msg_query)) {
         echo 1;
     // }else{

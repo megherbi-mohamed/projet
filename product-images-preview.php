@@ -2,10 +2,10 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_prd = htmlspecialchars($_GET['id_prd']);
-$get_media_query = "SELECT * FROM produits_media WHERE id_prd = '$id_prd' AND id_user = {$_SESSION['user']}";
-$get_media_result = mysqli_query($conn, $get_media_query);
+$get_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '$id_prd' AND id_user = {$_SESSION['user']}");
+$get_media_query->execute();
 $i=0;
-while ($get_media_row = mysqli_fetch_assoc($get_media_result)) {
+while ($get_media_row = $get_media_query->fetch(PDO::FETCH_ASSOC)) {
 $i++;
 ?>
 <div class='product-image-preview' id='product_image_preview_<?php echo $i ?>'>

@@ -45,6 +45,7 @@
     font-size: .9rem;
     font-weight: bold;
     left: 12px;
+    opacity: .4;
 }
 .gb-connexion a{
     font-size: .9rem;
@@ -72,7 +73,6 @@
     top: 5px !important;
     transform: none !important;
     font-size: .7rem !important;
-    opacity: .6;
 }
 #loader_cnx_btq { 
     display: none;

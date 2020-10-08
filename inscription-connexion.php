@@ -127,7 +127,7 @@ if (!empty($_SESSION['user'])) {
                     },
                     success: function(response){
                         if(response != 0){
-                            window.location.href = 'utilisateur.php';
+                            window.location.href = 'utilisateur/'+response;
                         }
                         else{
                             $('.alert-inscription-connexion p').text("Information incorrecte.");

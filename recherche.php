@@ -2,37 +2,38 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
 }
 $text = '';
 if (isset($_GET['r'])) {
     $text = $_GET['r'];
     if ($text != '') {
-        $rech_user_query = "SELECT id_user AS id, type_user,nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
-        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'";
-        $rech_user_result = mysqli_query($conn, $rech_user_query);
+        $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user,nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
+        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'");
+        $rech_user_query->execute();
     }
     else{
-        $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
-        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques";
-        $rech_user_result = mysqli_query($conn, $rech_user_query);
+        $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques");
+        $rech_user_query->execute();
     }  
 }
 else{
-    $rech_user_query = "SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
-    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques";
-    $rech_user_result = mysqli_query($conn, $rech_user_query);
+    $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques");
+    $rech_user_query->execute();
 }
   
-$get_ville_query = "SELECT ville FROM villes";
-$get_ville_result = mysqli_query($conn, $get_ville_query);
+$get_ville_query = $conn->prepare("SELECT ville FROM villes");
+$get_ville_query->execute();
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -140,9 +141,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'services'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query =$conn->prepare( "SELECT * FROM categories WHERE categories = 'services'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -160,9 +161,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'artisants'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -180,9 +181,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'transports'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -200,9 +201,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'locations'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -220,9 +221,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'entreprises'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -240,9 +241,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'detaillons'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -260,9 +261,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'grossistes'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -280,9 +281,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'fabriquants'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -300,9 +301,9 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             </div>
             <div class="rc-sous-gategorie-bottom">
                 <?php 
-                $categories_query = "SELECT * FROM categories WHERE categories = 'import-export'";
-                $categories_result = mysqli_query($conn,$categories_query);
-                while ($categories_row = mysqli_fetch_assoc($categories_result)) {
+                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
+                $categories_query->execute();
+                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
                 <?php } ?>
@@ -568,11 +569,6 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
             $('.recherche-left').css('transform','translateX(0)');
         })
 
-        $('#recherche_text_resp').click(function(e){
-            e.stopPropagation();
-            // setBoutdechantierSearchBar();
-        })
-
         $(document).on('keypress',"#recherche_text",function() {
             if (event.which == 13) {
                 var rechercheText = $('#recherche_text').val();
@@ -585,7 +581,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                        history.replaceState(null,'', 'recherche/'+rechercheText);
                         $('.recherche-middle-content').empty();
                         $("#loader_load").show();
                     },
@@ -615,6 +611,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
 
         $(document).on('keypress',"#recherche_text_resp",function() {
             if (event.which == 13) {
+                $(this).blur();
                 var rechercheTextRsp = $('#recherche_text_resp').val();
                 var fd = new FormData();
                 fd.append('r',rechercheTextRsp);
@@ -625,7 +622,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        history.replaceState(null,'', './recherche.php?r='+rechercheTextRsp);
+                        history.replaceState(null,'', 'recherche/'+rechercheTextRsp);
                         $('.recherche-middle-content').empty();
                         $("#loader_load").show();
                     },
@@ -640,6 +637,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                         }
                     },
                     complete: function(response){
+                        unsetRechercheSearchBar();
                         $("#loader_load").hide();
                     }
                 });
@@ -665,7 +663,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    history.replaceState(null,'', 'recherche/'+rechercheText);
                     $('.recherche-middle-content').empty();
                     $("#loader_load").show();
                 },
@@ -698,7 +696,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    history.replaceState(null,'', 'recherche/'+rechercheText);
                     $('.recherche-middle-content').empty();
                     $("#loader_load").show();
                 },
@@ -729,7 +727,7 @@ $get_ville_result = mysqli_query($conn, $get_ville_query);
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    history.replaceState(null,'', './recherche.php?r='+rechercheText);
+                    history.replaceState(null,'', 'recherche/'+rechercheText);
                     $('.recherche-middle-content').empty();
                     $("#loader_load").show();
                 },

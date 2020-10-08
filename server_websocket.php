@@ -26,9 +26,6 @@ while ( true ) {
 	if (in_array($socket, $changed)) {
         $socket_new = socket_accept($socket); //accpet new socket
         
-        // $insert_msg = "INSERT INTO messages (message) VALUES ('changed')";
-        // mysqli_query($conn,$insert_msg);
-        
         $header = socket_read($socket_new, 1024); //read data sent by the socket
         perform_handshaking($header, $socket_new, $host, $port); //perform websocket handshake
 
@@ -39,6 +36,7 @@ while ( true ) {
             $expl_value  = explode(' ', $expl_header[1]);
             $user_id = $expl_value[0];
         }
+        
 		//make room for new socket
         $found_socket = array_search($socket, $changed);
         unset($changed[$found_socket]);
@@ -46,47 +44,106 @@ while ( true ) {
 		if ( !empty($user_id) && is_numeric($user_id) ) {
             $user_data[$user_id] = $user_id;
             $clients[$user_id] = $socket_new; //add socket to client array
-		}
-	}
+        }
+    }
+    
 	foreach ($changed as $changed_socket) {
-
         //check for any incomming data
-        while(socket_recv($changed_socket, $buf, 1024, 0) >= 1)
-        {
+        while(socket_recv($changed_socket, $buf, 1024, 0) >= 1) {
             $received_text = unmask($buf); //unmask data
             $tst_msg = json_decode($received_text); //json decode
-            $user_id = $tst_msg->uid; //sender id
-            $to_id = $tst_msg->to_id; //destination id
-            $msgCle = $tst_msg->msgCle;
-            $typeMessagerie = $tst_msg->typeMessagerie;
-
-            $user_message = trim($tst_msg->message); //message text
-            $timemsg = date("H:i:s");
-            //prepare data to be sent to client
-            $refreshSender = 0;
-			if ( !empty($user_id) && !empty($user_message) ) {
-				if ( array_key_exists($to_id, $clients) ) {
-                    // echo ' two online';
-                    $insert_msg = "INSERT INTO messages (message,id_recever,id_sender,temp_msg,etat_recever_msg,etat_sender_msg) VALUES ('$user_message','$user_id','$to_id','$timemsg','$user_id','$to_id')";
-                    if (mysqli_query($conn,$insert_msg)) {
-                        $response_text = mask(json_encode(array('typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
-                        send_private_message($clients[$to_id], $response_text); //send data
-                        //Send to Sender
-                        $response_text = mask(json_encode(array('typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
-                        send_private_message($clients[$user_id], $response_text); 
-                    }   
-                } 
-                else {
-                    // echo ' one online';
-                    $refreshSender = 1;
-					$insert_msg = "INSERT INTO messages (message,id_recever,id_sender,temp_msg,etat_recever_msg,etat_sender_msg) VALUES ('$user_message','$user_id','$to_id','$timemsg','$user_id','$to_id')";
-                    if (mysqli_query($conn,$insert_msg)) {
-                        $response_text = mask(json_encode(array('typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
-                        send_private_message($clients[$user_id], $response_text); 
+            $typeNotification = $tst_msg->typeNotification; 
+            if ($typeNotification == 'message') {
+                $user_id = $tst_msg->uid; //sender id
+                $to_id = $tst_msg->to_id; //destination id
+                $msgCle = $tst_msg->msgCle;
+                $typeMessagerie = $tst_msg->typeMessagerie;
+                $user_message = trim($tst_msg->message); //message text
+                $timemsg = date("H:i:s");
+                //prepare data to be sent to client
+                $refreshSender = 0;
+                // echo 'eada ';
+                if ( !empty($user_id) && !empty($user_message) ) {
+                    if ( array_key_exists($to_id, $clients) ) {
+                        // echo ' two online';
+                        $insert_msg_query = $conn->prepare("INSERT INTO messages (message,id_recever,id_sender,temp_msg,etat_recever_msg,etat_sender_msg,msg_cle) VALUES (:message,:id_recever,:id_sender,:temp_msg,:etat_recever_msg,:etat_sender_msg,:msg_cle)");
+                        $insert_msg_query->bindParam(':message',$user_message);
+                        $insert_msg_query->bindParam(':id_recever',$user_id);
+                        $insert_msg_query->bindParam(':id_sender',$to_id);
+                        $insert_msg_query->bindParam(':temp_msg',$timemsg);
+                        $insert_msg_query->bindParam(':etat_recever_msg',$user_id);
+                        $insert_msg_query->bindParam(':etat_sender_msg',$to_id);
+                        $insert_msg_query->bindParam(':msg_cle',$msgCle);
+                        if ($insert_msg_query->execute()) {
+                            $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
+                            send_private_message($clients[$to_id], $response_text); //send data
+                            //Send to Sender
+                            $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
+                            send_private_message($clients[$user_id], $response_text); 
+                        }   
+                    } 
+                    else {
+                        // echo ' one online';
+                        $refreshSender = 1;
+                        $insert_msg_query = $conn->prepare("INSERT INTO messages (message,id_recever,id_sender,temp_msg,etat_recever_msg,etat_sender_msg,msg_cle) VALUES (:message,:id_recever,:id_sender,:temp_msg,:etat_recever_msg,:etat_sender_msg,:msg_cle)");
+                        $insert_msg_query->bindParam(':message',$user_message);
+                        $insert_msg_query->bindParam(':id_recever',$user_id);
+                        $insert_msg_query->bindParam(':id_sender',$to_id);
+                        $insert_msg_query->bindParam(':temp_msg',$timemsg);
+                        $insert_msg_query->bindParam(':etat_recever_msg',$user_id);
+                        $insert_msg_query->bindParam(':etat_sender_msg',$to_id);
+                        $insert_msg_query->bindParam(':msg_cle',$msgCle);
+                        if ($insert_msg_query->execute()) {
+                            $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'typeMessagerie'=>$typeMessagerie,'refreshSender'=>$refreshSender,'msgCle'=>$msgCle,'idSender'=>$to_id,'idRecever'=>$user_id,'message'=>$user_message, 'timemsg'=>$timemsg)));
+                            send_private_message($clients[$user_id], $response_text); 
+                        }
                     }
-				}
-			}
-			break 2;
+                }
+            } 
+            else if ($typeNotification == 'like') {
+                $user_id = $tst_msg->uid;
+                if ( !empty($user_id) ) {
+                    $id_user = $tst_msg->to_id;
+                    $id_pub = $tst_msg->idPub;
+                    // $id = $tst_msg->id;
+                    $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'idPub'=>$id_pub,'to_id'=>$user_id)));
+                    send_private_message($clients[$user_id], $response_text);
+                    send_private_message($clients[$id_user], $response_text);
+                }  
+            }
+            else if ($typeNotification == 'commentaire') {
+                $user_id = $tst_msg->uid;
+                if ( !empty($user_id) ) {
+                    $id_user = $tst_msg->to_id;
+                    $id_pub = $tst_msg->idPub;
+                    $img_user = $tst_msg->imgUser;
+                    $nom_user = $tst_msg->nomUser;
+                    $commentaire = $tst_msg->commentaire;
+                    $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'idPub'=>$id_pub,'to_id'=>$user_id,'img_user'=>$img_user,'nom_user'=>$nom_user,'commentaire'=>$commentaire)));
+                    send_private_message($clients[$user_id], $response_text);
+                    send_private_message($clients[$id_user], $response_text);
+                }  
+            }
+            else if ($typeNotification == 'abonnement') {
+                $user_id = $tst_msg->uid;
+                if ( !empty($user_id) ) {
+                    $id_abn_user = $tst_msg->to_id;
+                    $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'id_abn_user'=>$id_abn_user)));
+                    send_private_message($clients[$user_id], $response_text);
+                    send_private_message($clients[$id_abn_user], $response_text);
+                }  
+            }
+            else if ($typeNotification == 'abonnementBtq') {
+                $user_id = $tst_msg->uid;
+                if ( !empty($user_id) ) {
+                    $id_abn_user = $tst_msg->to_id;
+                    $typeMessagerie = $tst_msg->messagerieType;
+                    $response_text = mask(json_encode(array('typeNotification'=>$typeNotification,'typeMessagerie'=>$typeMessagerie,'id_abn_user'=>$id_abn_user)));
+                    send_private_message($clients[$user_id], $response_text);
+                    send_private_message($clients[$id_abn_user], $response_text);
+                }  
+            }
+            break 2;
         }
 		$buf = @socket_read($changed_socket, 1024, PHP_NORMAL_READ);
         if  ( $buf == false ) { // check disconnected client

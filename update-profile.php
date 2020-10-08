@@ -9,8 +9,8 @@ $profession_user = htmlspecialchars($_POST['profession_user']);
 $adresse_user = htmlspecialchars($_POST['adresse_user']);
 $ville_user = htmlspecialchars($_POST['ville_user']);
 
-$updt_user_query = "UPDATE utilisateurs SET nom_user='$nom_user',tlph_user='$tlph_user',age_user='$age_user',
-profession_user='$profession_user',adresse_user='$adresse_user',ville='$ville_user' WHERE id_user=".$_SESSION['user'];
+$updt_user_query = $conn->prepare("UPDATE utilisateurs SET nom_user='$nom_user',tlph_user='$tlph_user',age_user='$age_user',
+profession_user='$profession_user',adresse_user='$adresse_user',ville='$ville_user' WHERE id_user=".$_SESSION['user']);
 
 if(mysqli_query($conn, $updt_user_query)){
 

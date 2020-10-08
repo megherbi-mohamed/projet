@@ -1,25 +1,35 @@
 <?php
 include_once './bdd/connexion.php';
 $text = htmlspecialchars($_POST['r']);
+// if ($text != '') {
+//     $rech_user_query = "(SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%') 
+//     UNION (SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%') ORDER BY RAND()";
+//     $rech_user_result = mysqli_query($conn, $rech_user_query);
+// }
+// else{
+//     $rech_user_query = "(SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel') 
+//     UNION (SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques) ORDER BY RAND()";
+//     $rech_user_result = mysqli_query($conn, $rech_user_query);
+// }   
 if ($text != '') {
-    $rech_user_query = "(SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%') 
-    UNION (SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%') ORDER BY RAND()";
-    $rech_user_result = mysqli_query($conn, $rech_user_query);
+    $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user,nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
+    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'");
+    $rech_user_query->execute();
 }
 else{
-    $rech_user_query = "(SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel') 
-    UNION (SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques) ORDER BY RAND()";
-    $rech_user_result = mysqli_query($conn, $rech_user_query);
-}      
-if (mysqli_num_rows($rech_user_result) > 0) {
+    $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
+    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques");
+    $rech_user_query->execute();
+}    
+if ($rech_user_query->rowCount() > 0) {
 $i = 0;
-while ($rech_user_row = mysqli_fetch_assoc($rech_user_result)){ 
+while ($rech_user_row = $rech_user_query->fetch(PDO::FETCH_ASSOC)){ 
 $i++;
-    $user_total_rating_query = "SELECT * FROM user_rating WHERE id_user = {$rech_user_row['id']}"; 
-    $user_total_rating_result = mysqli_query($conn, $user_total_rating_query);
+    $user_total_rating_query = $conn->prepare("SELECT * FROM user_rating WHERE id_user = {$rech_user_row['id']}"); 
+    $user_total_rating_query->execute();
 
     $tr = 0;$tt = 0;$tc = 0;$td = 0;$trp = 0;$n=1;
-    while($user_total_rating_row=mysqli_fetch_assoc($user_total_rating_result)){
+    while($user_total_rating_row = $user_total_rating_query->fetch(PDO::FETCH_ASSOC)){
         
         $tnr = $user_total_rating_row['rapidite'];
         $tnt = $user_total_rating_row['travaille'];
@@ -78,9 +88,9 @@ $i++;
         <div>
             <?php
             if ($rech_user_row['type_user'] == 'professionnel') { ?>
-            <a href="./utilisateur-info.php?id_user=<?php echo $rech_user_row['id'] ?>"><i class="far fa-user-circle"></i></a>
+            <a href="utilisateur/<?php echo $rech_user_row['id'] ?>"><i class="far fa-user-circle"></i></a>
             <?php }else if($rech_user_row['type_user'] == 'boutique'){ ?>
-            <a href="./boutique.php?btq=<?php echo $rech_user_row['id'] ?>"><i class="fas fa-store-alt"></i></a>
+            <a href="boutique/<?php echo $rech_user_row['id'] ?>"><i class="fas fa-store-alt"></i></a>
             <?php } ?>
         </div>
     </div>

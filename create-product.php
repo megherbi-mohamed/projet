@@ -13,21 +13,21 @@ $avantage_prd = htmlspecialchars($_POST['avantage_prd']);
 $quantite_prd = htmlspecialchars($_POST['quantity_prd']);
 $prix_prd = htmlspecialchars($_POST['price_prd']);
 
-$create_product_query = "UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd', categorie_prd = '$categorie_prd',
+$create_product_query = $conn->prepare("UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd', categorie_prd = '$categorie_prd',
 description_prd = '$description_prd',caracteristique_prd = '$caracteristique_prd', fonctionnalite_prd = '$fonctionnalite_prd', avantage_prd = '$avantage_prd', 
-quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', etat = 0 WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'";
-if (mysqli_query($conn,$create_product_query)) {
-    $update_media_query = "UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'";
-    if (mysqli_query($conn,$update_media_query)) {
-        $get_product_query = "SELECT * FROM produit_boutique WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'";
-        if ($get_product_result = mysqli_query($conn,$get_product_query)) {
-            $get_product_row = mysqli_fetch_assoc($get_product_result); 
-            $get_product_media_query = "SELECT * FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1";
-            if ($get_product_media_result = mysqli_query($conn,$get_product_media_query)) {
-                $get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
-                $get_prd_id_query = "SELECT COUNT(id_prd) as `count` FROM produit_boutique WHERE id_btq = '$id_btq'";
-                if ($get_prd_id_result= mysqli_query($conn,$get_prd_id_query)) {
-                    $get_prd_id_row = mysqli_fetch_assoc($get_prd_id_result);
+quantite_prd = '$quantite_prd', prix_prd = '$prix_prd', etat = 0 WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'");
+if ($create_product_query->execute()) {
+    $update_media_query = $conn->prepare("UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'");
+    if ($update_media_query->execute()) {
+        $get_product_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_prd = '$id_prd' AND id_btq = '$id_btq'");
+        if ($get_product_query->execute()) {
+            $get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC); 
+            $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1");
+            if ($get_product_media_query->execute()) {
+                $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
+                $get_prd_id_query = $conn->prepare("SELECT COUNT(id_prd) as `count` FROM produit_boutique WHERE id_btq = '$id_btq'");
+                if ($get_prd_id_query->execute()) {
+                    $get_prd_id_row = $get_prd_id_query->fetch(PDO::FETCH_ASSOC);
                     $id = $get_prd_id_row['count'];
 ?>
 

@@ -2,17 +2,17 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_user = htmlspecialchars($_SESSION['user']);
-$get_user_bt_annc_query = "SELECT * FROM produit_boutdechantier WHERE id_user = $id_user";
-$get_user_bt_annc_result = mysqli_query($conn,$get_user_bt_annc_query);
-if (mysqli_num_rows($get_user_bt_annc_result) > 0) {
+$get_user_bt_annc_query = $conn->prepare("SELECT * FROM produit_boutdechantier WHERE id_user = $id_user");
+$get_user_bt_annc_query->execute();
+if ($get_user_bt_annc_query->rowCount() > 0) {
 ?>
 <div class="user-bt-annonces">
     <?php
     $i = 0;
-    while ($get_user_bt_annc_row = mysqli_fetch_assoc($get_user_bt_annc_result)) {
+    while ($get_user_bt_annc_row = $get_user_bt_annc_query->fetch(PDO::FETCH_ASSOC)) {
     $i++;
-    $get_image_query = "SELECT media_url FROM bt_produits_media WHERE id_prd = {$get_user_bt_annc_row['id_prd']}";
-    $get_image_result = mysqli_query($conn, $get_image_query);
+    $get_image_query = $conn->prepare("SELECT media_url FROM bt_produits_media WHERE id_prd = {$get_user_bt_annc_row['id_prd']}");
+    $get_image_query->execute();
     ?>
     <input type="hidden" id="tail_prd_<?php echo $i ?>" value="<?php echo $i ?>">
     <input type="hidden" id="id_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['id_prd'] ?>">
@@ -35,7 +35,7 @@ if (mysqli_num_rows($get_user_bt_annc_result) > 0) {
         <div class="user-bt-annonce-middle">
             <div class="user-bt-annonce-middle-left">
                 <?php 
-                while ($get_image_row = mysqli_fetch_assoc($get_image_result)) {
+                while ($get_image_row = $get_image_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <img src="<?php echo $get_image_row['media_url'] ?>" alt="">
                 <?php } ?>

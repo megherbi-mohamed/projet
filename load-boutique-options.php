@@ -4,11 +4,11 @@ include_once './bdd/connexion.php';
 if (!empty($_GET['id_btq'])) {
     $id_btq = htmlspecialchars($_GET['id_btq']);
 
-    $num_btq_msg_query = "SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever";    
-    $num_btq_msg_result = mysqli_query($conn,$num_btq_msg_query);
-    $num_btq_msg_row = mysqli_num_rows($num_btq_msg_result);
+    $num_btq_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = $id_btq AND etat_sender_msg = $id_btq GROUP BY id_recever");    
+    $num_btq_msg_query->execute();
+    $num_btq_msg_num= $num_btq_msg_query->rowCount();
     $show_btq_message = '';
-    if ($num_btq_msg_row > 0) {
+    if ($num_btq_msg_num > 0) {
         $show_btq_message = 'style="display:block"';
     }
 }
@@ -20,7 +20,7 @@ if (!empty($_GET['id_btq'])) {
     <p>Messages</p>
     <div class="btq-new-msg">
         <div id="btq_new_msg" <?php echo $show_btq_message ?>>
-            <span><?php echo $num_btq_msg_row; ?></span>
+            <span><?php echo $num_btq_msg_num; ?></span>
         </div>
     </div>
 </div>
@@ -31,7 +31,7 @@ if (!empty($_GET['id_btq'])) {
     <p>Notifications</p>
     <!-- <div class="btq-new-ntf">
         <div id="btq_new_ntf" <?php echo $show_btq_notification ?>>
-            <span><?php echo $num_btq_ntf_row; ?></span>
+            <span><?php echo $num_btq_ntf_num; ?></span>
         </div>
     </div> -->
 </div>

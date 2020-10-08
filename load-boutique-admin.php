@@ -1,10 +1,10 @@
 <?php
 include_once './bdd/connexion.php';
 $id_btq = htmlspecialchars($_POST['id_btq']);
-$get_btq_admin_query = "SELECT * FROM admin_boutique WHERE id_btq = $id_btq";
-$get_btq_admin_result = mysqli_query($conn,$get_btq_admin_query);
-if (mysqli_num_rows($get_btq_admin_result) > 0) {
-    $get_btq_admin_row = mysqli_fetch_assoc($get_btq_admin_result);
+$get_btq_admin_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = $id_btq");
+$get_btq_admin_query->execute();
+if ($get_btq_admin_query->rowCount() > 0) {
+    $get_btq_admin_row = $get_btq_admin_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <div class="boutique-admin-info">
     <div class="boutique-admin-info-top">

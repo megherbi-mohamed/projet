@@ -2,9 +2,9 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_btq = htmlspecialchars($_POST['id_btq']);
-$btq_inf_query = "SELECT * FROM boutiques WHERE id_btq = $id_btq";
-$btq_inf_result = mysqli_query($conn, $btq_inf_query);
-$btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
+$btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq");
+$btq_inf_query->execute();
+$btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <div class="update-boutique-informations">
     <h3>Modifier les informations de boutique!</h3>
@@ -17,9 +17,9 @@ $btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
             <select id="ville_btq">
                 <option value="<?php echo $btq_inf_row['ville_btq'] ?>"><?php echo $btq_inf_row['ville_btq'] ?></option>
                 <?php
-                $ville_query = "SELECT * FROM villes";
-                $ville_result = mysqli_query($conn, $ville_query); 
-                while ($ville_row = mysqli_fetch_assoc($ville_result)) {
+                $ville_query = $conn->prepare("SELECT * FROM villes");
+                $ville_query->execute(); 
+                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                 ?>
                 <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
                 <?php } ?>

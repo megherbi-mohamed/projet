@@ -1,6 +1,6 @@
 .inscription-connexion-container{
     width: 550px;
-    height: 550px;
+    height: 500px;
     position: fixed;
     top: 65%;
     left: 50%;
@@ -55,7 +55,8 @@
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
 }
 .connexion div span,
 .inscription div span{
@@ -65,12 +66,13 @@
     font-size: .9rem;
     font-weight: bold;
     left: 12px;
+    opacity: .4;
+    z-index: -1;
 }
 .active-cnx-connexion-span{
     top: 5px !important;
     transform: none !important;
     font-size: .7rem !important;
-    opacity: .6;
 }
 .connexion p,
 .inscription p{
@@ -376,7 +378,7 @@
         width: 100%;
         min-height: calc(100vh - 50px);
         position: relative;
-        top: 10px;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
     }

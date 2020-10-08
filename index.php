@@ -2,9 +2,9 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = "SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user'];
-    $result = mysqli_query($conn, $cnx_user_query);
-    $row = mysqli_fetch_assoc($result);
+    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $cnx_user_query->execute();
+    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
 }
 ?>

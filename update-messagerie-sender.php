@@ -15,9 +15,9 @@ $id_user = htmlspecialchars($_POST['id_user']);
 
 // $updt_sender_msg_query = "UPDATE messages SET etat_recever_msg = 0 WHERE id_recever = $id_sender AND id_sender = $id_user";
 
-$updt_recever_msg_query = "UPDATE messages SET etat_sender_msg = 0 WHERE id_recever = $id_user AND id_sender = $id_sender";
+$updt_recever_msg_query = $conn->prepare("UPDATE messages SET etat_sender_msg = 0 WHERE id_recever = $id_user AND id_sender = $id_sender");
 // if (mysqli_query($conn, $updt_sender_msg_query)) {
-    if (mysqli_query($conn, $updt_recever_msg_query)) {
+    if ($updt_recever_msg_query->execute()) {
         echo 1;
     }else{
         echo 0;

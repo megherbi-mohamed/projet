@@ -32,29 +32,35 @@
 <div class="user-profile-left-content hide-scroll-bar">
     <div id="user-profile-left-content-picture">
         <div class="user-profile-left-content-picture-couverture">
-            <img id="user_couverture" src="<?php if($row['couverture_user']==''){echo'./images/logo.png';}else{echo './'.$row['couverture_user'];}?>" alt="logo">
+            <img id="user_couverture" src="<?php if($row_g['couverture_user']==''){echo'./images/logo.png';}else{echo './'.$row_g['couverture_user'];}?>" alt="logo">
+            <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
             <div class="update-user-couverture" id="update_user_couverture">
                 <i class="fas fa-camera"></i>
             </div>
+            <?php } ?>
         </div>
         <div class="user-picture">
-            <img id="user_img" src="<?php if($row['img_user']==''){echo'./images/logo.png';}else{echo './'.$row['img_user'];}?>" alt="logo">
+            <img id="user_img" src="<?php if($row_g['img_user']==''){echo'./images/logo.png';}else{echo './'.$row_g['img_user'];}?>" alt="logo">
+            <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
             <div class="update-user-image" id="update_user_image">
                 <i class="fas fa-camera"></i>
             </div>
+            <?php } ?>
         </div>
     </div>
     <div class="user-rating">
+        <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
         <div class="user-disponibility">
             <form action="./etat-user.php" method="post" id="check_form">
                 <label class="switch">
-                <input id="input_user_checkbox" type="checkbox" <?php echo $row['etat_user']; ?>>
+                <input id="input_user_checkbox" type="checkbox" <?php echo $row_g['etat_user']; ?>>
                     <span class="slider round"></span>
                 </label>
                 <input type="submit" id="check_btn">
             </form>
         </div>
-        <p><?php echo $row['nom_user']?></p>
+        <?php } ?>
+        <p><?php echo $row_g['nom_user']?></p>
         <div>
             <i class="<?php echo $tr1 ?>"></i>
             <i class="<?php echo $tr2 ?>"></i>
@@ -62,53 +68,44 @@
             <i class="<?php echo $tr4 ?>"></i>
             <i class="<?php echo $tr5 ?>"></i>
         </div>
+        <?php if (isset($_SESSION['user']) && $_SESSION['user'] !== $_GET['user']) { ?>
+        <?php 
+        $abonne_query = $conn->prepare("SELECT id_a FROM abonnes WHERE id_user = '$id_user' AND id_abn_user = '$user'");
+        $abonne_query->execute();
+        if($abonne_query->rowCount() > 0){
+        ?>
+        <div id="disfollow_button">
+            <p>Disabonner</p>
+            <i class="fas fa-user-slash"></i>
+        </div>
+        <?php }else{?>
+        <div id="follow_button">
+            <p>Abonner</p>
+            <i class="fas fa-user-plus"></i>
+        </div> 
+        <?php }?>
+        <div id="message_button">
+            <p>Envoyer un message</p>
+            <i class="fab fa-facebook-messenger"></i>
+        </div>
+        <?php } ?>
     </div>
     <div class="user-map">
         <div id="user_map"></div>
-        <input type="hidden" id="latitude_user" value="<?php echo $row['latitude_user']; ?>">
-        <input type="hidden" id="longitude_user" value="<?php echo $row['longitude_user']; ?>">
+        <input type="hidden" id="latitude_user" value="<?php echo $row_g['latitude_user']; ?>">
+        <input type="hidden" id="longitude_user" value="<?php echo $row_g['longitude_user']; ?>">
         <!-- <button><i class="fas fa-map-marker-alt"></i>Modifier la position</button> -->
     </div>
     <div class="user-informations" id="user_informations">
-        <p>Profession : <span><?php echo $row['profession_user']; ?></span></p>
-        <p>Téléphone : <span><?php echo $row['tlph_user']; ?></span></p>
-        <p>Adresse : <span><?php echo $row['adresse_user']; ?></span></p>
-        <p>Ville : <span><?php echo $row['ville']; ?></span></p>
-    </div>
-    <div style="display:none" class="modify-user-informations">
-        <form action="./update-profile.php" method="post" id="update_profile_form">
-            <div>
-                <label>Nom et prénom</label>
-                <input type="text" name="nom_user" value="<?php echo $row['nom_user'] ?>" autocomplete="off">
-            </div>
-            <div style="margin-top:10px">
-                <label>N° téléphone</label>
-                <input type="text" name="tlph_user" value="<?php echo $row['tlph_user'] ?>" autocomplete="off">
-            </div>
-            <div>
-                <label>Age</label>
-                <input type="text" name="age_user" value="<?php echo $row['age_user'] ?>" autocomplete="off">
-            </div>
-            <div>
-                <label>Profession</label>
-                <input type="text" name="profession_user" value="<?php echo $row['profession_user'] ?>" autocomplete="off">
-            </div>
-            <div>
-                <label>Adresse</label>
-                <input type="text" name="adresse_user" value="<?php echo $row['adresse_user'] ?>" autocomplete="off">
-            </div>
-            <div>
-                <label>Ville</label>
-                <input type="text" name="ville_user" value="<?php echo $row['ville'] ?>" autocomplete="off">
-            </div>
-            <div style="margin-top:20px">
-                <input type="submit" id="modify_user_inf_btn" value="Valider">
-            </div>
-        </form>
+        <p>Profession : <span><?php echo $row_g['profession_user']; ?></span></p>
+        <p>Téléphone : <span><?php echo $row_g['tlph_user']; ?></span></p>
+        <p>Adresse : <span><?php echo $row_g['adresse_user']; ?></span></p>
+        <p>Ville : <span><?php echo $row_g['ville']; ?></span></p>
     </div>
 </div>
 <div class="user-profile-middle-content">
     <div class="user-profile-middle-container">
+        <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
         <div class="user-profile-middle-content-pub">
             <h4>Recommendés</h4>
             <div class="user-profile-middle-content-pub-slide-button">
@@ -133,39 +130,34 @@
             <?php } ?>
             </div>
         </div>
-        <div class="manage-user-publications">
-            <div id="show_hided_publications">
-                <i class="fas fa-eye-slash"></i>
-                <p>Publications masquées</p>
-            </div>
-            <div id="show_saved_publications">
-                <i class="fas fa-bookmark"></i>
-                <p>Publications enregistrées</p>
-            </div>
-        </div>
+        <?php } ?>
         <div class="user-profile-publications">
             <?php 
-            $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '{$_SESSION["user"]}' AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1"); 
+            $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '$user' AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 4"); 
             $publication_query->execute();
             $i=0;
-            while($publication_row=$publication_query->fetch(PDO::FETCH_ASSOC)){
+            while($publication_row = $publication_query->fetch(PDO::FETCH_ASSOC)){
             $i++; 
             ?>
+            <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
             <input type="hidden" id="publication_tail_<?php echo $i ?>" value="<?php echo $i ?>">
             <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>">
             <input type="hidden" id="publication_lieu_<?php echo $i ?>" value="<?php echo $publication_row['lieu_pub'] ?>">
             <input type="hidden" id="etat_commentaire_<?php echo $i ?>" value="<?php echo $publication_row['etat_commentaire'] ?>">
+            <?php } ?>
             <div class="user-publication" id="user_publication_<?php echo $i ?>">
+                <div id="pub_tail_<?php echo $publication_row['id_pub'] ?>"></div>
                 <div class="user-publication-top">
                     <div class="user-publication-top-left">
-                        <img src="<?php echo $row['img_user'] ?>" alt="logo">
-                        <p><?php echo $row['nom_user'] ?></p>
+                        <img src="<?php echo $row_g['img_user'] ?>" alt="logo">
+                        <p><?php echo $row_g['nom_user'] ?></p>
                     </div>
                     <div class="user-publication-top-right" id="display_pub_options_button_<?php echo $i ?>">
                         <i class="fas fa-ellipsis-v"></i>
                     </div>
                 </div>
                 <div class="publication-options" id="publication_options_<?php echo $i ?>">
+                    <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
                     <?php if ($publication_row['etat_commentaire'] == 0) { ?>
                     <div class="publication-option" id="desactive_publication_comment_<?php echo $i ?>">
                         <i class="fas fa-comment-slash"></i>
@@ -204,6 +196,7 @@
                             <p>La publication sera supprimée définitivement</p>
                         </div>
                     </div>
+                    <?php } ?>
                     <div class="publication-option" id="save_publication_<?php echo $i ?>">
                         <i class="fas fa-bookmark"></i>
                         <div>
@@ -266,15 +259,18 @@
                     $publication_comment_query->execute();
                     $publication_comment_count = $publication_comment_query->rowCount();
                     ?>
-                    <div class="user-publication-bottom-top" id="user_publication_bottom_top_<?php echo $i ?>">
+                    <div class="user-publication-bottom-top pub-like-<?php echo $publication_row['id_pub']?>" id="user_publication_bottom_top_<?php echo $i ?>">
                         <div>
                             <?php
                             $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                             $num_like_pub_query->execute();
-                            $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
+                            // $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
                             $num_like_pub_count = $num_like_pub_query->rowCount();
+                            $num_like_user_query = $conn->prepare("SELECT id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}' AND id_user = $id_user"); 
+                            $num_like_user_query->execute();
+                            $num_like_user_count = $num_like_user_query->rowCount();
                             if ($num_like_pub_count > 0) {
-                            if ($num_like_pub_row['id_user'] == $row['id_user']) { ?>
+                            if ($num_like_user_count > 0) { ?>
                             <i id="dislike_pub_button_<?php echo $i ?>" class="fas fa-heart"></i>
                             <?php }else{ ?>
                             <i id="like_pub_button_<?php echo $i ?>" class="far fa-heart"></i>
@@ -307,19 +303,24 @@
                     $publication_comment_user_query->execute();
                     $publication_comment_user_row = $publication_comment_user_query->fetch(PDO::FETCH_ASSOC);
                     ?>
-                    <img src="./<?php echo $publication_comment_user_row['img_user'] ?>" alt="">
+                    <?php if ($publication_comment_user_row['img_user'] != '') { ?>
+                        <img src="./<?php echo $publication_comment_user_row['img_user'] ?>" alt="">
+                    <?php }else if($publication_comment_user_row['img_user'] == ''){ ?>
+                        <img src="./boutique-logo/logo.png" alt="">
+                    <?php } ?>
                     <div>
                         <h4><?php echo $publication_comment_user_row['nom_user'] ?></h4>
                         <p><?php echo $publication_comment_row['commentaire_text'] ?></p>
                     </div>
                     <?php } ?>
                     </div>
-                    <div class="user-publication-bottom-preview" id="user_publication_bottom_preview_<?php echo $i ?>"></div>
+                    <div class="user-publication-bottom-preview pub-comment-<?php echo $publication_row['id_pub']?>" id="user_publication_bottom_preview_<?php echo $i ?>"></div>
                 </div>
             </div>
             <?php } ?>
         </div>
     </div>
+    <div id="loader_publications" class="center"></div>
 </div>
 <div class="user-profile-right-content">
     <div class="user-profile-right-content-pub">
@@ -338,17 +339,16 @@
         <h4>Boutiques</h4>
         <div class="user-boutiques">
             <?php 
-            $j = 0;
-            $class_btq = '';
-            $btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = '$id_user'");
+            $btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = '$user'");
             $btq_query->execute();
             while($btq_row = $btq_query->fetch(PDO::FETCH_ASSOC)){
-            $j++;
-            if ($btq_row['etat_btq'] == 1) { $class_btq = 'unset-btq'; }
-            else{ $class_btq = ''; }
             ?>
-            <a href="./gerer-boutique.php?btq=<?php echo $btq_row['id_btq'] ?>">
-            <div class="user-boutique <?php echo $class_btq?>" id="user_boutique_<?php echo $j ?>">
+            <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
+            <a onclick="pushState(<?php echo $btq_row['id_btq'] ?>)" href="gerer-boutique/<?php echo $btq_row['id_btq'] ?>">
+            <?php }else{ ?>
+            <a href="boutique/<?php echo $btq_row['id_btq'] ?>">
+            <?php } ?>
+            <div class="user-boutique">
                 <?php if ($btq_row['logo_btq'] != '') { ?>
                     <img src="./<?php echo $btq_row['logo_btq'] ?>" alt="">
                 <?php }else if($btq_row['logo_btq'] == ''){ ?>
@@ -357,8 +357,7 @@
                 <div class="user-boutique-options">
                     <h4><?php echo $btq_row['nom_btq'] ?></h4>
                     <div class="user-boutique-option">
-                        <input type="hidden" id="nom_btq_<?php echo $j ?>" value="<?php echo $btq_row['nom_btq'] ?>">
-                        <input type="hidden" id="id_btq_<?php echo $j ?>" value="<?php echo $btq_row['id_btq'] ?>">
+                        <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
                         <div class="user-boutique-messages">
                             <p>Messages</p>
                             <i class="fab fa-facebook-messenger"></i>
@@ -371,13 +370,24 @@
                                 $show_btq_message = 'style="display:block"';
                             }
                             ?>
-                            <div <?php echo $show_btq_message ?>><span><?php echo $num_btq_msg_row ?></span></div>
+                            <div <?php echo $show_btq_message ?>><span><?php echo $num_btq_msg_count?></span></div>
                         </div>
                         <div class="user-boutique-notifications">
                             <p>Notifications</p>
                             <i class="fas fa-bell"></i>
                             <div><span></span></div>
                         </div>
+                        <?php }else{ ?>
+                        <div class="user-boutique-messages">
+                            <?php 
+                            $num_btq_abn_query = $conn->prepare("SELECT id_a FROM abonnes WHERE id_abn_user = {$btq_row['id_btq']}");    
+                            $num_btq_abn_query->execute();
+                            $num_btq_abn_count = $num_btq_abn_query->rowCount();
+                            ?>
+                            <p>Abonnés (<?php echo $num_btq_abn_count; ?>)</p>
+                        </div>
+                        <div></div>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
@@ -386,7 +396,11 @@
         </div>
     </div>
 </div> 
-
+<div class="display-user-publications-comments">
+    <div class="display-user-publications-comments-container"></div>
+    <div id="loader_comments" class="center"></div>
+</div>
+<?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
 <div class="user-image-update-container">
     <div class="cancel-user-image-update" id="cancel_user_image_update">
         <i class="fas fa-times"></i>
@@ -405,7 +419,6 @@
         </div>
 	</div>
 </div>
-
 <div class="user-couverture-update-container">
     <div class="cancel-user-couverture-update" id="cancel_user_couverture_update">
         <i class="fas fa-times"></i>
@@ -424,3 +437,70 @@
         </div>
 	</div>
 </div>
+<?php }else if (isset($_SESSION['user']) && $_SESSION['user'] !== $_GET['user']){ ?>
+<div class="abonne-user" id="abonne_user">
+    <div class="abonne-user-container" id="abonne_user_container">
+        <div class="abonne-user-top">
+            <h4>Abonner a <?php echo $row_g['nom_user'] ?></h4>
+            <div class="cancel-abonne-user" id="cancel_abonne_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="abonne-user-middle">
+            <div id="ntf_user_btn">
+                <i class="fas fa-check etat"></i>
+                <input type="hidden" id="notifications_user" value="1">
+            </div>
+            <p>Recever des nouveautées de <?php echo $row_g['nom_user'] ?> ?</p>
+        </div>
+        <div class="abonne-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_abonne_user_button">Annuler</button>
+            <button id="abonne_user_button">Abonner</button>
+        </div>
+    </div>
+    <div id="loader_abn_user" class="center"></div>
+</div>
+<div class="abonne-user" id="disabonne_user">
+    <div class="abonne-user-container" id="disabonne_user_container">
+        <div class="abonne-user-top">
+            <h4>Disabonner a <?php echo $row_g['nom_user'] ?> ?</h4>
+            <div class="cancel-abonne-user" id="cancel_disabonne_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="abonne-user-middle">
+            <p>Voulez vous disabonner a <?php echo $row_g['nom_user'] ?> ?</p>
+        </div>
+        <div class="abonne-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_disabonne_user_button">Annuler</button>
+            <button id="disabonne_user_button">Disbonner</button>
+        </div>
+    </div>
+    <div id="loader_disabn_user" class="center"></div>
+</div>
+<div class="message-user" id="message_user">
+    <div class="message-user-container" id="message_user_container">
+        <div class="message-user-top">
+            <h4>Envoyer un message a <?php echo $row_g['nom_user'] ?></h4>
+            <div class="cancel-message-user" id="cancel_message_user">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="message-user-middle">
+            <p>Message</p>
+            <textarea id="message_text"></textarea>
+        </div>
+        <div class="message-user-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_message_user_button">Annuler</button>
+            <button id="message_user_button">Envoyer</button>
+        </div>
+    </div>
+    <div id="loader_msg_user" class="center"></div>
+</div>
+<?php } ?>

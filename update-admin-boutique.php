@@ -11,13 +11,13 @@ $creation_ctg = htmlspecialchars($_POST['creation_ctg']);
 $modification_ctg = htmlspecialchars($_POST['modification_ctg']);
 $suppression_ctg = htmlspecialchars($_POST['suppression_ctg']);
 
-$update_admin_query = "UPDATE admin_boutique SET messagerie = '$messagerie',notifications = '$notifications',modification = '$modification',
+$update_admin_query = $conn->prepare("UPDATE admin_boutique SET messagerie = '$messagerie',notifications = '$notifications',modification = '$modification',
 creation_prd = '$creation_prd',modification_prd = '$modification_prd',suppression_prd = '$suppression_prd', 
-creation_ctg = '$creation_ctg',modification_ctg = '$modification_ctg',suppression_ctg = '$suppression_ctg' WHERE id_btq = $id_btq";
-if(mysqli_query($conn,$update_admin_query)){
-    $get_btq_admin_query = "SELECT * FROM admin_boutique WHERE id_btq = $id_btq";
-    if ($get_btq_admin_result = mysqli_query($conn,$get_btq_admin_query)) {
-        $get_btq_admin_row = mysqli_fetch_assoc($get_btq_admin_result);
+creation_ctg = '$creation_ctg',modification_ctg = '$modification_ctg',suppression_ctg = '$suppression_ctg' WHERE id_btq = $id_btq");
+if($update_admin_query->execute()){
+    $get_btq_admin_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = $id_btq");
+    if ($get_btq_admin_query->execute()) {
+        $get_btq_admin_row = $get_btq_admin_query->fetch(PDO::FETCH_ASSOC);
     ?>
 <div class="boutique-admin-info">
     <div class="boutique-admin-info-top">

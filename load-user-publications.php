@@ -1,13 +1,14 @@
 <?php
-session_start();
 include_once './bdd/connexion.php'; 
-$cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-$cnx_user_query->execute();
-$row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
+$id_user = htmlspecialchars($_POST['id_user']);
+$user_get_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = '$id_user'");
+$user_get_query->execute();
+$row_g = $user_get_query->fetch(PDO::FETCH_ASSOC);
+$user = $row_g['id_user'];
 
 $ofst = htmlspecialchars($_POST['offset']);
-$offset = ((int)$ofst)*1;
-$publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '{$_SESSION["user"]}' AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 1 OFFSET $offset"); 
+$offset = ((int)$ofst)*4;
+$publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '$user' AND masquer_pub = 0 ORDER BY id_pub DESC LIMIT 4 OFFSET $offset"); 
 $publication_query->execute();
 $i=$offset;
 while($publication_row = $publication_query->fetch(PDO::FETCH_ASSOC)){
@@ -18,17 +19,19 @@ $i++;
 <input type="hidden" id="publication_lieu_<?php echo $i ?>" value="<?php echo $publication_row['lieu_pub'] ?>">
 <input type="hidden" id="etat_commentaire_<?php echo $i ?>" value="<?php echo $publication_row['etat_commentaire'] ?>">
 <div class="user-publication" id="user_publication_<?php echo $i ?>">
+    <div id="pub_tail_<?php echo $publication_row['id_pub'] ?>"></div>    
     <div class="user-publication-top">
         <div class="user-publication-top-left">
-            <img src="<?php echo $row['img_user'] ?>" alt="logo">
-            <p><?php echo $row['nom_user'] ?></p>
+            <img src="<?php echo $row_g['img_user'] ?>" alt="logo">
+            <p><?php echo $row_g['nom_user'] ?></p>
         </div>
         <div class="user-publication-top-right" id="display_pub_options_button_<?php echo $i ?>">
             <i class="fas fa-ellipsis-v"></i>
         </div>
     </div>
     <div class="publication-options" id="publication_options_<?php echo $i ?>">
-        <?php if ($publication_row['etat_commentaire'] == 0) { ?>
+    <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
+    <?php if ($publication_row['etat_commentaire'] == 0) { ?>
         <div class="publication-option" id="desactive_publication_comment_<?php echo $i ?>">
             <i class="fas fa-comment-slash"></i>
             <div>
@@ -66,6 +69,7 @@ $i++;
                 <p>La publication sera supprimée définitivement</p>
             </div>
         </div>
+        <?php } ?>
         <div class="publication-option" id="save_publication_<?php echo $i ?>">
             <i class="fas fa-bookmark"></i>
             <div>
@@ -136,7 +140,7 @@ $i++;
                 $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
                 $num_like_pub_count = $num_like_pub_query->rowCount();
                 if ($num_like_pub_count > 0) {
-                if ($num_like_pub_row['id_user'] == $row['id_user']) { ?>
+                if ($num_like_pub_row['id_user'] == $row_g['id_user']) { ?>
                 <i id="dislike_pub_button_<?php echo $i ?>" class="fas fa-heart"></i>
                 <?php }else{ ?>
                 <i id="like_pub_button_<?php echo $i ?>" class="far fa-heart"></i>
@@ -156,10 +160,10 @@ $i++;
         </div>
         <?php if ($publication_row['etat_commentaire'] == 0) { ?>
         <div class="user-publication-bottom-bottom" id="user_publication_bottom_bottom_<?php echo $i ?>">
-        <img src="./<?php echo $row['img_user'] ?>" alt="">
+        <img src="./<?php echo $row_g['img_user'] ?>" alt="">
             <input type="text" id="commentaire_text_<?php echo $i ?>" placeholder = "Tapez une commentaire ...">
-            <input type="hidden" id="commentaire_img_user_<?php echo $i ?>" value="<?php echo $row['img_user'] ?>">
-            <input type="hidden" id="commentaire_nom_user_<?php echo $i ?>" value="<?php echo $row['nom_user'] ?>">
+            <input type="hidden" id="commentaire_img_user_<?php echo $i ?>" value="<?php echo $row_g['img_user'] ?>">
+            <input type="hidden" id="commentaire_nom_user_<?php echo $i ?>" value="<?php echo $row_g['nom_user'] ?>">
         </div>
         <?php } ?>
         <div class="user-publication-bottom-comment" id="user_publication_bottom_comment_<?php echo $i ?>">

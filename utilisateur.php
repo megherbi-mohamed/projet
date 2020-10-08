@@ -2,55 +2,48 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $user_session_query->execute();
+    $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
     $id_user = $row['id_user'];
 }
 else{
     header('Location: inscription-connexion.php');
 }
-
-// $msg_query = "SELECT * FROM messages WHERE id_msg IN ( SELECT MAX(id_msg) FROM messages WHERE id_recever = {$row['id_user']} GROUP BY id_sender) ORDER BY id_msg DESC";
-// $msg_result = mysqli_query($conn,$msg_query);
-
-// $num_msg_query = "SELECT * FROM messages WHERE id_recever = {$row['id_user']} AND etat_msg = 1 GROUP BY id_sender";    
-// $num_msg_result = mysqli_query($conn,$num_msg_query);
-// $num_message = 0;
-// while ($num_msg_row = mysqli_fetch_assoc($num_msg_result)) {
-//     $num_message++;
-// }
-// $etat_message = '';
-// if ($num_message > 0) {
-//     $etat_message = 'active-message-num';
-// }else{ $etat_message = '';}
-
+if (isset($_GET['user'])) {
+    $user_get_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_GET['user']);
+    $user_get_query->execute();
+    $row_g = $user_get_query->fetch(PDO::FETCH_ASSOC);
+    $user = $row_g['id_user'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css-js/style.css">
-    <link rel="stylesheet" href="./css-js/utilisateur.css">
-    <link rel="stylesheet" href="./css-js/demandeur.css">
-    <link rel="stylesheet" href="./css-js/croppie.css">
-    <link href="./css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css-js/style.css">
+    <link rel="stylesheet" href="css-js/utilisateur.css">
+    <!-- <link rel="stylesheet" href="css-js/demandeur.css"> -->
+    <link rel="stylesheet" href="css-js/croppie.css">
+    <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
-    <title><?php echo $row['nom_user'] ?></title>
+    <title><?php echo $row_g['nom_user'] ?></title>
 </head>
 <body>
     <?php include './navbar.php';?>
     <div class="clear"></div>
     <div class="user-profile-container">
-        <?php if ($row['type_user'] == 'professionnel') { 
+        <?php if ($row_g['type_user'] == 'professionnel') { 
             include './professionnel.php';
-        }else if ($row['type_user'] == 'client'){ 
+        }else if ($row_g['type_user'] == 'client'){ 
             include './client.php';
         }?>
         <?php 
-        if ($row['cnx_count'] == 0) {
+        if (isset($_SESSION['user']) && $row['type_user'] == 'professionnel') {
+            if ($row['cnx_count'] == 0) {
         ?>
         <input type="hidden" id="pre_update_profile" value="1">
         <?php }else{ ?>
@@ -119,13 +112,15 @@ else{
             </div>
             <div id="loader_load" class="center"></div>
         </div>
+        <?php } ?>
     </div>
-    <div class="show-hided-publications">
-        <div class="show-hided-publications-container"></div>
-    </div>
-    <div class="show-saved-publications">
-        <div class="show-saved-publications-container"></div>
-    </div>
+    <input type="hidden" id="id_user" value="<?php echo $user ?>">
+    <?php if (isset($_SESSION['user']) && $_SESSION['user'] !== $_GET['user']) { ?>
+    <input type="hidden" id="id_corresponder" value="<?php echo $user ?>">
+    <input type="hidden" id="type_msg" value="userUser">
+    <input type="hidden" id="msg_cle" value="<?php echo $user.$_SESSION['user'] ?>">
+    <button style="display:none" id="send_message_button"></button>
+    <?php } ?>  
     <div id="loader" class="center"></div>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initUserMap"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -143,9 +138,9 @@ else{
             } 
         };
 
-        function pushState(href){
-            history.pushState('boutique','','/projet/gerer-boutique.php?btq='+href);
-        }
+        // function pushState(href){
+        //     history.pushState('boutique','','/projet/gerer-boutique.php?btq='+href);
+        // }
 
         // add new publications when scroll bottom
         var scrollBottom = 0;         
@@ -154,21 +149,23 @@ else{
                 scrollBottom++;
                 var fd = new FormData();
                 fd.append('offset', scrollBottom);
+                var idUser = $('#id_user').val();
+                fd.append('id_user', idUser);
                 $.ajax({
-                url: 'load-user-publications.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        // console.log(response);
-                        $('.user-profile-publications').append(response);
-                    }else{
-                        // alert('err');
-                    }
-                },
-            });
+                    url: 'load-user-publications.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        if(response != 0){
+                            // console.log(response);
+                            $('.user-profile-publications').append(response);
+                        }else{
+                            // alert('err');
+                        }
+                    },
+                });
             }
         });
 
@@ -178,10 +175,10 @@ else{
         //         scrollTop: $("#active_notification_"+actvNtf).offset().top
         //     }, 1000);
         // }
-
-        document.querySelector('#input_user_checkbox').addEventListener('click',()=>{
-            document.querySelector("#check_btn").click();
-        })
+        
+        // document.querySelector('#input_user_checkbox').addEventListener('click',()=>{
+        //     document.querySelector("#check_btn").click();
+        // })
         
         $("#check_form").submit(function(event){
             event.preventDefault(); 
@@ -231,7 +228,7 @@ else{
                 $('.alert-message p').text('');
             }, 1000);
         });
-
+    
         $('#cancel_alert_message').click(function(){
             $('.alert-message').css('transform','');
             setTimeout(() => {
@@ -732,63 +729,358 @@ else{
         });
 
         // show saved publications
-        if (windowWidth > 768) {
-            $('#show_saved_publications').click(function(){
-                console.log('med');
-                $("body").addClass('body-after');
-                $('.show-saved-publications').show();
-                $('.show-saved-publications-container').load('saved-publications.php');
-            })
-            $('.show-saved-publications-container').on('click','#cancel_saved_publications',function(){
-                $("body").removeClass('body-after');
-                $('.show-saved-publications').hide();
-                $('.show-saved-publications-container').empty();
-            })
-        }else{
-            $('#show_saved_publications').click(function(){
-                console.log('med');
-                $('.show-saved-publications').css('transform','translateX(0)');
-                $('.show-saved-publications-container').load('saved-publications.php');
-            })
-            $('.show-saved-publications-container').on('click','#cancel_saved_publications_resp',function(){
-                $('.show-saved-publications').css('transform','');
-                setTimeout(() => {
-                    $('.show-saved-publications-container').empty();
-                }, 400);
-            })
-        }
+        // if (windowWidth > 768) {
+        //     $('#show_saved_publications').click(function(){
+        //         console.log('med');
+        //         $("body").addClass('body-after');
+        //         $('.show-saved-publications').show();
+        //         $('.show-saved-publications-container').load('saved-publications.php');
+        //     })
+        //     $('.show-saved-publications-container').on('click','#cancel_saved_publications',function(){
+        //         $("body").removeClass('body-after');
+        //         $('.show-saved-publications').hide();
+        //         $('.show-saved-publications-container').empty();
+        //     })
+        // }else{
+        //     $('#show_saved_publications').click(function(){
+        //         console.log('med');
+        //         $('.show-saved-publications').css('transform','translateX(0)');
+        //         $('.show-saved-publications-container').load('saved-publications.php');
+        //     })
+        //     $('.show-saved-publications-container').on('click','#cancel_saved_publications_resp',function(){
+        //         $('.show-saved-publications').css('transform','');
+        //         setTimeout(() => {
+        //             $('.show-saved-publications-container').empty();
+        //         }, 400);
+        //     })
+        // }
 
-        $('.show-saved-publications').click(function(e){
-            e.stopPropagation();
-            $("body").removeClass('body-after');
-            $('.show-saved-publications').hide();
-            $('.show-saved-publications-container').empty();
-        })
+        // $('.show-saved-publications').click(function(e){
+        //     e.stopPropagation();
+        //     $("body").removeClass('body-after');
+        //     $('.show-saved-publications').hide();
+        //     $('.show-saved-publications-container').empty();
+        // })
 
-        $('.show-saved-publications-container').click(function(e){
-            e.stopPropagation();
-        })
+        // $('.show-saved-publications-container').click(function(e){
+        //     e.stopPropagation();
+        // })
 
         // remove saved publications
-        $('.show-saved-publications-container').on('click','[id^="remove_saved_pub_button_"]',function(){
-            id = $(this).attr("id").split("_")[4];
+        // $('.show-saved-publications-container').on('click','[id^="remove_saved_pub_button_"]',function(){
+        //     id = $(this).attr("id").split("_")[4];
+        //     var fd = new FormData();
+        //     var idPub = $('#id_publication_save_'+id).val();
+        //     fd.append('id_pub',idPub);
+        //     $.ajax({
+        //         url: 'remove-saved-publications.php',
+        //         type: 'post',
+        //         data: fd,
+        //         contentType: false,
+        //         processData: false,
+        //         success: function(response){
+        //             if(response != 0){
+        //                 $('.show-saved-publications-container').load('saved-publications.php');
+        //             }
+        //         }
+        //     });
+        // });
+
+        //utilisateur info
+        $(document).on('click',"#follow_button",function(e) {
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").show();
+            }else{
+                $("#abonne_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#ntf_user_btn').click(function(e){
+            e.stopPropagation();
+            var etat = $(this).find('i').attr('class');
+            var etatBtn = $(this).find('i');
+            if (etat == 'fas fa-check etat') {
+                $('#notifications_user').val("0");
+                etatBtn.replaceWith('<i class="fas fa-ban etat"></i>');
+            }
+            else{
+                $('#notifications_user').val("1");
+                etatBtn.replaceWith('<i class="fas fa-check etat"></i>');
+            }
+        })
+
+        $('#cancel_abonne_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#cancel_abonne_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#abonne_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#abonne_user").hide();
+            }else{
+                $("#abonne_user").css('transform','');
+            }
+        });
+
+        $('#abonne_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        // $('#abonne_user_button').click(function(e){
+        //     var fd = new FormData();
+        //     var idUser= $('#id_user').val();
+        //     fd.append('id_user',idUser);
+        //     var ntfUser = $('#notifications_user').val();
+        //     fd.append('notifications_user',ntfUser);
+        //     $.ajax({
+        //         url: 'abonne-user.php',
+        //         type: 'post',
+        //         data: fd,
+        //         contentType: false,
+        //         processData: false,
+        //         beforeSend: function(){
+        //             $('#abonne_user').css('opacity','0.5');
+        //             $("#loader_abn_user").show();
+        //         },
+        //         success: function(response){
+        //             if(response != 0){
+        //                 console.log(response);
+        //                 $("#follow_button").replaceWith('<div id="disfollow_button"><p>Disabonner</p><i class="fas fa-user-slash"></i></div>');
+        //             }
+        //         },
+        //         complete: function(){
+        //             $('#abonne_user').css('opacity','');
+        //             $("#loader_abn_user").hide();
+        //             $("body").removeClass('body-after');
+        //             if (windowWidth > 768) {
+        //                 $("#abonne_user").hide();
+        //             }else{
+        //                 $("#abonne_user").css('transform','');
+        //             }
+        //         }
+        //     });
+        // });
+
+        $(document).on('click',"#disfollow_button",function(e) {
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").show();
+            }else{
+                $("#disabonne_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#cancel_disabonne_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#cancel_disabonne_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#disabonne_user_button').click(function(e){
             var fd = new FormData();
-            var idPub = $('#id_publication_save_'+id).val();
-            fd.append('id_pub',idPub);
+            var idUser= $('#id_user').val();
+            fd.append('id_user',idUser);
             $.ajax({
-                url: 'remove-saved-publications.php',
+                url: 'disabonne-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#disabonne_user').css('opacity','0.5');
+                    $("#loader_disabn_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $("#disfollow_button").replaceWith('<div id="follow_button"><p>Abonner</p><i class="fas fa-user-plus"></i></div>');
+                    }
+                },
+                complete: function(){
+                    $('#disabonne_user').css('opacity','');
+                    $("#loader_disabn_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#disabonne_user").hide();
+                    }else{
+                        $("#disabonne_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        $(document).on('click',"#message_button",function() {
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").show();
+            }else{
+                $("#message_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#cancel_message_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#cancel_message_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#message_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#message_user").hide();
+            }else{
+                $("#message_user").css('transform','');
+            }
+        });
+
+        $('#message_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#message_user_button').click(function(e){
+            var fd = new FormData();
+            var idCrsp = $('#id_corresponder').val();
+            fd.append('id_corresponder',idCrsp);
+            var msgCle = $('#msg_cle').val();
+            fd.append('msgCle',msgCle);
+            $.ajax({
+                url: 'send-message-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#message_user').css('opacity','0.5');
+                    $("#loader_msg_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        if (response == 2) {
+                            window.location = 'messagerie.php?user='+idCrsp;
+                        }
+                        else if (response == 1){
+                            $('#send_message_button').click();
+                        }
+                    }
+                    else{
+                        console.log('err');
+                    }
+                },
+                complete: function(){
+                    $('#message_user').css('opacity','');
+                    $("#loader_msg_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#message_user").hide();
+                    }else{
+                        $("#message_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        function updateReceverMessage(userId,senderId){
+            var fd = new FormData();
+            fd.append('id_user',userId);
+            fd.append('id_sender',senderId);
+            $.ajax({
+                url: 'update-messagerie-recever.php',
                 type: 'post',
                 data: fd,
                 contentType: false,
                 processData: false,
                 success: function(response){
                     if(response != 0){
-                        $('.show-saved-publications-container').load('saved-publications.php');
+
                     }
                 }
             });
-        });
+        }
 
+        <?php 
+        if (isset($_GET['pub'])) {
+        ?>
+        var fd = new FormData();
+        fd.append('id_user',<?php echo $id_user; ?>);
+        fd.append('id_pub',<?php echo $_GET['pub']; ?>);
+        $.ajax({
+            url: 'load-user-publication-notification.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                $('.user-profile-middle-container').empty();
+                $("#loader_publications").show();
+            },
+            success: function(response){
+                $('.user-profile-middle-container').append(response);
+            },
+            complete: function(){
+                $("#loader_publications").hide();
+                $("html, body").animate({ scrollTop: $(document).height() }, 2000); 
+                history.pushState('','','/projet/utilisateur/<?php echo $id_user ?>');
+            }
+        });
+        <?php } ?>
+        
         <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $id_user; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;

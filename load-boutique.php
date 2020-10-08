@@ -2,9 +2,9 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_btq = htmlspecialchars($_POST['id_btq']);
-$btq_inf_query = "SELECT * FROM boutiques WHERE id_btq = $id_btq";
-$btq_inf_result = mysqli_query($conn, $btq_inf_query);
-$btq_inf_row = mysqli_fetch_assoc($btq_inf_result);
+$btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq");
+$btq_inf_query->execute();
+$btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
 $id_createur = $btq_inf_row['id_createur'];
 ?>
 <div class="boutique-top">
@@ -31,19 +31,20 @@ $id_createur = $btq_inf_row['id_createur'];
         </div>
     </div>
     <div class="boutique-options">
+        <a href="boutique/<?php echo $btq_inf_row['id_btq'] ?>">Voir en tant que visiteur</a>
         <h3><?php echo $btq_inf_row['nom_btq'] ?></h3>
     </div>   
 </div>
 <div class="boutique-bottom">
 <?php 
-$get_product_query = "SELECT * FROM produit_boutique WHERE id_btq = '{$btq_inf_row['id_btq']}' ORDER BY id_prd DESC";
-$get_product_result = mysqli_query($conn,$get_product_query);
+$get_product_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_btq = '{$btq_inf_row['id_btq']}' ORDER BY id_prd DESC");
+$get_product_query->execute();
 $i = 0;
-while ($get_product_row = mysqli_fetch_assoc($get_product_result)){
+while ($get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC)){
 $i++;
-$get_product_media_query = "SELECT * FROM produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1";
-$get_product_media_result = mysqli_query($conn,$get_product_media_query);
-$get_product_media_row = mysqli_fetch_assoc($get_product_media_result);
+$get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1");
+$get_product_media_query->execute();
+$get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <input type="hidden" id="id_prd_<?php echo $i ?>" value="<?php echo $get_product_row['id_prd'] ?>">
 <input type="hidden" id="product_tail_<?php echo $i ?>" value="<?php echo $i ?>">

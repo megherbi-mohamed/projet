@@ -1,7 +1,12 @@
 <?php 
 session_start();
 include_once './bdd/connexion.php';
-$id_btq = htmlspecialchars($_POST['id_btq']);
+$id_session_btq = htmlspecialchars($_POST['id_btq']);
+$get_session_btq_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session_btq' OR id_user_1 = '$id_session_btq' OR id_user_2 = '$id_session_btq' 
+                                            OR id_user_3 = '$id_session_btq' OR id_user_4 = '$id_session_btq' OR id_user_5 = '$id_session_btq'");
+$get_session_btq_query->execute();
+$get_session_btq_row = $get_session_btq_query->fetch(PDO::FETCH_ASSOC);
+$id_btq = $get_session_btq_row['id_user'];
 $btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq");
 $btq_inf_query->execute();
 $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
@@ -10,7 +15,7 @@ $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
     <h3>Modifier les informations de boutique!</h3>
     <div class="update-boutique-informations-top">
         <div>
-            <input type="text" id="nom_btq" value="<?php echo $btq_inf_row['nom_btq'] ?>" placeholder="Nom">
+            <input type="text" id="nom_btq" value="<?php echo $btq_inf_row['nom_btq'] ?>">
             <span class="nom-btq">Nom *</span>
         </div>
         <div>
@@ -30,22 +35,26 @@ $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
             <select id="commune_btq">
                 <option value="<?php echo $btq_inf_row['commune_btq'] ?>"><?php echo $btq_inf_row['commune_btq'] ?></option>
             </select>
-            <span class="commune-btq">Commune *</span>
+            <span class="commun-btq">Commune *</span>
         </div>
         <div>
-            <input type="text" id="adresse_btq" value="<?php echo $btq_inf_row['adresse_btq'] ?>" placeholder="Adresse">
-            <span class="adresse-btq">Adresse</span>
+            <input type="text" id="adresse_btq" value="<?php echo $btq_inf_row['adresse_btq'] ?>">
+            <?php if ($btq_inf_row['adresse_btq'] == '') { ?>
+                <span class="adresse-btq">Adresse</span>
+            <?php } else { ?>
+                <span class="btq-span-active">Adresse</span>
+            <?php } ?>
         </div>
         <div>
-            <input type="text" id="email_btq" value="<?php echo $btq_inf_row['email_btq'] ?>" placeholder="Email">
+            <input type="text" id="email_btq" value="<?php echo $btq_inf_row['email_btq'] ?>">
             <span class="email-btq">Email</span>
         </div>
         <div>
-            <input type="text" id="tlph_btq" value="<?php echo $btq_inf_row['tlph_btq'] ?>" placeholder="Téléphone">
+            <input type="text" id="tlph_btq" value="<?php echo $btq_inf_row['tlph_btq'] ?>">
             <span class="tlph-btq">Téléphone</span>
         </div>
         <div>
-            <textarea id="dscrp_btq" placeholder="Description .."></textarea>
+            <textarea id="dscrp_btq"></textarea>
             <span class="dscrp-btq">Description *</span>
         </div>
     </div>

@@ -6,6 +6,19 @@ $btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq"
 $btq_inf_query->execute();
 $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
 
+if (isset($_SESSION['user'])) {
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+    $user_session_query->execute();
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+    }
+}
+
 $id_prd = htmlspecialchars($_POST['id_prd']);
 $get_prd_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_prd = '$id_prd'");
 $get_prd_query->execute();
@@ -17,27 +30,6 @@ $image1 = '';
 if ($get_image1_query->rowCount() > 0) {
     $image1 = $get_image1_query->fetch(PDO::FETCH_ASSOC);
 }
-
-// $get_image2_query = $conn->prepare("SELECT media_url FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1 OFFSET 1";
-// $get_image2_result = mysqli_query($conn, $get_image2_query);
-// $image2 = '';
-// if (mysqli_num_rows($get_image2_result) > 0) {
-//     $image2 = mysqli_fetch_assoc($get_image2_result);
-// }
-
-// $get_image3_query = $conn->prepare("SELECT media_url FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1 OFFSET 2";
-// $get_image3_result = mysqli_query($conn, $get_image3_query);
-// $image3 = '';
-// if (mysqli_num_rows($get_image3_result) > 0) {
-//     $image3 = mysqli_fetch_assoc($get_image3_result);
-// }
-
-// $get_image4_query = "SELECT media_url FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1 OFFSET 3";
-// $get_image4_result = mysqli_query($conn, $get_image4_query);
-// $image4 = '';
-// if (mysqli_num_rows($get_image4_result) > 0) {
-//     $image4 = mysqli_fetch_assoc($get_image4_result);
-// }
 
 $get_image_query = $conn->prepare("SELECT media_url FROM produits_media WHERE id_prd = '$id_prd'");
 $get_image_query->execute();
@@ -153,7 +145,39 @@ $get_apercu_query->execute();
             </div>
         </div>
         <div class="product-details-bottom-bottom-comments" id="comments_product">
-            med
+            <?php if (isset($_SESSION['user'])) { ?>
+            <div class="type-product-comment">
+                <img src="./<?php echo $row['img_user'] ?>" alt="">
+                <input type="text" id="commentaire_prd_text" placeholder = "Tapez une commentaire ...">
+                <input type="hidden" id="commentaire_img_user" value="<?php echo $row['img_user'] ?>">
+                <input type="hidden" id="commentaire_nom_user" value="<?php echo $row['nom_user'] ?>">
+                <input type="hidden" id="id_prd" value="<?php echo $get_prd_row['id_prd'] ?>">
+                <input type="hidden" id="id_user_comment" value="<?php echo $row['id_user'] ?>">
+            </div>
+            <?php } ?>
+            <div class="product-comments-preview" id="product_comments_preview"></div>
+            <div class="all-product-comments">
+                <?php
+                $product_comment_query = $conn->prepare("SELECT * FROM commentaires_produits WHERE id_prd = '{$get_prd_row["id_prd"]}' ORDER BY id_c DESC"); 
+                $product_comment_query->execute();
+                $product_comment_count = $product_comment_query->rowCount();
+                while($product_comment_row = $product_comment_query->fetch(PDO::FETCH_ASSOC)){
+                $product_comment_user_query = $conn->prepare("SELECT img_user AS img, nom_user AS nom FROM utilisateurs WHERE id_user = '{$product_comment_row["id_user"]}'
+                UNION SELECT logo_btq AS img, nom_btq AS nom FROM boutiques WHERE id_btq = '{$product_comment_row["id_user"]}'");
+                $product_comment_user_query->execute();
+                $product_comment_user_row = $product_comment_user_query->fetch(PDO::FETCH_ASSOC);
+                ?>
+                <?php if ($product_comment_user_row['img'] != '') { ?>
+                    <img src="./<?php echo $product_comment_user_row['img'] ?>" alt="">
+                <?php }else if($product_comment_user_row['img'] == ''){ ?>
+                    <img src="./boutique-logo/logo.png" alt="">
+                <?php } ?>
+                <div>
+                    <h4><?php echo $product_comment_user_row['nom'] ?></h4>
+                    <p><?php echo $product_comment_row['commentaire_text'] ?></p>
+                </div>
+                <?php } ?>
+            </div>
         </div>
     </div>
 </div>

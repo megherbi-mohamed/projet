@@ -1,20 +1,57 @@
 <?php 
+session_set_cookie_params(0);
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
+    $id_session = htmlspecialchars($_SESSION['user']);
+    // echo $id_session;
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
     $user_session_query->execute();
-    $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
-    $id_user = $row['id_user'];
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+        $uid = $id_session;
+        $id_user = $row['id_user'];
+    }
+    else{
+        header('Location: inscription-connexion.php');
+    }
 }
+// else if (isset($_COOKIE['user'])) {
+//     $id_session = htmlspecialchars($_COOKIE['user']);
+//     $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+//                                             OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+//     $get_session_id_query->execute();
+//     $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+//     $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+//     $user_session_query->execute();
+//     if ($user_session_query->rowCount() > 0) {
+//         $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+//         $uid = $id_session;
+//         $id_user = $row['id_user'];
+//     }
+//     else{
+//         header('Location: inscription-connexion.php');
+//     }
+// }
 else{
     header('Location: inscription-connexion.php');
 }
 if (isset($_GET['user'])) {
-    $user_get_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_GET['user']);
+    $get_id = htmlspecialchars($_GET['user']);
+    $get_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$get_id' OR id_user_1 = '$get_id' OR id_user_2 = '$get_id' 
+                                            OR id_user_3 = '$get_id' OR id_user_4 = '$get_id' OR id_user_5 = '$get_id'");
+    $get_id_query->execute();
+    $get_id_row = $get_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_get_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_id_row['id_user']}");
     $user_get_query->execute();
-    $row_g = $user_get_query->fetch(PDO::FETCH_ASSOC);
-    $user = $row_g['id_user'];
+    if ($user_get_query->rowCount() > 0) {
+        $row_g = $user_get_query->fetch(PDO::FETCH_ASSOC);
+        $user = $row_g['id_user'];
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -26,7 +63,6 @@ if (isset($_GET['user'])) {
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="css-js/style.css">
     <link rel="stylesheet" href="css-js/utilisateur.css">
-    <!-- <link rel="stylesheet" href="css-js/demandeur.css"> -->
     <link rel="stylesheet" href="css-js/croppie.css">
     <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
@@ -118,14 +154,13 @@ if (isset($_GET['user'])) {
     <?php if (isset($_SESSION['user']) && $_SESSION['user'] !== $_GET['user']) { ?>
     <input type="hidden" id="id_corresponder" value="<?php echo $user ?>">
     <input type="hidden" id="type_msg" value="userUser">
-    <input type="hidden" id="msg_cle" value="<?php echo $user.$_SESSION['user'] ?>">
+    <input type="hidden" id="msg_cle" value="<?php echo $user.$id_user ?>">
     <button style="display:none" id="send_message_button"></button>
     <?php } ?>  
     <div id="loader" class="center"></div>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initUserMap"></script> -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./css-js/main.js"></script>
-    <!-- <script src="./css-js/activites-notes.js"></script> -->
     <script src="./css-js/croppie.js"></script>
     <script>
         document.onreadystatechange = function() { 
@@ -137,10 +172,6 @@ if (isset($_GET['user'])) {
                 document.querySelector("body").style.visibility = "visible"; 
             } 
         };
-
-        // function pushState(href){
-        //     history.pushState('boutique','','/projet/gerer-boutique.php?btq='+href);
-        // }
 
         // add new publications when scroll bottom
         var scrollBottom = 0;         
@@ -210,156 +241,100 @@ if (isset($_GET['user'])) {
             });
         }
 
-        $('[id^="delete_boutique_btn_"]').click(function(){
-            var id = $(this).attr("id").split("_")[3];
-            $('.alert-message button').show();
-            $('.alert-message p').text('Voulez vous vraiment supprimer la boutique!');
-            $('.alert-message').css('transform','translate(-50%,0)');
-            var idBtq = $('#id_btq_'+id).val();
-            $('#id_btq_dlt').val(idBtq);
-            $('#btq_cls').val(id);
-        });
-
-        $('#delete_confirmation_btn').click(function(){
-            $("#dlt_btq_btn").click();
-            $('.alert-message').css('transform','');
-            setTimeout(() => {
-                $('.alert-message button').hide();
-                $('.alert-message p').text('');
-            }, 1000);
-        });
-    
-        $('#cancel_alert_message').click(function(){
-            $('.alert-message').css('transform','');
-            setTimeout(() => {
-                $('.alert-message button').hide();
-                $('.alert-message p').text('');
-            }, 1000);
-        });
-
-        $("#delete_boutique_form").submit(function(event){
-            event.preventDefault(); 
-            var fd = new FormData();
-            var idBtq = $('#id_btq_dlt').val();
-            var btqCls = $('#btq_cls').val();
-            fd.append('id_btq',idBtq);
-
-            $.ajax({
-                url: 'delete-boutique.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $("#delete_boutique_form")[0].reset();
-                        setTimeout(() => {
-                            $('.alert-message p').text('La boutique a été bien supprimé, vous pouver la récuperer dans les 15 jours suivant!');
-                        }, 1000);
-                        setTimeout(() => {
-                            $('.alert-message').css('transform','translate(-50%,0)');
-                        }, 2000);
-                        setTimeout(() => {
-                            $('.alert-message').css('transform','');
-                        }, 4000);
-                        setTimeout(() => {
-                            $('.alert-message p').text('');
-                        }, 5000);
-                        $('#user_boutique_'+btqCls).addClass('unset-btq');
-                        $('#user_boutique_'+btqCls+' span').text('('+response+')');
-                    }else{
-                        alert('err');
-                    }
-                },
-            });
-        });
-
-        $('[id^="recover_boutique_btn_"]').click(function(){
-            var id = $(this).attr("id").split("_")[3];
-            var idBtq = $('#id_btq_'+id).val();
-            var nomBtq = $('#nom_btq_'+id).val();
-            $('#id_btq_rcv').val(idBtq);
-            $('#nom_btq_rcv').val(nomBtq);
-            $('#btq_cls_rcv').val(id);
-            $('#rcv_btq_btn').click();
-        });
-
-        $("#recover_boutique_form").submit(function(event){
-            event.preventDefault(); 
-            var fd = new FormData();
-            var idBtq = $('#id_btq_rcv').val();
-            var btqCls = $('#btq_cls_rcv').val();
-            var nomBtq = $('#nom_btq_rcv').val();
-            fd.append('id_btq',idBtq);
-
-            $.ajax({
-                url: 'recover-boutique.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $("#recover_boutique_form")[0].reset();
-                        // setTimeout(() => {
-                            $('.alert-message p').text('La boutique '+nomBtq+' a été bien récuperer!');
-                        // }, 1000);
-                        setTimeout(() => {
-                            $('.alert-message').css('transform','translate(-50%,0)');
-                        }, 1000);
-                        setTimeout(() => {
-                            $('.alert-message').css('transform','');
-                        }, 3000);
-                        setTimeout(() => {
-                            $('.alert-message p').text('');
-                        }, 5000);
-                        $('#user_boutique_'+btqCls).removeClass('unset-btq');
-                        $('#user_boutique_'+btqCls+' span').text('');
-                    }else{
-                        alert('err');
-                    }
-                },
-            });
-        });
-
         $("#update_user_image").click(function(){
-            setTimeout(() => {
-                $('body').addClass('body-after');
-            }, 0);
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.navbar').css('z-index','50');
+            if (windowWidth < 768) {
+                $(".user-image-update").css('transform','translateX(0)');
             }
-            $(".user-image-update-container").css('display','initial');
+            else{
+                $('body').addClass('body-after');
+                $(".user-image-update").css('display','initial');
+            }
         });
 
         $("#update_user_couverture").click(function(){
-            setTimeout(() => {
-                $('body').addClass('body-after');
-            }, 0);
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.navbar').css('z-index','50');
+            if (windowWidth < 768) {
+                $(".user-couverture-update").css('transform','translateX(0)');
             }
-            $(".user-couverture-update-container").css('display','initial');
+            else{
+                $('body').addClass('body-after');
+                $(".user-couverture-update").css('display','initial');
+            }
+        });
+
+        $(".user-image-update").click(function(){
+            if (windowWidth < 768) {
+                $(".user-image-update").css('transform','');
+            }
+            else{
+                $('body').removeClass('body-after');
+                $(".user-image-update").css('display','');
+            }
+        });
+
+        $(".user-couverture-update").click(function(){
+            if (windowWidth < 768) {
+                $(".user-couverture-update").css('transform','');
+            }
+            else{
+                $('body').removeClass('body-after');
+                $(".user-couverture-update").css('display','');
+            }
+        });
+
+        $(".user-image-update-container").click(function(e){
+            e.stopPropagation();
+        });
+
+        $(".user-couverture-update-container").click(function(e){
+            e.stopPropagation();
         });
 
         $("#cancel_user_image_update").click(function(){
-            $('body').removeClass('body-after');
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.navbar').css('z-index','');
+            if (windowWidth < 768) {
+                $(".user-image-update").css('transform','');
             }
-            $(".user-image-update-container").css('display','');
+            else{
+                $('body').removeClass('body-after');
+                $(".user-image-update").css('display','');
+            }
         });
 
         $("#cancel_user_couverture_update").click(function(){
-            $('body').removeClass('body-after');
-            var windowWidth = window.innerWidth;
-            if (windowWidth <= 768) {
-                $('.navbar').css('z-index','');
+            if (windowWidth < 768) {
+                $(".user-couverture-update").css('transform','');
             }
-            $(".user-couverture-update-container").css('display','');
+            else{
+                $('body').removeClass('body-after');
+                $(".user-couverture-update").css('display','');
+            }
+        });
+
+        $("#cancel_updt_img_button").click(function(){
+            if (windowWidth < 768) {
+                $(".user-image-update").css('transform','');
+            }
+            else{
+                $('body').removeClass('body-after');
+                $(".user-image-update").css('display','');
+            }
+        });
+
+        $("#cancel_updt_cvrt_button").click(function(){
+            if (windowWidth < 768) {
+                $(".user-couverture-update").css('transform','');
+            }
+            else{
+                $('body').removeClass('body-after');
+                $(".user-couverture-update").css('display','');
+            }
+        });
+
+        $("#cancel_user_image_update_resp").click(function(){
+            $(".user-image-update").css('transform','');
+        });
+
+        $("#cancel_user_couverture_update_resp").click(function(){
+            $(".user-couverture-update").css('transform','');
         });
 
         $("#find_image_btn").click(function(){
@@ -425,18 +400,49 @@ if (isset($_GET['user'])) {
                     url: "update-user-image.php",
                     type: "POST",
                     data: {"image":resp},
+                    beforeSend: function(){
+                        $('.user-image-update-container').css('opacity','0.5');
+                        $("#loader_updt_img").show();
+                    },
                     success: function (data) {
-
                         $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
                         $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
                         $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>");
-
                         $('body').removeClass('body-after');
-                        var windowWidth = window.innerWidth;
-                        if (windowWidth <= 768) {
-                            $('.navbar').css('z-index','');
-                        }
-                        $(".user-image-update-container").css('display','');
+                        $(".user-image-update").css('display','');
+                    },
+                    complete: function(){
+                        $('.user-image-update-container').css('opacity','');
+                        $("#loader_updt_img").hide();
+                    }
+                });
+            });
+        });
+
+        $('.upload-result-resp').on('click', function (ev) {
+            $uploadCrop.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                $.ajax({
+                    url: "update-user-image.php",
+                    type: "POST",
+                    data: {"image":resp},
+                    beforeSend: function(){
+                        $('.user-image-update-container').css('opacity','0.5');
+                        $("#loader_updt_img").show();
+                    },
+                    success: function (data) {
+                        $(".user-image-update").css('transform','');
+                        setTimeout(() => {
+                            $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
+                            $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
+                            $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>"); 
+                        }, 400);
+                    },
+                    complete: function(){
+                        $('.user-image-update-container').css('opacity','');
+                        $("#loader_updt_img").hide();
                     }
                 });
             });
@@ -451,55 +457,48 @@ if (isset($_GET['user'])) {
                     url: "update-user-couverture.php",
                     type: "POST",
                     data: {"image":resp},
+                    beforeSend: function(){
+                        $('.user-couverture-update-container').css('opacity','0.5');
+                        $("#loader_updt_cvrt").show();
+                    },
                     success: function (data) {
                         $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
                         $('body').removeClass('body-after');
-                        var windowWidth = window.innerWidth;
-                        if (windowWidth <= 768) {
-                            $('.navbar').css('z-index','');
-                        }
-                        $(".user-couverture-update-container").css('display','');
+                        $(".user-couverture-update").css('display','');
+                    },
+                    complete: function(){
+                        $('.user-couverture-update-container').css('opacity','');
+                        $("#loader_updt_cvrt").hide();
                     }
                 });
             });
         });
 
-        // create boutique
-        $('#create_pre_boutique').click(function(){
-            $('.create-pre-boutique-name').show();
-        });
-
-        $('#cancel_create_boutique').click(function(){
-            $('.create-pre-boutique-name').hide();
-            $('#nom_btq').val("");
-        });
-
-        $('#create_btq_btn').click(function(event){
-            event.preventDefault(); 
-            if ($('#nom_btq').val() == ''){
-                $('#nom_btq').css('border','2px solid red');
-            }
-            else{
-                $("#create_boutique_form").submit();
-            }
-        });
-
-        $("#create_boutique_form").submit(function(event){
-            event.preventDefault(); 
-            var post_url = $(this).attr("action"); 
-            var request_method = $(this).attr("method");
-            var form_data = $(this).serialize();
-            $.ajax({
-                url : post_url,
-                type: request_method,
-                data : form_data
-            }).done(function(response){
-                if (response != 0) {
-                    $("#create_boutique_form")[0].reset();
-                    setTimeout(() => {
-                        window.location = './boutique.php?id_btq='+response;
-                    }, 500);
-                }
+        $('.upload-result-couverture-resp').on('click', function (ev) {
+            $uploadCropCouverture.croppie('result', {
+                type: 'canvas',
+                size: 'viewport'
+            }).then(function (resp) {
+                $.ajax({
+                    url: "update-user-couverture.php",
+                    type: "POST",
+                    data: {"image":resp},
+                    beforeSend: function(){
+                        $('.user-couverture-update-container').css('opacity','0.5');
+                        $("#loader_updt_cvrt").show();
+                    },
+                    success: function (data) {
+                        $(".user-couverture-update").css('transform','');
+                        setTimeout(() => {
+                            $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
+                            $('body').removeClass('body-after');
+                        }, 400);
+                    },
+                    complete: function(){
+                        $('.user-couverture-update-container').css('opacity','');
+                        $("#loader_updt_cvrt").hide();
+                    }
+                });
             });
         });
 
@@ -728,64 +727,6 @@ if (isset($_GET['user'])) {
             });
         });
 
-        // show saved publications
-        // if (windowWidth > 768) {
-        //     $('#show_saved_publications').click(function(){
-        //         console.log('med');
-        //         $("body").addClass('body-after');
-        //         $('.show-saved-publications').show();
-        //         $('.show-saved-publications-container').load('saved-publications.php');
-        //     })
-        //     $('.show-saved-publications-container').on('click','#cancel_saved_publications',function(){
-        //         $("body").removeClass('body-after');
-        //         $('.show-saved-publications').hide();
-        //         $('.show-saved-publications-container').empty();
-        //     })
-        // }else{
-        //     $('#show_saved_publications').click(function(){
-        //         console.log('med');
-        //         $('.show-saved-publications').css('transform','translateX(0)');
-        //         $('.show-saved-publications-container').load('saved-publications.php');
-        //     })
-        //     $('.show-saved-publications-container').on('click','#cancel_saved_publications_resp',function(){
-        //         $('.show-saved-publications').css('transform','');
-        //         setTimeout(() => {
-        //             $('.show-saved-publications-container').empty();
-        //         }, 400);
-        //     })
-        // }
-
-        // $('.show-saved-publications').click(function(e){
-        //     e.stopPropagation();
-        //     $("body").removeClass('body-after');
-        //     $('.show-saved-publications').hide();
-        //     $('.show-saved-publications-container').empty();
-        // })
-
-        // $('.show-saved-publications-container').click(function(e){
-        //     e.stopPropagation();
-        // })
-
-        // remove saved publications
-        // $('.show-saved-publications-container').on('click','[id^="remove_saved_pub_button_"]',function(){
-        //     id = $(this).attr("id").split("_")[4];
-        //     var fd = new FormData();
-        //     var idPub = $('#id_publication_save_'+id).val();
-        //     fd.append('id_pub',idPub);
-        //     $.ajax({
-        //         url: 'remove-saved-publications.php',
-        //         type: 'post',
-        //         data: fd,
-        //         contentType: false,
-        //         processData: false,
-        //         success: function(response){
-        //             if(response != 0){
-        //                 $('.show-saved-publications-container').load('saved-publications.php');
-        //             }
-        //         }
-        //     });
-        // });
-
         //utilisateur info
         $(document).on('click',"#follow_button",function(e) {
             $("body").addClass('body-after');
@@ -1013,7 +954,7 @@ if (isset($_GET['user'])) {
                 success: function(response){
                     if(response != 0){
                         if (response == 2) {
-                            window.location = 'messagerie.php?user='+idCrsp;
+                            window.location = 'messagerie/'+idCrsp;
                         }
                         else if (response == 1){
                             $('#send_message_button').click();
@@ -1056,6 +997,7 @@ if (isset($_GET['user'])) {
 
         <?php 
         if (isset($_GET['pub'])) {
+            if ($id_user == $row_g['id_user']) {
         ?>
         var fd = new FormData();
         fd.append('id_user',<?php echo $id_user; ?>);
@@ -1079,10 +1021,65 @@ if (isset($_GET['user'])) {
                 history.pushState('','','/projet/utilisateur/<?php echo $id_user ?>');
             }
         });
-        <?php } ?>
+        <?php }else{ ?>
+            $("html, body").animate({
+                scrollTop: $("#pub_tail_<?php echo $_GET['pub'] ?>").offset().top - 70
+            }, 1000); 
+            history.pushState('','','/projet/utilisateur/<?php echo $row_g['id_user'] ?>');
+        <?php }}?>
         
+        $('.user-publication-middle-one-view img').on('load', function(){
+            console.log('load 1 img');
+        });
+
+        $('.user-publication-middle-two-view img').on('load', function(){
+            console.log('load 2 img');
+        });
+
+        $('.user-publication-middle-three-view').on('load', function(){
+            console.log('load 3 img');
+        });
+
+        $('.user-publication-middle-four-view img').on('load', function(){
+            console.log('load 4 img');
+        });
+
+        $('[id^="show_gb_btq_"]').click(function(e){
+            var id = $(this).attr('id').split('_')[3];
+            var fd = new FormData();
+            var idBtq = $('#id_user_btq_'+id).val();
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'get-boutique-session.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(this).css('opacity','0.5');
+                    $("#loader_btq_id").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        window.location = 'gerer-boutique/'+response;
+                    }
+                },
+                complete: function(){
+                    $(this).css('opacity','');
+                    $("#loader_btq_id").hide();
+                }
+            });
+        });
+
+        $('[id^="show_btq_"]').click(function(e){
+            var id = $(this).attr('id').split('_')[2];
+            var idBtq = $('#id_user_btq_'+id).val();
+            window.location = 'boutique/'+idBtq;
+        });
+    
         <?php if (isset($_SESSION['user'])) { ?>
-        var uid = <?php echo $id_user; ?>;
+        var idUser = <?php echo $id_user; ?>;
+        var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
         var js_flood = 0;

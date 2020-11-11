@@ -10,8 +10,8 @@ list(, $data)      = explode(',', $data);
 $data = base64_decode($data);
 $imageName = time().'.png';
 
-$query = "UPDATE utilisateurs SET img_user = 'images/$imageName' WHERE id_user = '$idUser'";
-if(mysqli_query($conn, $query)){
+$query = $conn->prepare("UPDATE utilisateurs SET img_user = 'images/$imageName' WHERE id_user = '$idUser'");
+if($query->execute()){
     if(file_put_contents('images/'.$imageName, $data)){
         echo 'done';
     }else{

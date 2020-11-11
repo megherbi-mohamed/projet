@@ -1,6 +1,11 @@
 <?php
 include_once './bdd/connexion.php';
-$id_btq = htmlspecialchars($_POST['id_btq']);
+$id_session_btq = htmlspecialchars($_POST['id_btq']);
+$get_session_btq_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session_btq' OR id_user_1 = '$id_session_btq' OR id_user_2 = '$id_session_btq' 
+                                            OR id_user_3 = '$id_session_btq' OR id_user_4 = '$id_session_btq' OR id_user_5 = '$id_session_btq'");
+$get_session_btq_query->execute();
+$get_session_btq_row = $get_session_btq_query->fetch(PDO::FETCH_ASSOC);
+$id_btq = $get_session_btq_row['id_user'];
 $get_btq_admin_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = $id_btq");
 $get_btq_admin_query->execute();
 if ($get_btq_admin_query->rowCount() > 0) {
@@ -163,15 +168,15 @@ if ($get_btq_admin_query->rowCount() > 0) {
         </div>
         <div>
             <input type="text" id="nom_adm">
-            <span class="nom">Nom</span>
+            <span class="nom-adm">Nom *</span>
         </div>
         <div>
             <input type="password" id="mtp_adm">
-            <span class="mtp">Mot de passe</span>
+            <span class="mtp-adm">Mot de passe *</span>
         </div>
         <div>
             <input type="password" id="cnfrm_mtp_adm">
-            <span class="cnfrm-mtp">Mot de passe confirmation</span>
+            <span class="cnfrm-mtp-adm">Mot de passe confirmation *</span>
         </div>
     </div>
     <hr>

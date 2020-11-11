@@ -1,4 +1,4 @@
-.categorie-search-bar{
+/* .categorie-search-bar{
     margin-left: 10px;
 }
 .categorie-search-bar input{
@@ -16,7 +16,7 @@
 }
 .categorie-search-bar div i{
     color: #000;
-}
+} */
 .boutdechantier-recherche-responsive{
     display: none;
 }
@@ -477,7 +477,7 @@
 .bt-product{
     height: 170px;
     width: 100%;
-    border-radius: 8px;
+    border-radius: 5px;
     background: #ffffff;
     overflow: hidden;
     position: relative;
@@ -523,14 +523,102 @@
     text-align: center;
 }
 
-#loader_load { 
+/* bt product container */
+.bt-product-details {
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    overflow: auto;
+    position: fixed;
+    z-index: 150;
+    display: none;
+}
+.bt-product-details-container{
+    width: 93%;
+    height: calc(100% - 40px);
+    margin: 20px;
+    border-radius: 10px;
+    background: #ffffff;
+    padding: 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 400px calc(100% - 700px) 300px;
+}
+.cancel-bt-product-details-resp{
+    display: none;
+}
+.cancel-bt-product-details{
+    position: fixed;
+    top: 10px;
+    right: 25px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+}
+.cancel-bt-product-details:hover{
+    background: #e0e0e0;
+}
+.cancel-bt-product-details i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.cancel-bt-prosuct-details-resp{
+    display: none;
+}
+.bt-product-details-left{
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+.bt-product-details-left-top{
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    height: 400px;
+}
+.bt-product-details-left-top img{
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+}
+.bt-product-details-left-bottom{
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+.bt-product-details-left-bottom div{
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    margin: 5px;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+.bt-product-details-left-bottom div img{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+}
+
+#loader_load,
+#loader_bt_prd{ 
     display: none;
     position: absolute;
     top: 0;
     left: 0;
-    border: 3px solid #f3f3f3; 
+    border: 3px solid #ffffff; 
     border-radius: 50%; 
-    border-top: 3px solid rgb(137, 218, 238); 
+    border-top: 3px solid rgb(0, 0, 0); 
     width: 40px; 
     height: 40px; 
     animation: spin 1s linear infinite; 
@@ -630,6 +718,7 @@
     width: 90%;
     margin: 0 auto 10px;
     position: relative;
+    z-index: 1;
 }
 .product-input input,
 .product-input select{
@@ -639,7 +728,8 @@
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
 }
 .product-input span{
     position: absolute;
@@ -648,6 +738,8 @@
     font-size: .9rem;
     font-weight: bold;
     left: 12px;
+    opacity: .4;
+    z-index: -1;
 }
 .active-updt-bt-prd-span,
 .type-bt-pr,
@@ -656,7 +748,6 @@
     top: 5px !important;
     transform: none !important;
     font-size: .7rem !important;
-    opacity: .6;
 }
 .product-images-preview,
 .product-update-images-preview{
@@ -861,10 +952,27 @@
         box-shadow: none;
         z-index: 50;
     }
+    .navbar-left{
+        display: none;
+    }
     .boutdechantier-recherche{
         display: none;
     }
     .boutdechantier-recherche-responsive{
+        position: fixed;
+        top: 0;
+        z-index: 50;
+        height: 50px;
+        width: 100%;
+        -webkit-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        display: block;
+        background: #ffffff;
+    }
+    .boutdechantier-recherche-responsive-container{
+        width: 91.5%;
+        margin: auto;
         display: grid;
         grid-template-columns: 13% 61% 13% 13%;
         align-items: center;
@@ -872,22 +980,15 @@
         background: #ffffff;
         padding: 3.5px 0;
         box-sizing: border-box;
-        position: fixed;
-        top: 50px;
-        z-index: 45;
-        height: 40px;
-        width: 100%;
-        -webkit-box-shadow: 0px 3px 15px -6px #b8b6b6;
-        -moz-box-shadow: 0px 3px 15px -6px #b8b6b6;
-        box-shadow: 0px 3px 15px -6px #b8b6b6;
+        height: 50px;
     }
     #boutdechantier_recherche_responsive{
         width: 100%;
         position: relative;
-        margin-top: -2px;
+        display: none;
     }
     #boutdechantier_recherche_responsive input{
-        width: 96%;
+        width: 100%;
         position: relative;
         background: #ecedee;
         padding: 8px 8px 10px 35px;
@@ -895,7 +996,6 @@
         border: none;
         border-radius: 22.5px;
         outline: none;
-        margin-left: 9px;
     }
     #boutdechantier_recherche_responsive i{
         position: absolute;
@@ -906,22 +1006,27 @@
     }
     #back_history,
     #display_categories,
-    #display_filter{
+    #display_filter,
+    #back_menu,
+    #display_bt_search_bar{
         width: 30px;
         height: 30px;
         border-radius: 50%;
         position: relative;
         background: #ecedee;
     }
-    #back_history{
-        margin-left: 14px;
+    #back_menu{
+        display: none;
+        justify-self: start;
     }
-    #display_filter{
-        margin-right: 14px;
+    #display_bt_search_bar{
+        justify-self: end;
     }
     #back_history i,
     #display_categories i,
-    #display_filter i{
+    #display_filter i,
+    #back_menu i,
+    #display_bt_search_bar i{
         position: absolute;
         top: 50%;
         left: 50%;
@@ -944,14 +1049,14 @@
     }
     .boutdechantier-categories{
         width: 100%;
-        height: calc(100vh - 40px);
+        height: calc(100vh - 60px);
     }
     .boutdechantier-categories::-webkit-scrollbar{
         width: 0;
     }
     .bt-sous-gategorie{
         top: 0px;
-        height: calc(100vh - 40px);
+        height: 100vh;
     }
     .bt-categorie{
         grid-template-columns: 20% 80%;
@@ -962,7 +1067,7 @@
     .boutdechantier-right{
         width: 100%;
         margin-left: 0;
-        margin-top: 45px;
+        margin-top: 5px;
     }
     .boutdechantier-right-container{
         width: 98%;

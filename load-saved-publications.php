@@ -1,24 +1,29 @@
 <?php 
 session_start();
 include_once './bdd/connexion.php';
-$cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-$cnx_user_query->execute();
-$row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
-$id_user = $row['id_user'];
+$id_session = htmlspecialchars($_SESSION['user']);
+$get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                        OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+$get_session_id_query->execute();
+$get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+
+$user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+$user_session_query->execute();
+
+if ($user_session_query->rowCount() > 0) {
+    $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+    $uid = $id_session;
+    $id_user = $row['id_user'];
+}
+else{
+    header('Location: inscription-connexion.php');
+}
 ?>
-<!-- <div class="cancel-saved-publications">
-    <div id="cancel_saved_publications_resp">
-        <i class="fas fa-arrow-left"></i>
-    </div>
-    <p>Publications enregistrées</p>
-</div>
-<div id="cancel_saved_publications">
-    <i class="fas fa-times"></i>
-</div> -->
 <div class="user-profile-publications">
     <?php 
     $saved_publication_query = $conn->prepare("SELECT * FROM publications_enregistres WHERE id_user = '$id_user'"); 
     $saved_publication_query->execute();
+    if ($saved_publication_query->rowCount() > 0) {
     $i=0;
     while($saved_publication_row = $saved_publication_query->fetch(PDO::FETCH_ASSOC)){
     $i++; 
@@ -130,4 +135,7 @@ $id_user = $row['id_user'];
         </div>
     </div>
     <?php } ?>
+    <?php }else{
+        echo '<p style="font-size:.85rem; text-align:center;">Accune publication entregistrées</p>';
+    } ?>
 </div>

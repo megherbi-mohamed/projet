@@ -61,7 +61,7 @@ $get_message_key_row = $get_message_key_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <input type="hidden" id="msgCle" value="<?php echo $get_message_key_row['message_cle']; ?>">
 <?php
-$verify_user_query = $conn->prepare("SELECT id_user FROM utilisateurs WHERE id_user = '$id_sender'");
+$verify_user_query = $conn->prepare("SELECT id_user FROM utilisateurs WHERE id_user = '$id_sender' AND type_user != NULL");
 $verify_user_query->execute();
 if($verify_user_query->rowCount() > 0){
 ?>

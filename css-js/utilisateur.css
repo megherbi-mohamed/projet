@@ -344,6 +344,8 @@
     padding: 5px;
     box-sizing: border-box;
     border-radius: 5px;
+    position: relative;
+    cursor: pointer;
 }
 .user-boutique:hover{
     background: #e0e0e0;
@@ -684,7 +686,7 @@
 }
 .user-publication-middle-four-view div{
     width: 100%;
-    height: 250px;
+    height: 200px;
     background: #000000;
     position: relative;
     overflow: hidden;
@@ -915,6 +917,7 @@ input:checked + .slider:before {
     width: 100%;
     margin: 0 auto 10px;
     position: relative;
+    z-index: 1;
 }
 .pre-update-profile-left input,
 .pre-update-profile-left select{
@@ -924,7 +927,8 @@ input:checked + .slider:before {
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
 }
 .pre-update-profile-left span{
     position: absolute;
@@ -933,6 +937,8 @@ input:checked + .slider:before {
     font-size: .9rem;
     font-weight: bold;
     left: 12px;
+    opacity: .4;
+    z-index: -1;
 }
 .pre-nom-user,
 .pre-categorie-user,
@@ -941,7 +947,6 @@ input:checked + .slider:before {
     top: 5px !important;
     transform: none !important;
     font-size: .7rem !important;
-    opacity: .6;
 }
 .pre-profession option{
     text-transform: lowercase;
@@ -970,7 +975,8 @@ input:checked + .slider:before {
 #loader_disabn_user,
 #loader_msg_user,
 #loader_comments,
-#loader_publications{ 
+#loader_publications,
+#loader_btq_id{ 
     display: none;
     position: absolute;
     top: 0;
@@ -1357,25 +1363,65 @@ input:checked + .slider:before {
         background: #ffffff;
         padding: 10px;
         box-sizing: border-box;
-        height: 80%;
+        height: calc(100vh - 60px);
         z-index: 150;
         transform: translateY(100%);
         transition: transform .4s ease-in-out;
-        overflow: auto;
+    }
+    .display-user-publications-comments-top{
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 12% 88%;
+        align-self: center;
+        justify-self: center;
+        border-bottom: 1px solid #ecedee;
+    }
+    .display-user-publications-comments-top div{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: relative;
+        background: #eeeded;
+    }
+    .display-user-publications-comments-top div i{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+
+    }
+    .display-user-publications-comments-top h4{
+        margin: 0;
+        align-self: center;
     }
     .display-user-publications-comments-container{
+        position: fixed;
+        top: 51px;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        height: calc(100vh - 103px);
+        overflow: auto;
+    }
+    .publicaiton-comment{
+        width: 100%;
         display: grid;
         grid-template-columns: 12% 88%;
         align-items: center;
+        margin-bottom: 5px;
     }
-    .display-user-publications-comments-container img{
+    .publicaiton-comment img{
         width: 35px;
         height: 35px;
         border-radius: 50%;
-        justify-self: center;
-        margin-top: -5px;
     }
-    .display-user-publications-comments-container div{
+    .publicaiton-comment div{
         width: 95%;
         padding: 5px;
         box-sizing: border-box;
@@ -1384,14 +1430,53 @@ input:checked + .slider:before {
         margin-bottom: 5px;
         justify-self: center;
     }
-    .display-user-publications-comments-container div h4{
+    .publicaiton-comment div h4{
         margin: 0 5px;
         font-size: .85rem;
     }
-    .display-user-publications-comments-container div p{
+    .publicaiton-comment div p{
         margin: 5px;
         font-size: .9rem;
         word-wrap: break-word;
+    }
+    .display-user-publications-comments-bottom{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        display: grid;
+        padding: 10px;
+        box-sizing: border-box;
+        grid-template-columns: 88% 12%;
+        align-items: center;
+        border-top: 1px solid #ecedee;
+        background: #ffffff;
+    }
+    .display-user-publications-comments-bottom input{
+        width: 100%;
+        padding: 8px 15px;
+        box-sizing: border-box;
+        border: none;
+        outline: none;
+        background: #ecedee;
+        border-radius: 17.5px;
+        justify-self: center;
+    }
+    .display-user-publications-comments-bottom div{
+        justify-self: center;
+        position: relative;
+        align-self: center;
+    }
+    .display-user-publications-comments-bottom div img{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        width: 25px;
+        height: 25px;
+        border-radius: 0;
+        margin-top: 0;
+        margin-left: 5px;
     }
 
     .pre-update-profile{

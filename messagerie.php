@@ -2,10 +2,21 @@
 session_start();
 include_once './bdd/connexion.php';
 if (!empty($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
-    $id_user = $row['id_user'];
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+    $user_session_query->execute();
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+        $uid = $id_session;
+        $id_user = $row['id_user'];
+    }
+    else{
+        header('Location: inscription-connexion.php');
+    }
     if (!empty($_GET['user'])) {
         $id_sender = $_GET['user'];
         $get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE 
@@ -140,7 +151,7 @@ else{header('location : insecription-connexion.php');}
                 ?>
                 <input type="hidden" id="msgCle" value="<?php echo $get_message_key_row['message_cle']; ?>">
                 <?php
-                $verify_user_query = $conn->prepare("SELECT id_user FROM utilisateurs WHERE id_user = $id_sender");
+                $verify_user_query = $conn->prepare("SELECT id_user FROM utilisateurs WHERE id_user = $id_sender AND type_user != NULL");
                 $verify_user_query->execute();
                 if ($verify_user_query->rowCount() > 0) {
                 ?>
@@ -315,7 +326,7 @@ else{header('location : insecription-connexion.php');}
         //     })
         // }
         
-        var uid = <?php echo $id_user; ?>;
+        var uid = <?php echo $uid; ?>;
         $(document).on('beforunload',function(){
             $('.messagerie-left').load('load-messagerie-sender.php?id_user='+uid);
         })

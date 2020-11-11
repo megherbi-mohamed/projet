@@ -2,10 +2,21 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
-    $id_user = $row['id_user'];
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+    $user_session_query->execute();
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+        $uid = $id_session;
+        $id_user = $row['id_user'];
+    }
+    else{
+        header('Location: inscription-connexion.php');
+    }
 }
 $text = '';
 if (isset($_GET['r'])) {
@@ -47,18 +58,26 @@ $get_ville_query->execute();
     <?php include './navbar.php'; ?>
     <div class="clear"></div>
     <div class="recherche-recherche-responsive">
-        <div id="back_history">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <div id="recherche_recherche_responsive">
-            <input type="text" id="recherche_text_resp" placeholder="Entrez votre recherche ...">
-            <i class="fas fa-search"></i>
-        </div>
-        <div id="display_categories">
-            <i class="fas fa-list"></i>
-        </div>
-        <div id="display_filter">
-            <i class="fas fa-filter"></i>
+        <div class="recherche-recherche-responsive-container">
+            <div class="show-hide-menu" id="show_hide_menu">
+                <i class="fas fa-bars"></i>
+            </div> 
+            <div class="logo-name">
+                <h4>Nhannik</h4>
+            </div> 
+            <div id="back_menu">
+                <i class="fas fa-arrow-left"></i>
+            </div>    
+            <div id="recherche_recherche_responsive">
+                <input type="text" id="recherche_text_resp" placeholder="Entrez votre recherche ...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div id="display_categories">
+                <i class="fas fa-list"></i>
+            </div>
+            <div id="display_rech_search_bar">
+                <i class="fas fa-search"></i>
+            </div>
         </div>
     </div>
     <div class="recherche-left">
@@ -611,7 +630,6 @@ $get_ville_query->execute();
 
         $(document).on('keypress',"#recherche_text_resp",function() {
             if (event.which == 13) {
-                $(this).blur();
                 var rechercheTextRsp = $('#recherche_text_resp').val();
                 var fd = new FormData();
                 fd.append('r',rechercheTextRsp);
@@ -644,11 +662,14 @@ $get_ville_query->execute();
             }
         });
 
-        $('#recherche_text_resp').click(function(e){
+        $('#recherche_recherche_responsive').click(function(e){
             e.stopPropagation();
-            setRechercheSearchBar();
         })
 
+        $('#display_rech_search_bar').click(function(e){
+            e.stopPropagation();
+            setRechercheSearchBar();
+        }) 
 
         $(document).ready(function(){
             var rechercheText = $('#r').val();
@@ -765,7 +786,7 @@ $get_ville_query->execute();
         }
     
         <?php if (isset($_SESSION['user'])) { ?>
-        var uid = <?php echo $id_user; ?>;
+        var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
         var js_flood = 0;

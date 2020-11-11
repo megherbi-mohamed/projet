@@ -2,10 +2,24 @@ RewriteEngine On
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
+RewriteRule ^inscription-connexion(.*)$ inscription-connexion.php [L]
+RewriteRule ^gestion-boutique-connexion(.*)$ gestion-boutique-connexion.php [L]
+
+RewriteRule ^index(.*)$ index.php [L]
+
+RewriteRule ^boutdechantier(.*)$ boutdechantier.php [L]
+
+RewriteRule ^promotions(.*)$ promotions.php [L]
+
+RewriteRule ^evenements(.*)$ evenements.php [L]
+
 RewriteRule ^utilisateur/(\d+)?$ utilisateur.php?user=$1 [L]
 RewriteRule ^utilisateur/([^/]+)(/([^/]+))?$ utilisateur.php?user=$1&pub=$3 [L]
 
-RewriteRule ^boutique/(.*)$ boutique.php?btq=$1 [L]
+RewriteRule ^profile-parametres/(.*)$ profile-parametres.php?act=$1 [L]
+
+RewriteRule ^boutique/(\d+)?$ boutique.php?btq=$1 [L]
+RewriteRule ^boutique/([^/]+)(/([^/]+))?$ boutique.php?btq=$1&prd=$3 [L]
 
 RewriteRule ^gerer-boutique/(\d+)?$ gerer-boutique.php?btq=$1 [L]
 

@@ -83,6 +83,99 @@ function start(websocketServerLocation){
         obj.focus();
     });
 
+    // create publication notification
+    $('#create_publication_button').click(function(){
+        // if ($('#publication_description').val() !== '') {
+            var typeNotification = 'publication';
+            var fd = new FormData();
+            var idPubLieu = $('#publication_location_text').val();
+            fd.append('lieu_pub',idPubLieu);
+            var idPub = $('#id_publication').val();
+            fd.append('id_pub',idPub);
+            var descriptionPub = $('#publication_description').val();
+            fd.append('description_pub',descriptionPub);
+            var idUser = $('#id_session_porfile').val();
+            $.ajax({
+                url: 'create-publication.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $("#loader_create_pub").show();
+                    $('#create_publication').css('opacity','0.5');
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        if ( js_flood == 0 ) {
+                            var msg = {
+                                typeNotification: typeNotification,
+                                uid: uid
+                            };
+                            websocket.send(JSON.stringify(msg));
+                            flood_js();
+                        } else {
+                            console.log('error');
+                        }
+                        $("body").removeClass('body-after');
+                        hideCreatePublication();
+                        $('.publication-images-preview div').remove();
+                        $('.publication-video-preview div').remove();
+                        $('.create-publication-container').css({'top':'','transform':''});
+                        window.location.href = "utilisateur/"+idUser;
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_pub").hide();
+                    $('#create_publication').css('opacity','');
+                }
+            });
+        // }
+    });
+
+    $('#crt_pubt_btn_resp').click(function(){
+        // if ($('#publication_description').val() !== '') {
+            var typeNotification = 'publication';
+            var fd = new FormData();
+            var idPubLieu = $('#publication_location_text').val();
+            fd.append('lieu_pub',idPubLieu);
+            var idPub = $('#id_publication').val();
+            fd.append('id_pub',idPub);
+            var descriptionPub = $('#publication_description').val();
+            fd.append('description_pub',descriptionPub);
+            var idUser = $('#id_session_porfile').val();
+            $.ajax({
+                url: 'create-publication.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        if ( js_flood == 0 ) {
+                            var msg = {
+                                typeNotification: typeNotification,
+                                uid: uid
+                            };
+                            websocket.send(JSON.stringify(msg));
+                            flood_js();
+                        } else {
+                            console.log('error');
+                        }
+                        hideCreatePublication();
+                        setTimeout(() => {
+                            $('.publication-images-preview div').remove();
+                            $('.publication-video-preview div').remove();
+                            window.location.href = "utilisateur/"+idUser;
+                        }, 400);
+                    }
+                }
+            });
+        // }
+    });
+
+    // like publication notification
     $(document).on('click','[id^="like_pub_button_"]',function(){
         var id = $(this).attr("id").split("_")[3];
         var typeNotification = 'like';
@@ -98,7 +191,6 @@ function start(websocketServerLocation){
             contentType: false,
             processData: false,
             success: function(response){
-                console.log(response);
                 if(response != 0){
                     var like = parseInt($('#user_publication_bottom_top_'+id).find('span').text());
                     $('#user_publication_bottom_top_'+id).find('span').text(like+1);
@@ -106,7 +198,6 @@ function start(websocketServerLocation){
                     if ( js_flood == 0 ) {
                         var msg = {
                             typeNotification: typeNotification,
-                            // id: id,
                             uid: uid,
                             to_id: to_id,
                             idPub: idPub
@@ -121,10 +212,10 @@ function start(websocketServerLocation){
         });
     });
 
-    // commentaire notification
+    // commentaire publication notification
     $(document).on('keypress','[id^="commentaire_text_"]',function(event) {
         if (event.which == 13) {
-            id = $(this).attr("id").split("_")[2];
+            var id = $(this).attr("id").split("_")[2];
             var typeNotification = 'commentaire';
             var fd = new FormData();
             var to_id = $(document).find('#id_user').val();
@@ -143,8 +234,11 @@ function start(websocketServerLocation){
                 processData: false,
                 success: function(response){
                     if(response != 0){
-                        $('#commentaire_text_'+id).val('');
-                        $('#user_publication_bottom_preview_'+id).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+                        $('[id^="commentaire_text_"]').val('');
+                        $('[id^="commentaire_text_"]').blur();
+                        if (windowWidth > 768) {
+                            $('#user_publication_bottom_preview_'+id).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+                        }
                         if ( js_flood == 0 ) {
                             var msg = {
                                 typeNotification: typeNotification,
@@ -166,7 +260,52 @@ function start(websocketServerLocation){
         }
     });
 
-    // abonnement notification
+    $('#send_comment_button').click(function(event) {
+        console.log('click');
+        var typeNotification = 'commentaire';
+        var fd = new FormData();
+        var to_id = $(document).find('#id_user').val();
+        fd.append('id_recever_ntf',to_id);
+        var idPub = $(document).find('#id_pub').val();
+        fd.append('id_pub',idPub);
+        var commentaireText = $('#commentaire_pub_text').val();
+        fd.append('commentaire_text',commentaireText);
+        var nomUser = $('#commentaire_nom_user').val();
+        var imgUser = $('#commentaire_img_user').val();
+        $.ajax({
+            url: 'comment-publication.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    $('#commentaire_pub_text').val('');
+                    $('#commentaire_pub_text').blur();
+                    if (windowWidth < 768) {
+                        $('.display-user-publications-comments-container').prepend("<div class='publicaiton-comment'><img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div></div>"); 
+                    }
+                    if ( js_flood == 0 ) {
+                        var msg = {
+                            typeNotification: typeNotification,
+                            commentaire: commentaireText,
+                            imgUser: imgUser,
+                            nomUser: nomUser,
+                            uid: uid,
+                            to_id: to_id,
+                            idPub: idPub
+                        };
+                        websocket.send(JSON.stringify(msg));
+                        flood_js();
+                    } else {
+                        console.log('error');
+                    }
+                }
+            }
+        });
+    });
+
+    // follow user notification
     $('#abonne_user_button').click(function(e){
         var typeNotification = 'abonnement';
         var fd = new FormData();
@@ -213,6 +352,7 @@ function start(websocketServerLocation){
         });
     });
 
+    // follow boutique notfication
     $('#abonne_btq_button').click(function(e){
         var typeNotification = 'abonnementBtq';
         var messagerieType = 'boutiqueUser';
@@ -261,6 +401,262 @@ function start(websocketServerLocation){
         });
     });
 
+    // create product notification
+    $('#create_product_button').click(function(){
+        var typeNotification = 'produit';
+        var idBtq = $('#id_boutique_product').val();
+        var idPrd = $('#id_product').val();
+        var namePrd = $('#name_product').val();
+        var referencePrd = $('#reference_product').val();
+        var categoriePrd = $('#categorie_product').val();
+        var descriptionPrd = $('#description_product').val();
+        var caracteristiquePrd = $('#caracteristique_product').val();
+        var fonctionnalitePrd = $('#fonctionnalite_product').val();
+        var avantagePrd = $('#avantage_product').val();
+        var quantityPrd = $('#quantity_product').val();
+        var pricePrd = $('#price_product').val();
+
+        if (namePrd == ''){
+            $('#name_product').css('border','2px solid red');
+        }
+        // else if(referencePrd == ''){
+        //     $('#name_product').css('border','');
+        //     $('#reference_product').css('border','2px solid red');
+        // }
+        else if(categoriePrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','2px solid red');
+        }
+        else if(descriptionPrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','2px solid red');
+        }
+        else if(quantityPrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','');
+            $('#quantity_product').css('border','2px solid red');
+        }
+        else if(pricePrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','');
+            $('#quantity_product').css('border','');
+            $('#price_product').css('border','2px solid red');
+        }
+        else if(namePrd != '' && categoriePrd != '' && descriptionPrd != '' &&
+            quantityPrd != '' && pricePrd != ''){
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            fd.append('name_prd',namePrd);
+            fd.append('reference_prd',referencePrd);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('description_prd',descriptionPrd);
+            fd.append('caracteristique_prd',caracteristiquePrd);
+            fd.append('fonctionnalite_prd',fonctionnalitePrd);
+            fd.append('avantage_prd',avantagePrd);
+            fd.append('quantity_prd',quantityPrd);
+            fd.append('price_prd',pricePrd);
+            $.ajax({
+                url: 'create-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.create-product-top').hide();
+                    $('.create-product-bottom').hide();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('.boutique-bottom').prepend(response);
+                        if ( js_flood == 0 ) {
+                            var msg = {
+                                typeNotification: typeNotification,
+                                uid: uid
+                            };
+                            websocket.send(JSON.stringify(msg));
+                            flood_js();
+                        } else {
+                            console.log('error');
+                        }
+                    }
+                },
+                complete: function(){
+                    $("#loader_load").hide();
+                    $(".create-product").hide();
+                    $("body").removeClass('body-after');
+                    $('.create-product-container').css({'top':'','transform':''});
+                    $('.create-product-top').show();
+                    $('.create-product-bottom').show();
+                    $('#name_product').val('');
+                    $('#reference_product').val('');
+                    $('#categorie_product').val('');
+                    $('#description_product').val('');
+                    $('#quantity_product').val('');
+                    $('#price_product').val('');
+                    $('.product-images-preview').empty();
+                }
+            });
+        }
+    });
+
+    $('#crt_prd_btn_resp').click(function(){
+        var typeNotification = 'produit';
+        var idBtq = $('#id_boutique_product').val();
+        var idPrd = $('#id_product').val();
+        var namePrd = $('#name_product').val();
+        var referencePrd = $('#reference_product').val();
+        var categoriePrd = $('#categorie_product').val();
+        var descriptionPrd = $('#description_product').val();
+        var caracteristiquePrd = $('#caracteristique_product').val();
+        var fonctionnalitePrd = $('#fonctionnalite_product').val();
+        var avantagePrd = $('#avantage_product').val();
+        var quantityPrd = $('#quantity_product').val();
+        var pricePrd = $('#price_product').val();
+
+        if (namePrd == ''){
+            $('#name_product').css('border','2px solid red');
+        }
+        // else if(referencePrd == ''){
+        //     $('#name_product').css('border','');
+        //     $('#reference_product').css('border','2px solid red');
+        // }
+        else if(categoriePrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','2px solid red');
+        }
+        else if(descriptionPrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','2px solid red');
+        }
+        else if(quantityPrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','');
+            $('#quantity_product').css('border','2px solid red');
+        }
+        else if(pricePrd == ''){
+            $('#name_product').css('border','');
+            // $('#reference_product').css('border','');
+            $('#categorie_product').css('border','');
+            $('#description_product').css('border','');
+            $('#quantity_product').css('border','');
+            $('#price_product').css('border','2px solid red');
+        }
+        else if(namePrd != '' && categoriePrd != '' && descriptionPrd != '' &&
+            quantityPrd != '' && pricePrd != ''){
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            fd.append('name_prd',namePrd);
+            fd.append('reference_prd',referencePrd);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('description_prd',descriptionPrd);
+            fd.append('caracteristique_prd',caracteristiquePrd);
+            fd.append('fonctionnalite_prd',fonctionnalitePrd);
+            fd.append('avantage_prd',avantagePrd);
+            fd.append('quantity_prd',quantityPrd);
+            fd.append('price_prd',pricePrd);
+            $.ajax({
+                url: 'create-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.create-product-top').hide();
+                    $('.create-product-bottom').hide();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('.boutique-bottom').prepend(response);
+                        if ( js_flood == 0 ) {
+                            var msg = {
+                                typeNotification: typeNotification,
+                                uid: uid
+                            };
+                            websocket.send(JSON.stringify(msg));
+                            flood_js();
+                        } else {
+                            console.log('error');
+                        }
+                    }
+                },
+                complete: function(){
+                    $("#loader_load").hide();
+                    $(".create-product").hide();
+                    $("body").removeClass('body-after');
+                    $('.create-product-container').css({'top':'','transform':''});
+                    $('.create-product-top').show();
+                    $('.create-product-bottom').show();
+                    $('#name_product').val('');
+                    $('#reference_product').val('');
+                    $('#categorie_product').val('');
+                    $('#description_product').val('');
+                    $('#quantity_product').val('');
+                    $('#price_product').val('');
+                    $('.product-images-preview').empty();
+                }
+            });
+        }
+    });
+
+    // commentaire product notification
+    $(document).on('keypress','#commentaire_prd_text',function(event) {
+        if (event.which == 13) {
+            var typeNotification = 'commentaireBtq';
+            var fd = new FormData();
+            var idUserComment = $(document).find('#id_user_comment').val();
+            fd.append('id_user',idUserComment);
+            var to_id = $(document).find('#id_boutique_product').val();
+            fd.append('id_btq',to_id);
+            console.log(to_id);
+            var idPrd = $(document).find('#id_prd').val();
+            fd.append('id_prd',idPrd);
+            var commentaireText = $(this).val();
+            fd.append('commentaire_text',commentaireText);
+            var nomUser = $('#commentaire_nom_user').val();
+            var imgUser = $('#commentaire_img_user').val();
+            $.ajax({
+                url: 'comment-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+                        $('#commentaire_text').val('');
+                        $('#product_comments_preview').prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+                        if ( js_flood == 0 ) {
+                            var msg = {
+                                typeNotification: typeNotification,
+                                uid: uid,
+                                to_id: to_id
+                            };
+                            websocket.send(JSON.stringify(msg));
+                            flood_js();
+                        } else {
+                            console.log('error');
+                        }
+                    }
+                }
+            });
+        }
+    });
+
     websocket.onmessage = function(ev) {
         var msg = JSON.parse(ev.data); 
         var typeNotification = msg.typeNotification;
@@ -269,13 +665,24 @@ function start(websocketServerLocation){
             var userId = msg.idRecever; 
             var senderId = msg.idSender; 
             var cleMsg = msg.msgCle;
-            var refreshSender = msg.refreshSender;
             var messagerieType = msg.typeMessagerie; 
             var msgCle = $(document).find('#msgCle').val();
             var messagerie = $(document).find('#messagerie').val();
             if (messagerieType == 'boutiqueUser') {
                 if (cleMsg == msgCle) {
-                    if (refreshSender == 1) {
+                    if (userId != uid) {
+                        if (messagerie == 'messagerie') {
+                            var template_message = $(document).find('#template_left_message').html();
+                            var message = template_message.replace('{message}', umsg);
+                            $('.messagerie-middle-bottom').append(message);
+                        }else if(messagerie == 'boutique'){
+                            var boutique_template_message = $(document).find('#boutique_left_message').html();
+                            var message_boutique = boutique_template_message.replace('{message}', umsg);
+                            $('.boutique-message-right-bottom').append(message_boutique);
+                        }
+                        updateSenderMessage(userId,senderId);
+                        updateReceverMessage(senderId,userId);
+                    }else{
                         if (messagerie == 'messagerie') {
                             var template_message = $(document).find('#template_right_message').html();
                             var message = template_message.replace('{message}', umsg);
@@ -286,36 +693,13 @@ function start(websocketServerLocation){
                             $('.boutique-message-right-bottom').append(message_boutique);
                         }
                         updateReceverMessage(userId,senderId);
-                    }else{
-                        if (userId != uid) {
-                            if (messagerie == 'messagerie') {
-                                var template_message = $(document).find('#template_left_message').html();
-                                var message = template_message.replace('{message}', umsg);
-                                $('.messagerie-middle-bottom').append(message);
-                            }else if(messagerie == 'boutique'){
-                                var boutique_template_message = $(document).find('#boutique_left_message').html();
-                                var message_boutique = boutique_template_message.replace('{message}', umsg);
-                                $('.boutique-message-right-bottom').append(message_boutique);
-                            }
-                            updateSenderMessage(userId,senderId);
-                            updateReceverMessage(senderId,userId);
-                        }else{
-                            if (messagerie == 'messagerie') {
-                                var template_message = $(document).find('#template_right_message').html();
-                                var message = template_message.replace('{message}', umsg);
-                                $('.messagerie-middle-bottom').append(message);
-                            }else if(messagerie == 'boutique'){
-                                var boutique_template_message = $(document).find('#boutique_right_message').html();
-                                var message_boutique = boutique_template_message.replace('{message}', umsg);
-                                $('.boutique-message-right-bottom').append(message_boutique);
-                            }
-                            updateReceverMessage(userId,senderId);
-                            updateSenderMessage(senderId,userId);
-                        }
+                        updateSenderMessage(senderId,userId);
                     }
                     scrolldiv();
                 }
-                updateReceverMessage(userId,senderId);
+                else{
+                    updateReceverMessage(userId,senderId);
+                }
                 $('.user-new-msg').load('load-user-new-msg.php');
                 $('.btq-new-msg').load('load-btq-new-msg.php?btq='+senderId);
                 $('.boutique-message-left').load('load-boutique-sender.php?id_btq='+uid);
@@ -323,44 +707,39 @@ function start(websocketServerLocation){
             } 
             else if(messagerieType == 'userUser') {
                 if (cleMsg == msgCle) {
-                    if (refreshSender == 1) {
-                        // console.log('1');
+                    if ( userId != uid ) {
+                        var template_message = $(document).find('#template_left_message').html();
+                        updateSenderMessage(userId,senderId);
+                        updateReceverMessage(senderId,userId);
+                    } else {
                         var template_message = $(document).find('#template_right_message').html();
-                        var message = template_message.replace('{message}', umsg);
-                        $('.messagerie-middle-bottom').append(message);
                         updateReceverMessage(userId,senderId);
-                    }else{
-                        // console.log('2');
-                        if ( userId != uid ) {
-                            var template_message = $(document).find('#template_left_message').html();
-                            updateSenderMessage(userId,senderId);
-                            updateReceverMessage(senderId,userId);
-                        } else {
-                            var template_message = $(document).find('#template_right_message').html();
-                            updateReceverMessage(userId,senderId);
-                            updateSenderMessage(senderId,userId);
-                        }
-                        var message = template_message.replace('{message}', umsg);
-                        $('.messagerie-middle-bottom').append(message);
+                        updateSenderMessage(senderId,userId);
                     }
+                    var message = template_message.replace('{message}', umsg);
+                    $('.messagerie-middle-bottom').append(message);
                     scrolldiv();
                 }
-                updateReceverMessage(userId,senderId);
+                else{
+                    updateReceverMessage(userId,senderId);
+                }
                 $('.user-new-msg').load('load-user-new-msg.php');
                 setTimeout(() => {
                     $('.messagerie-left').load('load-messagerie-sender.php?id_user='+uid);
                 }, 0);
             }
         }
+        else if (typeNotification == 'publication') {
+            var toId = msg.to_id;
+            if (toId == uid) {
+                $('.user-new-ntf').load('load-user-new-ntf.php');
+            } 
+        }
         else if (typeNotification == 'like') {
-            // var id = msg.id;
             var toId = msg.to_id;
             var idPub = msg.idPub;
-            console.log('idpub '+idPub);
-            if (toId != uid) {
-                console.log('1');
+            if (toId == uid) {
                 var like = parseInt($('.pub-like-'+idPub).find('span').text());
-                console.log('like '+like);
                 $('.pub-like-'+idPub).find('span').text(like+1);
                 $('.user-new-ntf').load('load-user-new-ntf.php');
             } 
@@ -371,7 +750,7 @@ function start(websocketServerLocation){
             var nomUser = msg.nom_user;
             var imgUser = msg.img_user;
             var commentaire = msg.commentaire;
-            if (toId != uid) {
+            if (toId == uid) {
                 $('.pub-comment-'+idPub).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaire+"</p></div>"); 
                 $('.user-new-ntf').load('load-user-new-ntf.php');
             } 
@@ -383,15 +762,25 @@ function start(websocketServerLocation){
             } 
         }
         else if (typeNotification == 'abonnementBtq') {
-            var messagerieType = msg.typeMessagerie; 
-            if (messagerieType == 'boutiqueUser') {
+            // var messagerieType = msg.typeMessagerie; 
+            // if (messagerieType == 'boutiqueUser') {
                 var id_abn_user = msg.id_abn_user;
-                console.log(id_abn_user);
                 if (id_abn_user == uid) {
-                    console.log('yes');
                     $('.btq-new-ntf').load('load-btq-new-ntf.php?btq='+id_abn_user);
                 } 
-            }
+            // }
+        }
+        else if (typeNotification == 'produit') {
+            var toId = msg.to_id;
+            if (toId == uid) {
+                $('.user-new-ntf').load('load-user-new-ntf.php');
+            } 
+        }
+        else if (typeNotification == 'commentaireBtq') {
+            var toId = msg.to_id;
+            if (toId == uid) {
+                $('.btq-new-ntf').load('load-btq-new-ntf.php?btq='+toId);
+            } 
         }
     };
     

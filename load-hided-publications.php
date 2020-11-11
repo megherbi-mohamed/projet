@@ -1,23 +1,25 @@
 <?php 
 session_start();
 include_once './bdd/connexion.php';
-$cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-$cnx_user_query->execute();
-$row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
+$id_session = htmlspecialchars($_SESSION['user']);
+$get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+$get_session_id_query->execute();
+$get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+
+$user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+$user_session_query->execute();
+
+if ($user_session_query->rowCount() > 0) {
+    $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+    $id_user = $row['id_user'];
+}
 ?>
-<!-- <div class="cancel-hided-publications">
-    <div id="cancel_hided_publications_resp">
-        <i class="fas fa-arrow-left"></i>
-    </div>
-    <p>Publications masquées</p>
-</div>
-<div id="cancel_hided_publications">
-    <i class="fas fa-times"></i>
-</div> -->
 <div class="user-profile-publications">
     <?php 
-    $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '{$_SESSION["user"]}' AND masquer_pub = 1 ORDER BY id_pub DESC"); 
+    $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_user = '$id_user' AND masquer_pub = 1 ORDER BY id_pub DESC"); 
     $publication_query->execute();
+    if ($publication_query->rowCount() > 0) {
     $i=0;
     while($publication_row = $publication_query->fetch(PDO::FETCH_ASSOC)){
     $i++; 
@@ -134,4 +136,7 @@ $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
         </div>
     </div>
     <?php } ?>
+    <?php }else{
+        echo '<p style="font-size:.85rem; text-align:center;">Accune publication masquées</p>';
+    } ?>
 </div>

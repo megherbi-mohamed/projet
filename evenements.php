@@ -10,12 +10,13 @@ if (isset($_SESSION['user'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css-js/style.css">
-    <link rel="stylesheet" href="./css-js/evenements.css">
-    <link href="./css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css-js/style.css">
+    <link rel="stylesheet" href="css-js/evenements.css">
+    <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
     <title>Evenements</title>
 </head>
@@ -110,7 +111,7 @@ if (isset($_SESSION['user'])) {
     </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="./css-js/main.js"></script>
+    <script src="css-js/main.js"></script>
     <script>
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 

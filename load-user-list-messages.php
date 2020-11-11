@@ -2,9 +2,21 @@
 session_start();
 include_once './bdd/connexion.php';
 $id_user= htmlspecialchars($_POST['id_user']);
-$get_msg_query = $conn->prepare("SELECT * FROM messages WHERE id_msg IN (SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' OR id_sender = '$id_user' GROUP BY msg_cle) ORDER BY id_msg DESC");
+$get_msg_query = $conn->prepare("SELECT id_sender,id_recever FROM messages WHERE id_msg IN (SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' OR id_sender = '$id_user' GROUP BY msg_cle) ORDER BY id_msg DESC");
 $get_msg_query->execute();
-if ($get_msg_query->rowCount()) {
+
+if ($get_msg_query->rowCount() > 0) {
+
+$get_last_sender_query = $conn->prepare("SELECT id_sender,id_recever FROM messages WHERE id_msg IN (SELECT MAX(id_msg) FROM messages WHERE id_recever = '$id_user' OR id_sender = '$id_user' GROUP BY msg_cle) ORDER BY id_msg DESC LIMIT 1");
+$get_last_sender_query->execute();
+$get_last_sender_row = $get_last_sender_query->fetch(PDO::FETCH_ASSOC);
+if ($get_last_sender_row['id_sender'] == $id_user) {
+    $last_sender = $get_last_sender_row['id_recever'];
+}
+else if ($get_last_sender_row['id_recever'] == $id_user){
+    $last_sender = $get_last_sender_row['id_sender'];
+}
+
 $i=0;
 while ($get_msg_row = $get_msg_query->fetch(PDO::FETCH_ASSOC)) {
 $i++;
@@ -46,6 +58,9 @@ if ($last_msg_row['etat_recever_msg'] == $id_user || $last_msg_row['etat_sender_
     </div>
 </div>
 <?php } ?>
+<div style="color:#000;text-decoration:none;margin-top:10px;text-align:center;width:100%;font-size:.9rem;font-weight:bold">
+    <a href="messagerie/<?php echo $last_sender; ?>">Afficher tout les messages</a>
+</div>
 <?php 
 } 
 else{

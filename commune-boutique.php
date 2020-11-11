@@ -4,10 +4,11 @@ $ville = htmlspecialchars($_GET['v']);
 ?>
 <select id="commune_boutique">
     <?php 
-    $commune_query = "SELECT * FROM communes WHERE ville = '$ville'";
-    $commune_result = mysqli_query($conn, $commune_query); 
-    while ($commune_row = mysqli_fetch_assoc($commune_result)) {
+    $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville'");
+    $commune_query->execute();
+    while ($commune_row = $commune_query->fetch(PDO::FETCH_ASSOC)) {
     ?>
     <option value="<?php echo $commune_row['commune'] ?>"><?php echo $commune_row['commune'] ?></option>
     <?php } ?>
 </select>
+<span class="ville-btq">Ville *</span>

@@ -126,6 +126,7 @@ if (!empty($_SESSION['user'])) {
                         $('.inscription-connexion-container').css('opacity','0.5');
                     },
                     success: function(response){
+                        // console.log(response);
                         if(response != 0){
                             window.location.href = 'utilisateur/'+response;
                         }
@@ -437,7 +438,7 @@ if (!empty($_SESSION['user'])) {
                 success: function(response){
                     console.log(response);
                     if(response != 0){
-                        window.location.href = 'utilisateur.php';
+                        window.location.href = 'utilisateur/'+response;
                     }
                     else{
                         $('#code_verification').val("");

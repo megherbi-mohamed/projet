@@ -1,31 +1,73 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
-</head>
-<body>
-    <div style="width:600px;margin:auto;background:#ecedee">
-        <div style="width:100%;background:#ffffff;padding:20px;box-sizing:border-box;text-align:center">
-            <h2 style="font-family:Fugaz One;">Nhannik</h2>
-        </div>
-        <div style="width:80%;margin:auto;text-align:center">
-            <p style="margin:10px auto;font-size:.9rem">Merci beaucoup d'avoir rejoint nhannik! pour terminer votre inscription, il vous suffit de confirmer que nous avons bien reçu votre e-mail</p>
-            <p style="margin:10px auto;font-size:.9rem">Code de vérification</p>
-            <div style="width:100%:background:#ffffff;padding:30px;box-sizing:border-box;text-align:center">
-                <h4>654987</h4>
-            </div>
-        </div>
-        <div style="width:80%;margin:auto,display:grid;grid-template-columns:repeat(3,1fr);align-items:center;justify-items:center">
-            <a href=""><i class="fab fa-facebook"></i></a>
-            <a href=""><i class="fab fa-instagram"></i></a>
-            <a href=""><i class="fab fa-youtube"></i></a>
-        </div>
-    </div>
-</body>
-</html> -->
-
 <?php 
-    echo 'a='.$_GET['a'].' b='.$_GET['b'];
+session_start();
+include 'bdd/connexion.php';
+// get online user 
+$id_user = 1;
+$get_btq_user_query = $conn->prepare("SELECT id_btq FROM boutiques WHERE id_createur = $id_user");
+$get_btq_user_query->execute();
+$reserved_session = array();
+while ($get_btq_user_row = $get_btq_user_query->fetch(PDO::FETCH_ASSOC)) {
+    $id_btq = $get_btq_user_row['id_btq'];
+    $get_btq_sessions_query = $conn->prepare("SELECT * FROM gerer_connexion WHERE id_user = $id_btq");
+    $get_btq_sessions_query->execute();
+    $get_btq_sessions_row = $get_btq_sessions_query->fetch(PDO::FETCH_ASSOC);
+    $session_btq_1 = $get_btq_sessions_row['id_user_1'];
+    $session_btq_2 = $get_btq_sessions_row['id_user_2'];
+    $session_btq_3 = $get_btq_sessions_row['id_user_3'];
+    $session_btq_4 = $get_btq_sessions_row['id_user_4'];
+    $session_btq_5 = $get_btq_sessions_row['id_user_5'];
+
+    $get_reserved_session_query = $conn->prepare("SELECT session_usr FROM sessions_reserves WHERE 
+    (session_btq = $session_btq_1 OR session_btq = $session_btq_2 OR
+    session_btq = $session_btq_3 OR session_btq = $session_btq_4 OR
+    session_btq = $session_btq_5) AND session_usr IS NOT NULL");
+    $get_reserved_session_query->execute();
+    while ($get_reserved_session_row = $get_reserved_session_query->fetch(PDO::FETCH_ASSOC)) {
+        $session_usr = $get_reserved_session_row['session_usr'];
+        array_push($reserved_session, $session_usr);
+    }
+}
+
+print_r($reserved_session);
 ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+// window.addEventListener('load', function() {
+
+//   function updateOnlineStatus(event) {
+//     var condition = navigator.onLine ? "online" : "offline";
+//     if (condition == 'offline') {
+        
+//     }
+//   }
+
+//   window.addEventListener('online',  updateOnlineStatus);
+//   window.addEventListener('offline', updateOnlineStatus);
+// });
+
+// window.onbeforeunload = function (event) {
+//     var message = 'Important: Please click on \'Save\' button to leave this page.';
+//     if (typeof event == 'undefined') {
+//         event = window.event;
+//     }
+//     if (event) {
+//         event.returnValue = message;
+//     }
+//     return message;
+// };
+// $.ajax({
+//     url: 'test1.php',
+//     success: function(response){
+//     },
+// });
+// $(function () {
+//     $("a").not('#lnkLogOut').click(function () {
+//         window.onbeforeunload = null;
+//     });
+//     $(".btn").click(function () {
+//         window.onbeforeunload = null;
+// });
+
+// };
+
+</script>

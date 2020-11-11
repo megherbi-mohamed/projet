@@ -1,7 +1,12 @@
 <?php 
 session_start();
 include_once './bdd/connexion.php';
-$id_btq = htmlspecialchars($_POST['id_btq']);
+$id_session_btq = htmlspecialchars($_POST['id_btq']);
+$get_session_btq_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session_btq' OR id_user_1 = '$id_session_btq' OR id_user_2 = '$id_session_btq' 
+                                            OR id_user_3 = '$id_session_btq' OR id_user_4 = '$id_session_btq' OR id_user_5 = '$id_session_btq'");
+$get_session_btq_query->execute();
+$get_session_btq_row = $get_session_btq_query->fetch(PDO::FETCH_ASSOC);
+$id_btq = $get_session_btq_row['id_user'];
 $btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq");
 $btq_inf_query->execute();
 $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
@@ -15,7 +20,7 @@ $id_createur = $btq_inf_row['id_createur'];
         <?php }else if($btq_inf_row['couverture_btq'] == ''){ ?>
             <img id="couverture_img" src="./boutique-couverture/couverture.png" alt="">
         <?php } ?>
-        <div class="couverture-modification-icon" id="but_updt_img_cvrt">
+        <div class="couverture-modification-icon" id="update_boutique_couverture">
             <i class="fas fa-camera"></i>
         </div>
         </div>
@@ -25,7 +30,7 @@ $id_createur = $btq_inf_row['id_createur'];
         <?php }else if($btq_inf_row['logo_btq'] == ''){ ?>
             <img src="./boutique-logo/logo.png" alt="">
         <?php } ?>
-        <div class="logo-modification-icon" id="but_updt_img_logo">
+        <div class="logo-modification-icon" id="update_boutique_logo">
             <i class="fas fa-camera"></i>
         </div>
         </div>

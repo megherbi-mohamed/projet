@@ -221,14 +221,11 @@
                         <?php }else if($publication_media_row['media_type'] == 'i'){ ?>
                         <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
                         <?php } ?>
-                        <input type="hidden" id="media_updt_<?php echo $i ?>_1" value="<?php echo $publication_media_row['media_url'] ?>">
-                        <input type="hidden" id="media_type_<?php echo $i ?>_1" value="<?php echo $publication_media_row['media_type'] ?>">
                     </div>
                     <?php } else if ($publication_media_query->rowCount() == 2) { ?>
                     <div class="user-publication-middle-two-view">
                     <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
                         <div>
-                            <input type="hidden" id="media_updt_<?php echo $i ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                             <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
                         </div>
                     <?php } ?>
@@ -237,7 +234,6 @@
                     <div class="user-publication-middle-three-view">
                     <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
                         <div>
-                            <input type="hidden" id="media_updt_<?php echo $i ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                             <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
                         </div>
                     <?php } ?>
@@ -246,7 +242,6 @@
                     <div class="user-publication-middle-four-view">
                     <?php $j=0; while($publication_media_row=$publication_media_query->fetch(PDO::FETCH_ASSOC)){ $j++; ?>
                         <div>
-                            <input type="hidden" id="media_updt_<?php echo $i ?>_<?php echo $j ?>" value="<?php echo $publication_media_row['media_url'] ?>">
                             <img src="./<?php echo $publication_media_row['media_url'] ?>" alt="">
                         </div>
                     <?php } ?>
@@ -255,7 +250,7 @@
                 </div>
                 <div class="user-publication-bottom">
                     <?php
-                    $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
+                    $publication_comment_query = $conn->prepare("SELECT * FROM commentaire_publication WHERE id_pub = '{$publication_row["id_pub"]}' ORDER BY id_c DESC"); 
                     $publication_comment_query->execute();
                     $publication_comment_count = $publication_comment_query->rowCount();
                     ?>
@@ -264,7 +259,6 @@
                             <?php
                             $num_like_pub_query = $conn->prepare("SELECT id_j,id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}'"); 
                             $num_like_pub_query->execute();
-                            // $num_like_pub_row = $num_like_pub_query->fetch(PDO::FETCH_ASSOC);
                             $num_like_pub_count = $num_like_pub_query->rowCount();
                             $num_like_user_query = $conn->prepare("SELECT id_user FROM jaime_publication WHERE id_pub = '{$publication_row["id_pub"]}' AND id_user = $id_user"); 
                             $num_like_user_query->execute();
@@ -290,7 +284,7 @@
                     </div>
                     <?php if ($publication_row['etat_commentaire'] == 0) { ?>
                     <div class="user-publication-bottom-bottom" id="user_publication_bottom_bottom_<?php echo $i ?>">
-                    <img src="./<?php echo $row['img_user'] ?>" alt="">
+                        <img src="./<?php echo $row['img_user'] ?>" alt="">
                         <input type="text" id="commentaire_text_<?php echo $i ?>" placeholder = "Tapez une commentaire ...">
                         <input type="hidden" id="commentaire_img_user_<?php echo $i ?>" value="<?php echo $row['img_user'] ?>">
                         <input type="hidden" id="commentaire_nom_user_<?php echo $i ?>" value="<?php echo $row['nom_user'] ?>">
@@ -322,6 +316,24 @@
     </div>
     <div id="loader_publications" class="center"></div>
 </div>
+<div class="display-user-publications-comments">
+    <div class="display-user-publications-comments-top">
+        <div id="hide_pub_comments">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <h4>Comments</h4>
+    </div>
+    <div class="display-user-publications-comments-container"></div>
+    <div class="display-user-publications-comments-bottom">
+        <input type="text" id="commentaire_pub_text" placeholder = "Tapez une commentaire ...">
+        <div id="send_comment_button">
+            <img src="./icons/send-message-icon.png" alt="">
+        </div>
+        <input type="hidden" id="commentaire_img_user" value="<?php echo $row['img_user'] ?>">
+        <input type="hidden" id="commentaire_nom_user" value="<?php echo $row['nom_user'] ?>">
+    </div>
+    <div id="loader_comments" class="center"></div>
+</div>
 <div class="user-profile-right-content">
     <div class="user-profile-right-content-pub">
         <h4>Sponsorisés</h4>
@@ -341,14 +353,17 @@
             <?php 
             $btq_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = '$user'");
             $btq_query->execute();
+            $i = 0;
             while($btq_row = $btq_query->fetch(PDO::FETCH_ASSOC)){
+                $id_btq = $btq_row['id_btq'];
+                $i++;
             ?>
             <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
-            <a onclick="pushState(<?php echo $btq_row['id_btq'] ?>)" href="gerer-boutique/<?php echo $btq_row['id_btq'] ?>">
-            <?php }else{ ?>
-            <a href="boutique/<?php echo $btq_row['id_btq'] ?>">
+            <div class="user-boutique" id="show_gb_btq_<?php echo $i ?>">
+            <?php } else { ?>
+            <div class="user-boutique" id="show_btq_<?php echo $i ?>">
             <?php } ?>
-            <div class="user-boutique">
+                <input type="hidden" id="id_user_btq_<?php echo $i ?>" value="<?php echo $id_btq ?>">
                 <?php if ($btq_row['logo_btq'] != '') { ?>
                     <img src="./<?php echo $btq_row['logo_btq'] ?>" alt="">
                 <?php }else if($btq_row['logo_btq'] == ''){ ?>
@@ -391,51 +406,71 @@
                     </div>
                 </div>
             </div>
-            </a>
+            <!-- </a> -->
             <?php } ?>
         </div>
     </div>
 </div> 
-<div class="display-user-publications-comments">
-    <div class="display-user-publications-comments-container"></div>
-    <div id="loader_comments" class="center"></div>
-</div>
 <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
-<div class="user-image-update-container">
-    <div class="cancel-user-image-update" id="cancel_user_image_update">
-        <i class="fas fa-times"></i>
-    </div>
-	<div class="panel panel-default">
-	    <div class="panel-heading">Modification d'image</div>
-        <div class="row">
-            <div class="image-upload-befor">
-                <div id="upload-demo"></div>
+<div class="user-image-update">
+    <div class="user-image-update-container">
+        <div class="user-image-update-top">
+            <div class="cancel-user-image-update-resp" id="cancel_user_image_update_resp">
+                <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="image-upload-option">
-                <button id="find_image_btn">Choissir une image</button>
-                <input type="file" id="upload" accept='image/*'>
-                <button class="upload-result">Valider la modification</button>
+            <h4>Modifier votre logo!</h4>
+            <div class="cancel-user-image-update" id="cancel_user_image_update">
+                <i class="fas fa-times"></i>
+            </div>
+            <button class="upload-result-resp">Valider</button>
+        </div>
+        <div class="panel panel-default">
+            <div class="row">
+                <div class="image-upload-befor">
+                    <div id="upload-demo"></div>
+                </div>
+                <div class="image-upload-option">
+                    <button id="find_image_btn">Choissir une image</button>
+                    <input type="file" id="upload" accept='image/*'>
+                    <div>
+                        <button id="cancel_updt_img_button">Annuler</button>
+                        <button class="upload-result">Valider la modification</button>
+                    </div>
+                </div>
             </div>
         </div>
-	</div>
+        <div id="loader_updt_img" class="center"></div>
+    </div>
 </div>
-<div class="user-couverture-update-container">
-    <div class="cancel-user-couverture-update" id="cancel_user_couverture_update">
-        <i class="fas fa-times"></i>
-    </div>
-	<div class="panel panel-default">
-	    <div class="panel-heading">Modification d'image</div>
-        <div class="row">
-            <div class="image-upload-befor">
-                <div id="upload-demo-couverture"></div>
+<div class="user-couverture-update">
+    <div class="user-couverture-update-container">
+        <div class="user-couverture-update-top">
+            <div class="cancel-user-couverture-update-resp" id="cancel_user_couverture_update_resp">
+                <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="image-upload-option">
-                <button id="find_couverture_btn">Choissir une image</button>
-                <input type="file" id="upload_couverture" accept='image/*'>
-                <button class="upload-result-couverture">Valider la modification</button>
+            <h4>Modifier carte visite!</h4>
+            <div class="cancel-user-couverture-update" id="cancel_user_couverture_update">
+                <i class="fas fa-times"></i>
+            </div>
+            <button class="upload-result-couverture-resp">Valider</button>
+        </div>
+        <div class="panel panel-default">
+            <div class="row">
+                <div class="image-upload-befor">
+                    <div id="upload-demo-couverture"></div>
+                </div>
+                <div class="image-upload-option">
+                    <button id="find_couverture_btn">Choissir une image</button>
+                    <input type="file" id="upload_couverture" accept='image/*'>
+                    <div>
+                        <button id="cancel_updt_cvrt_button">Annuler</button>
+                        <button class="upload-result-couverture">Valider la modification</button>
+                    </div>
+                </div>
             </div>
         </div>
-	</div>
+        <div id="loader_updt_cvrt" class="center"></div>
+    </div>
 </div>
 <?php }else if (isset($_SESSION['user']) && $_SESSION['user'] !== $_GET['user']){ ?>
 <div class="abonne-user" id="abonne_user">

@@ -1,8 +1,13 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
+$id_session_btq = htmlspecialchars($_POST['id_btq']);
+$get_session_btq_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session_btq' OR id_user_1 = '$id_session_btq' OR id_user_2 = '$id_session_btq' 
+                                            OR id_user_3 = '$id_session_btq' OR id_user_4 = '$id_session_btq' OR id_user_5 = '$id_session_btq'");
+$get_session_btq_query->execute();
+$get_session_btq_row = $get_session_btq_query->fetch(PDO::FETCH_ASSOC);
+$id_btq = $get_session_btq_row['id_user'];
 $id_sender = htmlspecialchars($_POST['id_sender']);
-$id_btq = htmlspecialchars($_POST['id_btq']);
 $get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE id_recever = '$id_btq' AND id_sender = '$id_sender'
 OR id_recever = '$id_sender' AND id_sender = '$id_btq'");
 $get_sender_msg_query->execute();

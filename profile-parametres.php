@@ -2,27 +2,58 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
-    $id_user = $row['id_user'];
+    $id_session = htmlspecialchars($_SESSION['user']);
+
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+    $user_session_query->execute();
+
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+        $uid = $id_session;
+        $id_user = $row['id_user'];
+    }
+    else{
+        header('Location: inscription-connexion.php');
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/projet/" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css-js/style.css">
-    <link rel="stylesheet" href="./css-js/profile-parametres.css">
-    <link href="./css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css-js/style.css">
+    <link rel="stylesheet" href="css-js/profile-parametres.css">
+    <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
     <title>Paramètres de profile</title>
 </head>
 <body>
     <?php include './navbar.php';?>
     <div class="clear"></div>
+    <div class="profile-parametres-responsive">
+        <div class="profile-parametres-responsive-container">
+            <div class="show-hide-menu" id="show_hide_menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="logo-name">
+                <h4>Nhannik</h4>
+            </div>
+            <div id="display_pp_manager">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="show-search-bar-rsp" id="show_search_bar_rsp">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </div>
     <div class="parametres-profile-left">
         <h2>Paramètres de profile</h2>
         <hr>
@@ -50,14 +81,24 @@ if (isset($_SESSION['user'])) {
                 <p>Publications enregistrées</p>
             </div>
         </div>
+        <div class="parametres-profile">
+            <div class="parametres-profile-button" id="display_all_notifications">
+                <div>
+                    <i class="fas fa-bell"></i>
+                </div>
+                <p>Notifications</p>
+            </div>
+        </div>
+        <div class="parametres-profile">
+            <div class="parametres-profile-button" id="display_all_followers">
+                <div>
+                    <i class="fas fa-users"></i>
+                </div>
+                <p>Abonnes</p>
+            </div>
+        </div>
     </div>
     <div class="parametres-profile-right">
-        <div class="parametres-profile-right-top">
-            <div id="cancel_parametres_profile_right">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Modifier les informations de profile!</h4>
-        </div>
         <div class="parametres-prfile-right-container">
             <div class="update-profile-informations">
                 <h3>Modifier les informations de profile!</h3>
@@ -162,11 +203,32 @@ if (isset($_SESSION['user'])) {
             <i class="fas fa-times"></i>
         </div>
     </div>
+    <div class="abonne-user" id="disabonne_user">
+        <div class="abonne-user-container" id="disabonne_user_container">
+            <div class="abonne-user-top">
+                <h4></h4>
+                <div class="cancel-abonne-user" id="cancel_disabonne_user">
+                    <i class="fas fa-times"></i>
+                </div>
+            </div>
+            <div class="abonne-user-middle">
+                <p></p>
+                <input type="hidden" id="id_user_abn">
+                <input type="hidden" id="user_tail">
+            </div>
+            <div class="abonne-user-bottom">
+                <div></div>
+                <div></div>
+                <button id="cancel_disabonne_user_button">Annuler</button>
+                <button id="disabonne_user_button">Disbonner</button>
+            </div>
+        </div>
+        <div id="loader_disabn_user" class="center"></div>
+    </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="./css-js/main.js"></script>
+    <script src="css-js/main.js"></script>
     <script>
-        var $pushState = 0;
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
                 document.querySelector("body").style.visibility = "hidden"; 
@@ -178,8 +240,10 @@ if (isset($_SESSION['user'])) {
             } 
         };
 
+        var action = '<?php echo $_GET['act'] ?>';
+        
         $(window).on('load',function(){
-            if (history.state === 'parametres') {
+            if (history.state === 'parametres' || action === 'parametres') {
                 $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
                 $('#display_user_informations').addClass('active-parametres-profile-button');
                 $.ajax({
@@ -189,14 +253,8 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('parametres','', '/projet/profile-parametres.php?parametres');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        history.replaceState('parametres','', '/projet/profile-parametres/parametres');
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
@@ -213,14 +271,8 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('saved','', '/projet/profile-parametres.php?publication-enregistrees');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        history.replaceState('saved','', '/projet/profile-parametres/publication-enregistrees');
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
@@ -237,14 +289,44 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('hided','', '/projet/profile-parametres.php?publication-masuqees');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        history.replaceState('hided','', '/projet/profile-parametres/publication-masuqees');
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'notification' || action === 'notifications') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_all_notifications').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-all-notifications.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.replaceState('notification','', '/projet/profile-parametres/notifications');
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'abonne') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_all_followers').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-all-followers.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.replaceState('abonne','', '/projet/profile-parametres/abonnes');
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
@@ -254,7 +336,7 @@ if (isset($_SESSION['user'])) {
         })
 
         $(window).on('popstate',function(){
-            if (history.state === 'parametres') {
+            if (history.state === 'parametres' || history.state === null) {
                 $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
                 $('#display_user_informations').addClass('active-parametres-profile-button');
                 $.ajax({
@@ -264,14 +346,7 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('parametres','', '/projet/profile-parametres.php?parametres');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
@@ -288,14 +363,7 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('saved','', '/projet/profile-parametres.php?publication-enregistrees');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
@@ -312,28 +380,47 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('hided','', '/projet/profile-parametres.php?publication-masuqees');
-                        if (windowWidth < 768) {
-                            $('.parametres-profile-right').css('transform','translateX(0)');
-                            $('.parametres-prfile-right-container').append(response);
-                        }
-                        else{
-                            $('.parametres-prfile-right-container').append(response);
-                        }
+                        $('.parametres-prfile-right-container').append(response);
                     },
                     complete: function(response){
                         $("#loader_load").hide();
                     }
                 });
             }
-        })
-
-        if (windowWidth < 768) {
-            $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
-        }
-
-        $('#cancel_parametres_profile_right').click(function(){
-            $('.parametres-profile-right').css('transform','');
+            if (history.state === 'notification') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_all_notifications').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-all-notifications.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'abonne') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_all_followers').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-all-followers.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
         })
 
         // display profile informations
@@ -347,10 +434,12 @@ if (isset($_SESSION['user'])) {
                     $("#loader_load").show();
                 },
                 success: function(response){
-                    history.pushState('parametres','', '/projet/profile-parametres.php?parametres');
+                    history.pushState('parametres','', '/projet/profile-parametres/parametres');
                     if (windowWidth < 768) {
-                        $('.parametres-profile-right').css('transform','translateX(0)');
-                        $('.parametres-prfile-right-container').append(response);
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
                     }
                     else{
                         $('.parametres-prfile-right-container').append(response);
@@ -373,10 +462,12 @@ if (isset($_SESSION['user'])) {
                     $("#loader_load").show();
                 },
                 success: function(response){
-                    history.pushState('saved','', '/projet/profile-parametres.php?publication-enregistrees');
+                    history.pushState('saved','', '/projet/profile-parametres/publication-enregistrees');
                     if (windowWidth < 768) {
-                        $('.parametres-profile-right').css('transform','translateX(0)');
-                        $('.parametres-prfile-right-container').append(response);
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
                     }
                     else{
                         $('.parametres-prfile-right-container').append(response);
@@ -399,10 +490,68 @@ if (isset($_SESSION['user'])) {
                     $("#loader_load").show();
                 },
                 success: function(response){
-                    history.pushState('hided','', '/projet/profile-parametres.php?publication-masuqees');
+                    history.pushState('hided','', '/projet/profile-parametres/publication-masuqees');
                     if (windowWidth < 768) {
-                        $('.parametres-profile-right').css('transform','translateX(0)');
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
+                    }
+                    else{
                         $('.parametres-prfile-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        });
+
+        // display all notifications
+        $(document).on('click',"#display_all_notifications",function() {
+            $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+            $(this).addClass('active-parametres-profile-button');
+            $.ajax({
+                url: 'load-all-notifications.php',
+                beforeSend: function(){
+                    $(".parametres-prfile-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    history.pushState('notification','', '/projet/profile-parametres/notifications');
+                    if (windowWidth < 768) {
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
+                    }
+                    else{
+                        $('.parametres-prfile-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        });
+
+        // display user hided publications
+        $(document).on('click',"#display_all_followers",function() {
+            $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+            $(this).addClass('active-parametres-profile-button');
+            $.ajax({
+                url: 'load-all-followers.php',
+                beforeSend: function(){
+                    $(".parametres-prfile-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    history.pushState('abonne','', '/projet/profile-parametres/abonnes');
+                    if (windowWidth < 768) {
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
                     }
                     else{
                         $('.parametres-prfile-right-container').append(response);
@@ -481,7 +630,7 @@ if (isset($_SESSION['user'])) {
 
         // remove hided publications
         $(document).on('click','[id^="remove_hided_pub_button_"]',function(){
-            id = $(this).attr("id").split("_")[4];
+            var id = $(this).attr("id").split("_")[4];
             var fd = new FormData();
             var idPub = $('#id_publication_hide_'+id).val();
             fd.append('id_pub',idPub);
@@ -509,7 +658,7 @@ if (isset($_SESSION['user'])) {
 
         // remove saved publications
         $(document).on('click','[id^="remove_saved_pub_button_"]',function(){
-            id = $(this).attr("id").split("_")[4];
+            var id = $(this).attr("id").split("_")[4];
             var fd = new FormData();
             var idPub = $('#id_publication_save_'+id).val();
             fd.append('id_pub',idPub);
@@ -524,6 +673,7 @@ if (isset($_SESSION['user'])) {
                     $("#loader_load").show();
                 },
                 success: function(response){
+                    console.log(response);
                     if(response != 0){
                         $('#user_publication_'+id).remove();
                     }
@@ -538,9 +688,143 @@ if (isset($_SESSION['user'])) {
         $(document).on('click','.cancel-alert-message',function(){
             $('.pp-message-alert').css('transform','');
         })
+
+        function updateReceverMessage(userId,senderId){
+            var fd = new FormData();
+            fd.append('id_user',userId);
+            fd.append('id_sender',senderId);
+            $.ajax({
+                url: 'update-messagerie-recever.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response != 0){
+
+                    }
+                }
+            });
+        }
+
+        // disfollow user
+        $(document).on('click','[id^="disfollow_button_"]',function(e) {
+            var id = $(this).attr("id").split("_")[2];
+            var idUser = $('#id_user_abn_'+id).val();
+            var nomUser = $('#nom_user_abn_'+id).val();
+            $('#user_tail').val(id);
+            $('#id_user_abn').val(idUser);
+            $('.abonne-user-top h4').text('Disabonner a '+nomUser);
+            $('.abonne-user-middle p').text('Voulez vous disabonner a '+nomUser);
+            $("body").addClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").show();
+            }else{
+                $("#disabonne_user").css('transform','translateY(0)');
+            }
+        })
+
+        $('#cancel_disabonne_user').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#cancel_disabonne_user_button').click(function(e){
+            e.stopPropagation();
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user').click(function(e){
+            $("body").removeClass('body-after');
+            if (windowWidth > 768) {
+                $("#disabonne_user").hide();
+            }else{
+                $("#disabonne_user").css('transform','');
+            }
+        });
+
+        $('#disabonne_user_container').click(function(e){
+            e.stopPropagation();
+        });
+
+        $('#disabonne_user_button').click(function(e){
+            var id = $('#user_tail').val();
+            var fd = new FormData();
+            var idUser = $('#id_user_abn').val();
+            fd.append('id_user',idUser);
+            $.ajax({
+                url: 'disabonne-user.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#disabonne_user').css('opacity','0.5');
+                    $("#loader_disabn_user").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $("#user_follower_"+id).remove();
+                    }
+                },
+                complete: function(){
+                    $('#disabonne_user').css('opacity','');
+                    $("#loader_disabn_user").hide();
+                    $("body").removeClass('body-after');
+                    if (windowWidth > 768) {
+                        $("#disabonne_user").hide();
+                    }else{
+                        $("#disabonne_user").css('transform','');
+                    }
+                }
+            });
+        });
+
+        $('#display_pp_manager').click(function(e){
+            e.stopPropagation();
+            setTimeout(() => {
+                $('body').addClass('body-after');
+            }, 0);
+            $('.parametres-profile-left').css('transform','translateX(0)');
+        })
+
+        // show user profile
+        $(document).on('click','[id^="show_profile_button_"]',function(e) {
+            var id = $(this).attr("id").split("_")[3];
+            var idUser = $('#id_user_abn_'+id).val();
+            window.location = 'utilisateur/'+idUser;
+        })
+
+        $('#search_pp_bar_button').click(function(e){
+            console.log('click');
+            // e.stopPropagation();
+            $('.categorie-professionnel').show();
+            $('#categorie_search').focus();
+            if (windowWidth > 768) {
+                $('.user-list-dropdown').hide();
+                $('.user-create-options').hide();
+                $('.user-list-messages').hdie();
+                $('.user-list-notifications').hide();
+            }else{
+                $('.user-list-dropdown').css('transform','');
+                $('.user-create-options').css('transform','');
+                $('.user-list-messages').css('transform','');
+                $('.user-list-notifications').css('transform','');
+            }
+        })
         
         <?php if (isset($_SESSION['user'])) { ?>
-        var uid = <?php echo $id_user; ?>;
+        var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
         var js_flood = 0;

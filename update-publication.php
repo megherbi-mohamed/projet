@@ -1,20 +1,25 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
+$id_session = htmlspecialchars($_SESSION['user']);
+$get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                        OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+$get_session_id_query->execute();
+$get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+$user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+$user_session_query->execute();
+$row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+$id_user = $row['id_user'];
 $id = htmlspecialchars($_POST['id']);
 $id_pub = htmlspecialchars($_POST['id_pub']);
 $lieu_pub = htmlspecialchars($_POST['lieu_pub']);
 $description_pub = htmlspecialchars($_POST['description_pub']);
 
-$update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = {$_SESSION['user']}");
+$update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = $id_user");
 if ($update_pub_query->execute()) {
 $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_pub = '$id_pub'"); 
 $publication_query->execute();
 $publication_row = $publication_query->fetch(PDO::FETCH_ASSOC);
-
-$cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-$cnx_user_query->execute();
-$row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <div class="user-publication" id="user_publication_<?php echo $id ?>">
     <div class="user-publication-top">

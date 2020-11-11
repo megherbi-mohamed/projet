@@ -2,10 +2,21 @@
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
-    $cnx_user_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user=".$_SESSION['user']);
-    $cnx_user_query->execute();
-    $row = $cnx_user_query->fetch(PDO::FETCH_ASSOC);
-    $id_user = $row['id_user'];
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_id_query->execute();
+    $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
+    $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
+    $user_session_query->execute();
+    if ($user_session_query->rowCount() > 0) {
+        $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
+        $uid = $id_session;
+        $id_user = $row['id_user'];
+    }
+    else{
+        header('Location: inscription-connexion.php');
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -15,9 +26,9 @@ if (isset($_SESSION['user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="./css-js/style.css">
-    <link rel="stylesheet" href="./css-js/boutdechantier.css">
-    <link href="./css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css-js/style.css">
+    <link rel="stylesheet" href="css-js/boutdechantier.css">
+    <link href="css-js/fontawesome-free-5.13.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fugaz One">
     <title>Bout de chantier</title>
 </head>
@@ -25,18 +36,29 @@ if (isset($_SESSION['user'])) {
     <?php include './navbar.php';?>
     <div class="clear"></div>
     <div class="boutdechantier-recherche-responsive">
-        <div id="back_history">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <div id="boutdechantier_recherche_responsive">
-            <input type="text" id="recherche_text_resp" placeholder="Chercher un produit ...">
-            <i class="fas fa-search"></i>
-        </div>
-        <div id="display_categories">
-            <i class="fas fa-list"></i>
-        </div>
-        <div id="display_filter">
-            <i class="fas fa-filter"></i>
+        <div class="boutdechantier-recherche-responsive-container">
+            <div class="show-hide-menu" id="show_hide_menu">
+                <i class="fas fa-bars"></i>
+            </div> 
+            <div class="logo-name">
+                <h4>Nhannik</h4>
+            </div> 
+            <div id="back_menu">
+                <i class="fas fa-arrow-left"></i>
+            </div>    
+            <div id="boutdechantier_recherche_responsive">
+                <input type="text" id="recherche_text_resp" placeholder="Chercher un produit ...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div id="display_categories">
+                <i class="fas fa-list"></i>
+            </div>
+            <!-- <div id="display_filter">
+                <i class="fas fa-filter"></i>
+            </div> -->
+            <div id="display_bt_search_bar">
+                <i class="fas fa-search"></i>
+            </div>
         </div>
     </div>
     <div class="boutdechantier-left">
@@ -375,6 +397,46 @@ if (isset($_SESSION['user'])) {
         </div>
         <div id="loader_load" class="center"></div>
     </div>
+    <div class="bt-product-details">
+        <div class="bt-product-details-container">
+            <div class="cancel-bt-product-details" id="cancel_bt_product_details">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="cancel-bt-product-details-resp">
+                <div id="cancel_bt_product_details_resp">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <h4>qsfqsf</h4>
+            </div>
+            <div class="bt-product-details-left">
+                <div class="bt-product-details-left-top">
+                    <img src="./boutique-logo/logo.png" alt="">
+                </div>
+                <div class="bt-product-details-left-bottom">
+                    <div>
+                        <img src="./boutique-logo/logo.png" alt="">
+                    </div>
+                    <div>
+                        <img src="./boutique-logo/logo.png" alt="">
+                    </div>
+                    <div>
+                        <img src="./boutique-logo/logo.png" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="bt-product-details-middle">
+                <p>zarzaerat</p>
+                <h4>150 da</h4>
+                <p>qslkfjoizajf</p>
+                <p>categorie</p>
+                <p>200 pcs</p>
+            </div>
+            <div class="bt-product-details-right">
+                
+            </div>
+        </div>
+        <div id="loader_bt_prd" class="center"></div>
+    </div>
     <div class="update-product" id="update_product">
         <div class="update-product-container">
             <div class="update-product-top">
@@ -390,10 +452,6 @@ if (isset($_SESSION['user'])) {
             <div class="update-product-bottom">
                 <input type="hidden" id="id_product_updt">
                 <input type="hidden" id="product_tail_updt">
-                <!-- <div class="product-input">
-                    <input type="text" id="updt_lieu_bt_prd">
-                    <span class="lieu-bt-prd">Lieu *</span>
-                </div> -->
                 <div class="product-input">
                     <input type="text" id="updt_name_bt_prd">
                     <span class="name-bt-prd active-updt-bt-prd-span">Titre *</span>
@@ -466,9 +524,8 @@ if (isset($_SESSION['user'])) {
     </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="./css-js/main.js"></script>
+    <script src="css-js/main.js"></script>
     <script>
-        var $pushState = 0;
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
                 document.querySelector("body").style.visibility = "hidden"; 
@@ -477,19 +534,11 @@ if (isset($_SESSION['user'])) {
             else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
-
-                // if (history.state == null) {
-                //     history.pushState('boutdechantier','', '/projet/boutdechantier.php');
-                // }
             } 
         };
-        // if (history.state == null) {
-        //     console.log('null');
-        // }
-        // console.log(history.state);
+      
         $(window).on('load',function(){
             if (history.state === 'annonces') {
-                // hideDivNotfBackg();
                 $('#display_bt_product_user').css('background','#ecedee');
                 $.ajax({
                     url: 'laod-user-bt-annonces.php',
@@ -498,7 +547,7 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('annonces','', '/projet/boutdechantier/annonces');
+                        history.replaceState('annonces','', '/projet/boutdechantier/annonces');
                         $('.boutdechantier-right-container').append(response);
                     },
                     complete: function(response){
@@ -507,7 +556,6 @@ if (isset($_SESSION['user'])) {
                 });
             }
             if (history.state === 'boutdechantier') {
-                // hideDivNotfBackg();
                 $('#display_bt_product_user').css('background','');
                 $.ajax({
                     url: 'laod-boutdechantier.php',
@@ -516,7 +564,7 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('boutdechantier','', '/projet/boutdechantier.php');
+                        history.replaceState('boutdechantier','', '/projet/boutdechantier');
                         $('.boutdechantier-right-container').append(response);
                     },
                     complete: function(response){
@@ -529,7 +577,6 @@ if (isset($_SESSION['user'])) {
 
         $(window).on('popstate',function(){
             if (history.state === 'annonces') {
-                // hideDivNotfBackg();
                 $('#display_bt_product_user').css('background','#ecedee');
                 $.ajax({
                     url: 'laod-user-bt-annonces.php',
@@ -538,7 +585,6 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('annonces','', '/projet/boutdechantier/annonces');
                         $('.boutdechantier-right-container').append(response);
                     },
                     complete: function(response){
@@ -546,8 +592,7 @@ if (isset($_SESSION['user'])) {
                     }
                 });
             }
-            if (history.state === 'boutdechantier') {
-                // hideDivNotfBackg();
+            if (history.state === 'boutdechantier' || history.state === null) {
                 $('#display_bt_product_user').css('background','');
                 $.ajax({
                     url: 'laod-boutdechantier.php',
@@ -556,7 +601,6 @@ if (isset($_SESSION['user'])) {
                         $("#loader_load").show();
                     },
                     success: function(response){
-                        history.pushState('boutdechantier','', '/projet/boutdechantier.php');
                         $('.boutdechantier-right-container').append(response);
                     },
                     complete: function(response){
@@ -645,7 +689,11 @@ if (isset($_SESSION['user'])) {
             $('.boutdechantier-left').css('transform','translateX(0)');
         })
 
-        $('#recherche_text_resp').click(function(e){
+        $('#boutdechantier_recherche_responsive').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#display_bt_search_bar').click(function(e){
             e.stopPropagation();
             setBoutdechantierSearchBar();
         })
@@ -677,7 +725,6 @@ if (isset($_SESSION['user'])) {
 
         $(document).on('keypress',"#recherche_text_resp",function() {
             if (event.which == 13) {
-                $(this).blur();
                 var fd = new FormData();
                 var rechercheText = $('#recherche_text_resp').val();
                 fd.append('text',rechercheText);
@@ -695,6 +742,7 @@ if (isset($_SESSION['user'])) {
                         $('.boutdechantier-right-container').append(response);
                     },
                     complete: function(response){
+                        unsetBoutdechantierSearchBar();
                         $("#loader_load").hide();
                     }
                 });
@@ -1045,8 +1093,9 @@ if (isset($_SESSION['user'])) {
                 $('#delete_product').css('transform','');
             }
         });
+        
         <?php if (isset($_SESSION['user'])) { ?>
-        var uid = <?php echo $id_user; ?>;
+        var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
         var websocket = false;
         var js_flood = 0;

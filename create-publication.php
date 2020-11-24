@@ -10,16 +10,13 @@ $id_user = $get_session_idSender_row['id_user'];
 $id_pub = htmlspecialchars($_POST['id_pub']);
 $lieu_pub = htmlspecialchars($_POST['lieu_pub']);
 $description_pub = htmlspecialchars($_POST['description_pub']);
-// $d=mktime(11, 14, 54, 8, 12, 2014);
 $temp_pub =  date("Y-m-d h:i:sa");
 $message_ntf = 'a ajouté(e) une nouvelle publication';
 $date_ntf =  date("Y-m-d h:i:sa");
 $type_ntf = 'publication';
 $etat_ntf = 0;
 $vu_ntf = ',';
-
 $create_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub', temp_pub = '$temp_pub',etat = 0, masquer_pub = 0, etat_commentaire = 0 WHERE id_pub = '$id_pub' AND id_user = $id_user");
-
 $notification_query = $conn->prepare("INSERT INTO publications_notifications (id_pub,id_sender_ntf,id_recever_ntf,message_ntf,etat_ntf,vu_ntf,type_ntf,date_ntf) VALUES (:id_pub,:id_sender_ntf,:id_recever_ntf,:message_ntf,:etat_ntf,:vu_ntf,:type_ntf,:date_ntf)");
 $notification_query->bindParam(':id_pub', $id_pub);
 $notification_query->bindParam(':id_sender_ntf',$id_user);

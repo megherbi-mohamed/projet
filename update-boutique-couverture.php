@@ -17,7 +17,7 @@ $imageName = time().'.png';
 $query = $conn->prepare("UPDATE boutiques SET couverture_btq = 'boutique-couverture/$imageName' WHERE id_btq = '$id_btq'");
 if($query->execute()){
     if(file_put_contents('boutique-couverture/'.$imageName, $data)){
-        echo 'done';
+        echo 1;
     }else{
         echo 0;
     }

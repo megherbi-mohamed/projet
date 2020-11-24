@@ -10,12 +10,12 @@ $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user =
 $user_session_query->execute();
 $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
 $id_user = $row['id_user'];
-$id = htmlspecialchars($_POST['id']);
+$id = htmlspecialchars($_POST['tail_pub']);
 $id_pub = htmlspecialchars($_POST['id_pub']);
 $lieu_pub = htmlspecialchars($_POST['lieu_pub']);
 $description_pub = htmlspecialchars($_POST['description_pub']);
 
-$update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = '$id_pub' AND id_user = $id_user");
+$update_pub_query = $conn->prepare("UPDATE publications SET lieu_pub = '$lieu_pub', description_pub = '$description_pub' WHERE id_pub = $id_pub AND id_user = $id_user");
 if ($update_pub_query->execute()) {
 $publication_query = $conn->prepare("SELECT * FROM publications WHERE id_pub = '$id_pub'"); 
 $publication_query->execute();

@@ -1,6 +1,7 @@
 <?php
 include_once './bdd/connexion.php';
 $id_btq = htmlspecialchars($_POST['id_btq']);
+$id_prm = htmlspecialchars($_POST['id_prm']);
 ?>
 <div class="back-to-boutique-user-promotion">
     <button id="back_to_boutique_user_promotion"><i class="fas fa-arrow-left"></i>Boutiques</button>
@@ -20,10 +21,9 @@ $get_product_media_query->execute();
 $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
 $img_prd = $get_product_media_row['media_url'];
 
-$get_product_promotion_query = $conn->prepare("SELECT id_prd_prm FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq");
+$get_product_promotion_query = $conn->prepare("SELECT id_prd_prm FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND id_prm = $id_prm");
 $get_product_promotion_query->execute();
-if ($get_product_promotion_query->rowCount() > 0) {
-?>
+if ($get_product_promotion_query->rowCount() > 0) { ?>
 <div class="product-boutique-promotion">
 <button id="delete_product_boutique_promotion_<?php echo $i ?>">Annuler</button>
 <?php } else { ?>
@@ -31,7 +31,7 @@ if ($get_product_promotion_query->rowCount() > 0) {
 <?php } ?>
     <input type="hidden" id="id_btq_prm" value="<?php echo $id_btq ?>">    
     <input type="hidden" id="id_prd_prm_<?php echo $i ?>" value="<?php echo $id_prd ?>">    
-    <div id="product_boutique_promotion_<?php echo $i ?>">
+    <div id="product_boutique_promotion_details_<?php echo $i ?>">
         <img src="<?php echo $img_prd ?>" alt="">
     </div>
     <p>Prix : <?php echo $prix_prd ?></p>

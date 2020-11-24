@@ -141,9 +141,9 @@
             ?>
             <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
             <input type="hidden" id="publication_tail_<?php echo $i ?>" value="<?php echo $i ?>">
-            <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>">
+            <!-- <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>">
             <input type="hidden" id="publication_lieu_<?php echo $i ?>" value="<?php echo $publication_row['lieu_pub'] ?>">
-            <input type="hidden" id="etat_commentaire_<?php echo $i ?>" value="<?php echo $publication_row['etat_commentaire'] ?>">
+            <input type="hidden" id="etat_commentaire_<?php echo $i ?>" value="<?php echo $publication_row['etat_commentaire'] ?>"> -->
             <?php } ?>
             <div class="user-publication" id="user_publication_<?php echo $i ?>">
                 <div id="pub_tail_<?php echo $publication_row['id_pub'] ?>"></div>
@@ -422,7 +422,7 @@
             <div class="cancel-user-image-update" id="cancel_user_image_update">
                 <i class="fas fa-times"></i>
             </div>
-            <button class="upload-result-resp">Valider</button>
+            <button class="upload-result">Valider</button>
         </div>
         <div class="panel panel-default">
             <div class="row">

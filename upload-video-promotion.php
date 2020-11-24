@@ -14,13 +14,13 @@ $upload_location = "promotion-media/";
 $filename = $_FILES['video']['name'];
 $videoName = time().$id_prm.'.mp4';
 $path = $upload_location.$videoName;
-$create_videos_query = $conn->prepare("INSERT INTO promotions_media (id_prm,id_user,media_url,media_type,etat) VALUES (:id_prm,:id_user,:media_url,;media_type,:etat)");
-$create_videos_query->bindParam(':id_prm',$id_prm);
-$create_videos_query->bindParam(':id_user',$id_user);
-$create_videos_query->bindParam(':media_url',$path);
-$create_images_query->bindParam(':media_type',$media_type);
-$create_videos_query->bindParam(':etat',$etat);
-if ($create_videos_query->execute()) {
+$create_video_query = $conn->prepare("INSERT INTO promotions_media (id_prm,id_user,media_url,media_type,etat) VALUES (:id_prm,:id_user,:media_url,:media_type,:etat)");
+$create_video_query->bindParam(':id_prm',$id_prm);
+$create_video_query->bindParam(':id_user',$id_user);
+$create_video_query->bindParam(':media_url',$path);
+$create_video_query->bindParam(':media_type',$media_type);
+$create_video_query->bindParam(':etat',$etat);
+if ($create_video_query->execute()) {
     if(move_uploaded_file($_FILES['video']['tmp_name'],$path)){
         echo json_encode($path);
     }
@@ -31,5 +31,4 @@ if ($create_videos_query->execute()) {
 else{
     echo 0;
 }
-die;
 ?>

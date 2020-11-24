@@ -679,7 +679,7 @@ else if (isset($_SESSION['btq'])) {
                 <div class="cancel-boutique-logo-update" id="cancel_boutique_logo_update">
                     <i class="fas fa-times"></i>
                 </div>
-                <button class="upload-result-resp">Valider</button>
+                <button class="upload-result">Valider</button>
             </div>
             <div class="panel">
                 <div class="row">
@@ -711,7 +711,7 @@ else if (isset($_SESSION['btq'])) {
                 <div class="cancel-boutique-couverture-update" id="cancel_boutique_couverture_update">
                     <i class="fas fa-times"></i>
                 </div>
-                <button class="upload-result-couverture-resp">Valider</button>
+                <button class="upload-result-couverture">Valider</button>
             </div>
             <div class="panel-couverture">
                 <div class="row-couverture">
@@ -1282,45 +1282,34 @@ else if (isset($_SESSION['btq'])) {
                 type: 'canvas',
                 size: 'viewport'
             }).then(function (resp) {
+                var idBtq = $('#id_boutique_product').val();
+                var fd = new FormData();
+                fd.append('id_btq',idBtq);
+                fd.append('image',resp);
                 $.ajax({
                     url: "update-boutique-logo.php",
                     type: "POST",
-                    data: {"image":resp},
+                    data: fd,
+                    contentType: false,
+                    processData: false,
                     beforeSend: function(){
                         $('.boutique-logo-update-container').css('opacity','0.5');
                         $("#loader_updt_img").show();
                     },
-                    success: function (data) {
-                        $('.boutique-logo img').replaceWith("<img src='"+resp+"' alt='logo'>");
-                        $('body').removeClass('body-after');
-                        $(".boutique-logo-update").css('display','');
-                    },
-                    complete: function(){
-                        $('.boutique-logo-update-container').css('opacity','');
-                        $("#loader_updt_img").hide();
-                    }
-                });
-            });
-        });
-
-        $('.upload-result-resp').on('click', function (ev) {
-            $uploadCrop.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (resp) {
-                $.ajax({
-                    url: "update-boutique-logo.php",
-                    type: "POST",
-                    data: {"image":resp},
-                    beforeSend: function(){
-                        $('.boutique-logo-update-container').css('opacity','0.5');
-                        $("#loader_updt_img").show();
-                    },
-                    success: function (data) {
-                        $(".boutique-logo-update").css('transform','');
-                        setTimeout(() => {
-                            $('.boutique-logo img').replaceWith("<img src='"+resp+"' alt='logo'>");
-                        }, 400);
+                    success: function (response) {
+                        if (response != 0) {
+                            if (windowWidth > 768) {
+                                $('.boutique-logo img').replaceWith("<img src='"+resp+"' alt='logo'>");
+                                $('body').removeClass('body-after');
+                                $(".boutique-logo-update").css('display','');
+                            }
+                            else{
+                                $(".boutique-logo-update").css('transform','');
+                                setTimeout(() => {
+                                    $('.boutique-logo img').replaceWith("<img src='"+resp+"' alt='logo'>");
+                                }, 400);
+                            }
+                        }
                     },
                     complete: function(){
                         $('.boutique-logo-update-container').css('opacity','');
@@ -1335,45 +1324,34 @@ else if (isset($_SESSION['btq'])) {
                 type: 'canvas',
                 size: 'viewport'
             }).then(function (resp) {
+                var idBtq = $('#id_boutique_product').val();
+                var fd = new FormData();
+                fd.append('id_btq',idBtq);
+                fd.append('image',resp);
                 $.ajax({
                     url: "update-boutique-couverture.php",
                     type: "POST",
-                    data: {"image":resp},
+                    data: fd,
+                    contentType: false,
+                    processData: false,
                     beforeSend: function(){
                         $('.boutique-couverture-update-container').css('opacity','0.5');
                         $("#loader_updt_cvrt").show();
                     },
-                    success: function (data) {
-                        $('.position-couverture img').replaceWith("<img id='couverture_img' src='"+resp+"' alt='logo'>");
-                        $('body').removeClass('body-after');
-                        $(".boutique-couverture-update").css('display','');
-                    },
-                    complete: function(){
-                        $('.boutique-couverture-update-container').css('opacity','');
-                        $("#loader_updt_cvrt").hide();
-                    }
-                });
-            });
-        });
-
-        $('.upload-result-couverture-resp').on('click', function (ev) {
-            $uploadCropCouverture.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (resp) {
-                $.ajax({
-                    url: "update-boutique-couverture.php",
-                    type: "POST",
-                    data: {"image":resp},
-                    beforeSend: function(){
-                        $('.boutique-couverture-update-container').css('opacity','0.5');
-                        $("#loader_updt_cvrt").show();
-                    },
-                    success: function (data) {
-                        $(".boutique-couverture-update").css('transform','');
-                        setTimeout(() => {
-                            $('.position-couverture img').replaceWith("<img id='couverture_img' src='"+resp+"' alt='logo'>");
-                        }, 400);
+                    success: function (response) {
+                        if (response != 0) {
+                            if (windowWidth > 768) {
+                                $('.boutique-couverture img').replaceWith("<img id='couverture_img' src='"+resp+"' alt='logo'>");
+                                $('body').removeClass('body-after');
+                                $(".boutique-couverture-update").css('display','');
+                            }
+                            else{
+                                $(".boutique-couverture-update").css('transform','');
+                                setTimeout(() => {
+                                    $('.boutique-couverture img').replaceWith("<img id='couverture_img' src='"+resp+"' alt='logo'>");
+                                }, 400);
+                            }
+                        }
                     },
                     complete: function(){
                         $('.boutique-couverture-update-container').css('opacity','');

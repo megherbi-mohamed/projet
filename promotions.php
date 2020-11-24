@@ -35,327 +35,185 @@ if (isset($_SESSION['user'])) {
 <body>
     <?php include './navbar.php'; ?>
     <div class="clear"></div>
-        <div class="promotions-recherche-responsive">
-            <div class="promotions-recherche-responsive-container">
-                <div class="show-hide-menu" id="show_hide_menu">
-                    <i class="fas fa-bars"></i>
-                </div> 
-                <div class="logo-name">
-                    <h4>Nhannik</h4>
-                </div> 
-                <div id="back_menu">
-                    <i class="fas fa-arrow-left"></i>
-                </div>    
-                <div id="promotions_recherche_responsive">
-                    <input type="text" id="recherche_text_resp" placeholder="Chercher une promotion ..." autocomplete="off">
-                    <i class="fas fa-search"></i>
-                </div>
-                <div id="display_categories">
-                    <i class="fas fa-list"></i>
-                </div>
-                <div id="display_prm_search_bar">
-                    <i class="fas fa-search"></i>
-                </div>
-            </div>
-        </div>
-        <div class="promotions-left">
-            <h2>Promotions</h2>
-            <div class="promotions-recherche">
-                <input type="text" id="recherche_text" placeholder="Chercher un produit ...">
+    <div class="promotions-recherche-responsive">
+        <div class="promotions-recherche-responsive-container">
+            <div class="show-hide-menu" id="show_hide_menu">
+                <i class="fas fa-bars"></i>
+            </div> 
+            <div class="logo-name">
+                <h4>Nhannik</h4>
+            </div> 
+            <div id="back_menu">
+                <i class="fas fa-arrow-left"></i>
+            </div>    
+            <div id="promotions_recherche_responsive">
+                <input type="text" id="recherche_text_resp" placeholder="Chercher une promotion ..." autocomplete="off">
                 <i class="fas fa-search"></i>
             </div>
-            <hr>
-            <?php if (isset($_SESSION['user'])) { ?>
-            <div class="promotions-user">
-                <div class="display-promotions-user" id="display_promotions_user">
-                    <div>
-                        <i class="fas fa-ad"></i>
-                    </div>
-                    <p>Vos promotions</p>
-                    <div class="promotions-notification">
-                        <div id="promotions_ntf">
-                            <span>0</span>
-                        </div>
-                    </div>
-                </div>
+            <div id="display_categories">
+                <i class="fas fa-sliders-h"></i>
             </div>
-            <?php } ?>
-            <hr>
-            <div class="filter-promotions-options">
-                <h3>Filtrer par</h3>
-                <div class="filter-promotion" id="display_promotions_categories">
-                    <div>
-                        <i class="fas fa-list-ul"></i>
-                    </div>
-                    <p>Categories</p>
-                </div>
-                <div class="filter-promotion" id="display_promotions_calender">
-                    <div>
-                        <i class="far fa-calendar-alt"></i>
-                    </div>
-                    <p>Date</p>
-                </div>
+            <div id="display_prm_search_bar">
+                <i class="fas fa-search"></i>
             </div>
-            <div class="promotion-categories">
-                <div class="promotion-categories-top">
-                    <div id="back_to_promotion_filter">
-                        <i class="fas fa-arrow-left"></i>
-                    </div>
-                    <p>Retour aux categories</p>
-                </div>
-                <div class="promotion-categories-bottom">
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/bureau-icon.png" alt="">
-                            <p>Services</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                            $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'services'");
-                            $categories_query->execute();
-                            while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                            ?>
-                            <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>  
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/service-icon.png" alt="">
-                            <p>Artisants</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                            $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
-                            $categories_query->execute();
-                            while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                            ?>
-                            <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/transport-icon.png" alt="">
-                            <p>Transports</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                            $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
-                            $categories_query->execute();
-                            while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                            ?>
-                            <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/service-icon.png" alt="">
-                            <p>Locations</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                            $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
-                            $categories_query->execute();
-                            while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                            ?>
-                            <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/entreprise-icon.png" alt="">
-                            <p>Entreprises</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
-                                $categories_query->execute();
-                                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                                ?>
-                                <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/detaillon-icon.png" alt="">
-                            <p>Detaillons</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
-                                $categories_query->execute();
-                                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                                ?>
-                                <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/grossiste-icon.png" alt="">
-                            <p>Grossistes</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
-                                $categories_query->execute();
-                                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                                ?>
-                                <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/fabriquant-icon.png" alt="">
-                            <p>Fabriquants</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
-                                $categories_query->execute();
-                                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                                ?>
-                                <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="categorie-promotion">
-                        <div class="categorie-promotion-top">
-                            <img src="./icons/importateur-icon.png" alt="">
-                            <p>Import - Export</p>
-                        </div>
-                        <div class="categorie-promotion-bottom">
-                            <?php 
-                                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
-                                $categories_query->execute();
-                                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                                ?>
-                                <li class="sous-categorie-promotion"><?php echo $categories_row['sous_categories'] ?></li>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="promotions-right">
-            <div class="promotions-right-container">
-                <?php 
-                $get_all_promotions_query = $conn->prepare("SELECT * FROM promotions ORDER BY id_prm DESC");
-                $get_all_promotions_query->execute();
-                $i = 0;
-                while ($get_all_promotions_row = $get_all_promotions_query->fetch(PDO::FETCH_ASSOC)) {
-                    $i++;
-                    $date_debut = $get_all_promotions_row['date_debut_prm'];
-                    $date_d = DateTime::createFromFormat("Y-m-d H:i:s", $date_debut);
-                    $date_ddp = $date_d->format("d-m");
-                    $ddp = date('m F', strtotime($date_ddp));
-
-                    $time_debut = $get_all_promotions_row['date_debut_prm'];
-                    $time_d = strtotime($time_debut);
-                    $tdp = date('H', $time_d);
-
-                    $date_fin = $get_all_promotions_row['date_fin_prm'];
-                    $date_f = DateTime::createFromFormat("Y-m-d H:i:s", $date_fin);
-                    $date_dfp = $date_f->format("d-m");
-                    $dfp = date('m F', strtotime($date_dfp));
-
-                    $time_fin = $get_all_promotions_row['date_fin_prm'];
-                    $time_f = strtotime($time_fin);
-                    $tfp = date('H', $time_f);
-
-                    $id_prm = $get_all_promotions_row['id_prm'];
-                    $get_promotion_img_query = $conn->prepare("SELECT media_url,media_type FROM promotions_media WHERE id_prm = $id_prm");
-                    $get_promotion_img_query->execute();
-                    $get_promotion_img_row = $get_promotion_img_query->fetch(PDO::FETCH_ASSOC);
-                ?>
-                <div class="promotion-overview">
-                    <div class="promotion-overview-left">
-                        <div>
-                            <?php if ($get_promotion_img_row['media_type'] == 'i') { ?>
-                                <img src="./<?php echo $get_promotion_img_row['media_url'] ?>" alt="">
-                            <?php } else { ?>
-                                <!-- video -->
-                            <?php } ?>
-                            <p id="promotion_participate_<?php echo $i ?>">Participants <span><?php echo $get_all_promotions_row['views_prm'] ?></span></p>
-                        </div>
-                    </div>
-                    <div class="promotion-overview-right">
-                        <div class="promotion-overview-right-top">
-                            <h3><?php echo $get_all_promotions_row['titre_prm'] ?></h3>
-                            <h4>Ajoutée le <span><?php echo $get_all_promotions_row['date_prm'] ?></span></h4>
-                        </div>
-                        <div class="promotion-overview-right-middle">
-                            <p><?php echo $get_all_promotions_row['description_prm'] ?></p>
-                            <h4>Commencer le : <span><?php echo $ddp.' à '.$tdp.'h' ?></span>
-                            , fin le : <span><?php echo $dfp.' à '.$tfp.'h' ?></span></h4>
-                            <p><?php echo $get_all_promotions_row['lieu_prm'] ?>, Algérie</p>
-                        </div>
-                        <div class="promotion-overview-right-bottom">
-                            <input type="hidden" id="latitude_prm_<?php echo $i ?>" value="<?php echo $get_all_promotions_row['latitude_prm'] ?>">
-                            <input type="hidden" id="longitude_prm_<?php echo $i ?>" value="<?php echo $get_all_promotions_row['longitude_prm'] ?>">
-                            <div id="show_promotion_position_<?php echo $i ?>">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div id="show_promotion_direction_<?php echo $i ?>">
-                                <i class="fas fa-directions"></i>
-                            </div>
-                            <input type="hidden" id="id_promotion_<?php echo $i ?>" value="<?php echo $get_all_promotions_row['id_prm'] ?>">
-                            <?php
-                            $get_saved_promotion_query = $conn->prepare("SELECT * FROM promotions_enregistres WHERE id_prm = $id_prm");
-                            $get_saved_promotion_query->execute();
-                            if ($get_saved_promotion_query->rowCount() > 0) {
-                                $get_saved_promotion_row = $get_saved_promotion_query->fetch(PDO::FETCH_ASSOC);
-                                if ($get_saved_promotion_row['id_user'] == $id_user) { ?>
-                                <p>interessé(e)</p>
-                                <?php } else { ?>
-                                <button id="save_promotion_<?php echo $i ?>">interesser</button>
-                                <?php }} else { ?>
-                                <button id="save_promotion_<?php echo $i ?>">interesser</button>
-                            <?php } ?>
-                            <?php
-                            $get_saved_promotion_query = $conn->prepare("SELECT * FROM promotions_enregistres WHERE id_prm = $id_prm");
-                            $get_saved_promotion_query->execute();
-                            if ($get_saved_promotion_query->rowCount() > 0) {
-                                $get_saved_promotion_row = $get_saved_promotion_query->fetch(PDO::FETCH_ASSOC);
-                                if ($get_saved_promotion_row['id_user'] == $id_user) { ?>
-                                <p>participé(e)</p>
-                                <?php } else { ?>
-                                <button id="updt_view_<?php echo $i ?>">participer</button>
-                                <?php }} else { ?>
-                                <button id="updt_view_<?php echo $i ?>">participer</button>
-                            <?php } ?>
-                            <button>Voir details</button>
-                        </div>
-                    </div>
-                </div>
-                <?php } ?>
-            </div>
-            <div id="loader_load" class="center"></div>
         </div>
     </div>
+    <div class="promotions-left">
+        <h2>Promotions</h2>
+        <div class="promotions-recherche">
+            <input type="text" id="recherche_text" placeholder="Chercher un produit ...">
+            <i class="fas fa-search"></i>
+        </div>
+        <hr>
+        <?php if (isset($_SESSION['user'])) { ?>
+        <div class="promotions-user">
+            <div class="display-promotions-user" id="display_promotions_user">
+                <div>
+                    <i class="fas fa-ad"></i>
+                </div>
+                <p>Vos promotions</p>
+                <div class="promotions-notification">
+                    <div id="promotions_ntf">
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="display-promotions-user" id="display_saved_promotions_user">
+                <div>
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <p>Promotions interésantes</p>
+                <div class="promotions-notification">
+                    <div id="promotions_ntf">
+                        <span>0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+        <hr>
+        <div class="filter-promotions-options">
+            <div class="filter-promotion-button">
+                <h4>Filtrer par</h4>
+                <button id="reset_promotion_button">Réintialiser</button>
+                <button id="filter_promotion_button">Filtrer</button>
+            </div>
+            <div class="quick-filter-button">
+                <button id="today_filter_button">Aujourd'hui</button>
+                <button id="week_filter_button">Cette semaine</button>
+                <button id="month_filter_button">Ce mois</button>
+            </div>
+            <div class="filter-promotion" id="display_promotions_categories">
+                <div>
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <p>Categories</p>
+            </div>
+            <div class="filter-ptomotion-option" id="promotion_categories">
+                <div class="filter-promotion-input">
+                    <p>Categories</p>
+                    <select id="categorie_promotion">
+                        <option value="">Categories</option>
+                        <option id="services" value="services">Services</option>
+                        <option id="artisants" value="artisants">Artisants</option>
+                        <option id="transports" value="transports">Transports</option>
+                        <option id="locations" value="locations">Locations</option>
+                        <option id="entreprises" value="entreprises">Entreprises</option>
+                        <option id="detaillons" value="detaillons">Detaillons</option>
+                        <option id="grossidtes" value="grossidtes">Grossistes</option>
+                        <option id="fabriquants" value="fabriquants">Fabriquants</option>
+                        <option id="import-export" value="import-export">Import-Export</option>
+                    </select> 
+                </div>
+                <div class="filter-promotion-input profession-promotion">
+                    <p>Profession</p>
+                    <select id="profession_promotion">
+                        <option value="">Professions</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-promotion" id="display_promotions_date">
+                <div>
+                    <i class="far fa-calendar-alt"></i>
+                </div>
+                <p>Date</p>
+            </div>
+            <div class="filter-ptomotion-option" id="promotion_date">
+                <div class="filter-promotion-input">
+                    <p>Debut promotion</p>
+                    <input type="date" id="date_debut_prm">
+                </div>
+                <div class="filter-promotion-input">
+                    <p>Fin promotion</p>
+                    <input type="date" id="date_fin_prm">
+                </div>
+            </div>
+            <div class="filter-promotion" id="display_promotions_localisation">
+                <div>
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <p>Lieu</p>
+            </div>
+            <div class="filter-ptomotion-option" id="promotion_localisation">
+                <div class="filter-promotion-input">
+                    <p>Ville</p>
+                    <select id="ville_promotion_filter">
+                        <option value="">Ville</option>
+                        <?php 
+                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query->execute(); 
+                        while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                        <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="filter-promotion-input commune-promotion-filter"> 
+                    <p>Commune</p>
+                    <select id="commune_promotion_filter">
+                        <option value="">Commune</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="promotions-right">
+        <div class="promotions-right-container"></div>
+        <div id="loader_load" class="center"></div>
+    </div>
     <div class="promotion-position">
-        <div class="promotion-position-container">
-            <div class="promotion-position-top">
-                <div class="cancel-promotion-position-resp" id="cancel_promotion_position_resp">
+        <div class="promotion-position-container" id="promotion_position_container">
+        <div class="promotion-position-top">
+            <div class="cancel-promotion-position-resp" id="cancel_promotion_position_resp">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <h4>La position de promotion ()</h4>
+            <div class="cancel-promotion-position" id="cancel_promotion_position">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="promotion-position-middle"></div>
+        <div class="promotion-position-bottom">
+            <p>Voir la direction de cette promotion sur google map</p>
+            <button id="show_promotion_direction">Direction <i class="fas fa-directions"></i></button>
+            <input type="hidden" id="latitude_prm">
+            <input type="hidden" id="longitude_prm">
+        </div>
+        </div>
+        <div id="loader_promotion_position" class="center"></div>
+    </div>
+    <div class="promotion-video">
+        <div class="promotion-video-container" id="promotion_video_container">
+            <div class="promotion-video-top">
+                <div class="cancel-promotion-video-resp" id="cancel_promotion_video_resp">
                     <i class="fas fa-arrow-left"></i>
                 </div>
-                <h4>La position de promotion ()</h4>
-                <div class="cancel-promotion-position" id="cancel_promotion_position">
+                <h4>Video</h4>
+                <div class="cancel-promotion-video" id="cancel_promotion_video">
                     <i class="fas fa-times"></i>
                 </div>
             </div>
-            <div class="promotion-position-middle"></div>
-            <div class="promotion-position-bottom">
-                <p>Voir la direction de cette promotion sur google map</p>
-                <button id="show_promotion_direction">Direction <i class="fas fa-directions"></i></button>
-                <input type="hidden" id="latitude_prm">
-                <input type="hidden" id="longitude_prm">
-            </div>
+            <div class="promotion-video-bottom" id="promotion_video_bottom"></div>  
         </div>
     </div>
     <div class="delete-promotion" id="delete_promotion">
@@ -380,9 +238,15 @@ if (isset($_SESSION['user'])) {
         </div>
     </div>
     <div class="create-publication" id="update_promotion">
-        <div class="create-publication-container" id="update_promotion_container">
-            <div id="loader_update_promotion" class="center"></div>
-        </div>
+        <div class="create-publication-container" id="update_promotion_container"></div>
+        <div id="loader_update_promotion" class="center"></div>
+    </div>
+    <div class="promotion-details" id="promotion_details">
+        <div class="promotion-details-container" id="promotion_details_container"></div>
+        <div class="cancel-promotion-details" id="cancel_promotion_details">
+            <i class="fas fa-times"></i>
+        </div>  
+        <div id="loader_promotion_details" class="center"></div>
     </div>
     <div id="loader" class="center"></div>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDBEGrApnjX_7GHcNDtF0LR0pgrwxj5j2Q&callback=initPrmMap"></script>
@@ -396,11 +260,24 @@ if (isset($_SESSION['user'])) {
             } else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
+                $.ajax({
+                    url: 'load-all-promotions.php',
+                    beforeSend: function(){
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.promotions-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
             } 
         };
 
         $(window).on('load',function(){
             if (history.state === 'promotions') {
+                $('.display-promotions-user').css('background','');
                 $('#display_promotions_user').css('background','#ecedee');
                 $.ajax({
                     url: 'load-user-promotions.php',
@@ -417,8 +294,26 @@ if (isset($_SESSION['user'])) {
                     }
                 });
             }
+            if (history.state === 'savedpromotions') {
+                $('.display-promotions-user').css('background','');
+                $('#display_saved_promotions_user').css('background','#ecedee');
+                $.ajax({
+                    url: 'load-saved-user-promotions.php',
+                    beforeSend: function(){
+                        $(".promotions-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.replaceState('savedpromotions','', '/projet/promotions/saved-promotions');
+                        $('.promotions-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
             if (history.state === 'allpromotions') {
-                $('#display_promotions_user').css('background','');
+                $('.display-promotions-user').css('background','');
                 $.ajax({
                     url: 'load-all-promotions.php',
                     beforeSend: function(){
@@ -439,6 +334,7 @@ if (isset($_SESSION['user'])) {
 
         $(window).on('popstate',function(){
             if (history.state === 'promotions') {
+                $('.display-promotions-user').css('background','');
                 $('#display_promotions_user').css('background','#ecedee');
                 $.ajax({
                     url: 'load-user-promotions.php',
@@ -454,8 +350,25 @@ if (isset($_SESSION['user'])) {
                     }
                 });
             }
+            if (history.state === 'savedpromotions') {
+                $('.display-promotions-user').css('background','');
+                $('#display_saved_promotions_user').css('background','#ecedee');
+                $.ajax({
+                    url: 'load-saved-user-promotions.php',
+                    beforeSend: function(){
+                        $(".promotions-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.promotions-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
             if (history.state === 'allpromotions' || history.state === null) {
-                $('#display_promotions_user').css('background','');
+                $('.display-promotions-user').css('background','');
                 $.ajax({
                     url: 'load-all-promotions.php',
                     beforeSend: function(){
@@ -473,6 +386,7 @@ if (isset($_SESSION['user'])) {
         })
 
         $('#display_promotions_user').click(function(){
+            $('.display-promotions-user').css('background','');
             $(this).css('background','#ecedee');
             $.ajax({
                 url: 'load-user-promotions.php',
@@ -482,7 +396,16 @@ if (isset($_SESSION['user'])) {
                 },
                 success: function(response){
                     history.pushState('promotions','', '/projet/promotions/vos-promotions');
-                    $('.promotions-right-container').append(response);
+                    if (windowWidth < 768) {
+                        $('.promotions-left').css('transform','');
+                        $("body").removeClass('body-after');
+                        setTimeout(() => {
+                            $('.promotions-right-container').append(response);
+                        }, 400);
+                    }
+                    else{
+                        $('.promotions-right-container').append(response);
+                    }
                 },
                 complete: function(response){
                     $("#loader_load").hide();
@@ -490,8 +413,32 @@ if (isset($_SESSION['user'])) {
             });
         })
 
-        $('#back_history').click(function(){
-            window.history.back();
+        $('#display_saved_promotions_user').click(function(){
+            $('.display-promotions-user').css('background','');
+            $(this).css('background','#ecedee');
+            $.ajax({
+                url: 'load-saved-user-promotions.php',
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    history.pushState('savedpromotions','', '/projet/promotions/saved-promotions');
+                    if (windowWidth < 768) {
+                        $('.promotions-left').css('transform','');
+                        $("body").removeClass('body-after');
+                        setTimeout(() => {
+                            $('.promotions-right-container').append(response);
+                        }, 400);
+                    }
+                    else{
+                        $('.promotions-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
         })
 
         $('#display_categories').click(function(e){
@@ -571,9 +518,13 @@ if (isset($_SESSION['user'])) {
             e.stopPropagation();
         })
 
-        $('#cancel_promotion_position').click(function(){
+        $('.promotion-position-container').on('click','#cancel_promotion_position',function(){
             $('body').removeClass('body-after');
             $('.promotion-position').hide();
+        })
+
+        $('.promotion-position-container').on('click','#cancel_promotion_position_resp',function(){
+            $('.promotion-position').css('transform','');
         })
 
         $(document).on('click','[id^="show_promotion_position_"]',function(){
@@ -582,11 +533,14 @@ if (isset($_SESSION['user'])) {
             var longitudePrm = $('#longitude_prm_'+id).val();
             $('#latitude_prm').val(latitudePrm);
             $('#longitude_prm').val(longitudePrm);
-            $('body').addClass('body-after');
-            $('.promotion-position').show();
-            setTimeout(() => {
-                initPrmMap(latitudePrm,longitudePrm);
-            }, 500);
+            if (windowWidth > 768) {
+                $('body').addClass('body-after');
+                $('.promotion-position').show();
+            }
+            else{
+                $('.promotion-position').css('transform','translateX(0)');
+            }
+            initPrmMap(latitudePrm, longitudePrm); 
         })
 
         function initPrmMap(lat,lng) {
@@ -603,7 +557,7 @@ if (isset($_SESSION['user'])) {
             });
         }
 
-        $(document).on('click','[id^="show_promotion_direction_"]',function(){
+        $('.promotions-right-container').on('click','[id^="show_promotion_direction_"]',function(){
             var id = $(this).attr("id").split("_")[3];
             var latitudePrm = $('#latitude_prm_'+id).val();
             var longitudePrm = $('#longitude_prm_'+id).val();
@@ -611,11 +565,44 @@ if (isset($_SESSION['user'])) {
             window.open(url, '_blank');
         })
 
-        $('#show_promotion_direction').click(function(){
+        // display promotion position
+        $('#promotion_position_container').on('click','#show_promotion_direction',function(){
             var latitudePrm = $('#latitude_prm').val();
             var longitudePrm = $('#longitude_prm').val();
             url = "https://maps.google.com/?q="+latitudePrm+","+longitudePrm;
             window.open(url, '_blank');
+        })
+
+        $('.promotion-video').click(function(){
+            $('body').removeClass('body-after');
+            $('.promotion-video').hide();
+            $('#promotion_video_bottom').empty();
+        })
+
+        $('.promotion-video-container').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#cancel_promotion_video').on('click',function(){
+            $('body').removeClass('body-after');
+            $('.promotion-video').hide();
+            $('#promotion_video_bottom').empty();
+        })
+
+        $('#cancel_promotion_video_resp').on('click',function(){
+            $('.promotion-video').css('transform','');
+            setTimeout(() => {
+                $('#promotion_video_bottom').empty();
+            }, 400);
+        })
+
+        // show promotion video
+        $(document).on('click','[id^="show_promotion_video_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            $('.promotion-video').show();
+            $("body").addClass('body-after');
+            var src = $('#promotion_video_'+id).find('source').attr('src');
+            $('#promotion_video_bottom').append('<video controls><source src="'+src+'"></video>')
         })
 
         $(document).on('click','[id^="save_promotion_"]',function(){
@@ -656,6 +643,132 @@ if (isset($_SESSION['user'])) {
                     }
                 }
             });
+        })
+
+        // show promotion details
+        $(document).on('click','[id^="promotion_details_button_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var idPrm = $('#id_promotion_'+id).val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-promotion-details.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $("body").css('overflow','hidden');
+                        $("#promotion_details").css('display','grid');
+                        $('#promotion_details_container').css('height','calc(100vh - 20px)');
+                    }
+                    else{
+                        $("#promotion_details").css('transform','translateX(0)');
+                    }
+                    $("#loader_promotion_details").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        $('#promotion_details_container').css('height','');
+                        $('#promotion_details_container').prepend(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_promotion_details").hide();
+                }
+            });
+        })
+
+        // display more boutique product in promotion details
+        $(document).on('click','[id^="go_boutique_button_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var idBtq = $('#id_btq_'+id).val();
+            var idPrd = $('#id_btq_prd_'+id).val();
+            window.location = 'boutique/'+idBtq+'/'+idPrd;
+        })
+
+        // cancel promotion details
+        $('#promotion_details_container').on('click','#cancel_promotion_details_resp',function(){
+            $("#promotion_details").css('transform','');
+            setTimeout(() => {
+                $('#promotion_details_container').empty();
+            }, 400);
+        })
+
+        $('#cancel_promotion_details').click(function(){
+            $("body").removeClass('body-after');
+            $("body").css('overflow','');
+            $("#promotion_details").css('display','');
+            $('#promotion_details_container').empty();
+        })
+
+        // show promotion createur
+        $('#promotion_details_container').on('click','#show_promotion_creator',function(){
+            var typePrmCrtr = $('#type_prm_crtr').val();
+            var idPrmCrtr = $('#id_prm_crtr').val();
+            if (typePrmCrtr == 'user') {
+                window.location = 'utilisateur/'+idPrmCrtr;
+            }
+            else if (typePrmCrtr == 'boutique') {
+                window.location = 'boutique/'+idPrmCrtr;
+            }
+        })
+
+        // show promotion details position
+        $(document).on('click','#show_promotion_position',function(){
+            console.log('click');
+            var latitudePrm = $('#latitude_prm').val();
+            var longitudePrm = $('#longitude_prm').val();
+            var fd = new FormData();
+            fd.append('latitude_prm',latitudePrm);
+            fd.append('longitude_prm',longitudePrm);
+            $.ajax({
+                url: 'load-promotion-position.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("#promotion_details").css('display','');
+                        $('#promotion_details_container').empty();
+                        $('.promotion-position').show();
+                    }
+                    else{
+                        $("#promotion_details").css('transform','');
+                        setTimeout(() => {
+                            $('#promotion_details_container').empty();
+                        }, 400);
+                        $('.promotion-position').css('transform','translateX(0)');
+                    }
+                    $("#loader_promotion_position").show();
+                },
+                success: function(response){
+                    $('#promotion_position_container').append(response);
+                },
+                complete: function(response){
+                    $("#loader_promotion_position").hide();
+                }
+            });
+        })
+
+        // show promotion details direction
+        $('#promotion_details_container').on('click','#show_promotion_direction',function(){
+            var latitudePrm = $('#latitude_prm').val();
+            var longitudePrm = $('#longitude_prm').val();
+            url = "https://maps.google.com/?q="+latitudePrm+","+longitudePrm;
+            window.open(url, '_blank');
+        })
+
+        // change photo product promotion
+        $('#promotion_details_container').on('click','.display-modele',function(){
+            var urlMedia = $(this).find('img').attr('src');
+            $('.display-modele').removeClass('product-details-image-active');
+            $(this).addClass('product-details-image-active');
+            $('.produit-promotion-details-left-top img').replaceWith('<img src="'+urlMedia+'" alt="">');
+            
         })
 
         // delete promotion
@@ -748,49 +861,80 @@ if (isset($_SESSION['user'])) {
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $("body").addClass('body-after');
-                    $("#update_promotion").show();
-                    $('#update_promotion_container').css({'top':'10px','transform':'translate(-50%,0%)'});
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $("#update_promotion").show();
+                        $('#update_promotion_container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    else{
+                        $("#update_promotion").css('transform','translateX(0)');
+                    }
                     $("#loader_update_promotion").show();
                 },
                 success: function(response){
-                    $('#update_promotion_container').prepend(response);
+                    if (response != 0) {
+                        $('#update_promotion_container').prepend(response);
+                    }
                 },
                 complete: function(response){
+                    $('.create-promotion-product-bottom').css('height','auto');
                     $("#loader_update_promotion").hide();
                 }
             });
         });
 
         $('#update_promotion_container').on('click','#cancel_update_promotion_resp',function(){
-            $('#update_promotion').css('transform','');
-            $('#update_promotion_container').empty();
-            $('#update_promotion_container').append('<div id="loader_update_promotion" class="center"></div>');
+            cancelUpdatePromotion ();
         })
 
         $('#update_promotion_container').on('click','#cancel_update_promotion',function(e){
             e.stopPropagation();
-            $("body").removeClass('body-after');
-            $('#update_promotion').hide();
-            $('#update_promotion_container').empty();
-            $('#update_promotion_container').append('<div id="loader_update_promotion" class="center"></div>');
+            cancelUpdatePromotion ();
         })
 
         $('#update_promotion').on('click',function(){
-            $("body").removeClass('body-after');
-            $('#update_promotion').hide();
-            $('#update_promotion_container').empty();
-            $('#update_promotion_container').append('<div id="loader_update_promotion" class="center"></div>');
+            cancelUpdatePromotion ();
         })
 
-        $(document).on('change','#updt_categorie_prm',function() {
+        function cancelUpdatePromotion () {
+            var fd = new FormData();
+            var idPrm = $('#id_updt_promotion').val();
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'pre-update-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#update_promotion_container').empty();
+                    $("#loader_update_promotion").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                    }    
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("body").removeClass('body-after');
+                        $('#update_promotion').hide();
+                    }
+                    else{
+                        $('#update_promotion').css('transform','');
+                    }
+                    $("#loader_update_promotion").hide();
+                }
+            });
+        }
+
+        $(document).on('change','#categorie_prm',function() {
             var categorie  = $(this).val();
             if (categorie !== '') {
                 $('.updt-sous-categorie-promotion').load('update-categorie-promotion.php?c='+categorie);
             }
         })
 
-        $(document).on('change','#updt_sous_categorie_prm',function() {
+        $(document).on('change','#sous_categorie_prm',function() {
             var profession = $(this).val();
             if (profession == 'autre') {
                 $('.updt-sous-categorie-promotion').hide(); 
@@ -798,28 +942,12 @@ if (isset($_SESSION['user'])) {
             }
         })
 
-        $(document).on('keyup',"#updt_lieu_prm",function(){
-            var locationText = document.getElementById("updt_lieu_prm");
-            var filter = locationText.value.toUpperCase();
-            var location = document.querySelectorAll("#update_promotion_location_item p");
-            var locationItem = document.querySelectorAll("#update_promotion_location_item");
-            for (let i = 0; i < locationItem.length; i++) {
-                txtValue = location[i].textContent || location[i].innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    locationItem[i].style.display = "";
-                    $('.promotion-preview-location').css('display','initial');
-                } else {
-                    locationItem[i].style.display = "none";
-                }
+        // select promotion ville and commune
+        $("#update_promotion_container").on('change','#ville_promotion',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-promotion').load('commune-promotion.php?v='+ville);
             }
-            if ($(this).val() == '') {
-                $('.promotion-preview-location').css('display','');
-            }
-        });
-
-        $('#update_promotion_container').on('click','#update_promotion_location_item',function(){
-            $('.promotion-preview-location').css('display','');
-            $("#updt_lieu_prm").val($(this).text());
         })
 
         // update promotion image 
@@ -955,7 +1083,6 @@ if (isset($_SESSION['user'])) {
         });
 
         $('#update_promotion_container').on('change','#updt_image_promotion_product',function (e) { 
-            console.log('click');
             e.stopPropagation();
             $('#updt_promotion_product_image_button').click();
         });
@@ -963,7 +1090,6 @@ if (isset($_SESSION['user'])) {
         // add image promotion product
         $('#update_promotion_container').on('click','#updt_promotion_product_image_button',function(e){
             e.stopPropagation();
-            console.log('click1');
             var form_data = new FormData();
             var idPrm = $('#id_updt_promotion').val();
             form_data.append('id_prm',idPrm);
@@ -1011,32 +1137,1023 @@ if (isset($_SESSION['user'])) {
             });
         });
 
+        $('.promotions-left').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#display_promotions_categories').click(function(){
+            if ($('#promotion_categories').height() > 0) {
+                $('#promotion_categories').css({'max-height':''});
+            }
+            else{
+                $('#promotion_categories').css({'max-height':'127px'});
+            }
+        })
+
+        $('#display_promotions_date').click(function(){
+            if ($('#promotion_date').height() > 0) {
+                $('#promotion_date').css({'max-height':''});
+            }
+            else{
+                $('#promotion_date').css({'max-height':'127px'});
+            }
+        })
+
+        $('#display_promotions_localisation').click(function(){
+            if ($('#promotion_localisation').height() > 0) {
+                $('#promotion_localisation').css({'max-height':''});
+            }
+            else{ 
+                $('#promotion_localisation').css({'max-height':'127px'});
+            }
+        })
+
+        $('#ville_promotion_filter').on('change',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-promotion-filter').load('commune-filter-promotion.php?v='+ville);
+            }
+        })
+
+        $('#categorie_promotion').on('change',function() {
+            var categorie  = $(this).val();
+            if (categorie !== '') {
+                $('.profession-promotion').load('categorie-filter-promotion.php?c='+categorie);
+            }
+        })
+
+        // filter promotions
+        $('#filter_promotion_button').on('click',function() {
+            var typeFilter = 'all';
+            var categoriePrm = $('#categorie_promotion').val();
+            var professionPrm = $('#profession_promotion').val();
+            var dateDebutPrm = $('#date_debut_prm').val();
+            var dateFinPrm = $('#date_fin_prm').val();
+            var villePrm = $('#ville_promotion_filter').val();
+            var communePrm = $('#commune_promotion_filter').val();
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('categorie_prm',categoriePrm);
+            fd.append('profession_prm',professionPrm);
+            fd.append('date_debut_prm',dateDebutPrm);
+            fd.append('date_fin_prm',dateFinPrm);
+            fd.append('ville_prm',villePrm);
+            fd.append('commune_prm',communePrm);
+            $.ajax({
+                url: 'filter-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 768) {
+                            $('.promotions-right-container').append(response);
+                        }
+                        else{
+                            $('.promotions-left').css('transform','');
+                            $("body").removeClass('body-after');
+                            setTimeout(() => {
+                                $('.promotions-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $('#today_filter_button').on('click',function() {
+            var typeFilter = 'today';
+            var d = new Date();
+            var categoriePrm = '';
+            var professionPrm = '';
+            var dateDebutPrm = d.toLocaleDateString();
+            var dateFinPrm = '';
+            var villePrm = '';
+            var communePrm = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('categorie_prm',categoriePrm);
+            fd.append('profession_prm',professionPrm);
+            fd.append('date_debut_prm',dateDebutPrm);
+            fd.append('date_fin_prm',dateFinPrm);
+            fd.append('ville_prm',villePrm);
+            fd.append('commune_prm',communePrm); 
+            $.ajax({
+                url: 'filter-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 768) {
+                            $('.promotions-right-container').append(response);
+                        }
+                        else{
+                            $('.promotions-left').css('transform','');
+                            $("body").removeClass('body-after');
+                            setTimeout(() => {
+                                $('.promotions-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        function getFirstLastDayWeek () {
+            var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            var date = new Date;
+            var day = weekday[date.getDay()];
+
+            if (day == "Sunday") {
+                var first_date = new Date(date.setDate(date.getDate())).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Monday") {
+                var first_date = new Date(date.setDate(date.getDate() - 1)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Tuesday") {
+                var first_date = new Date(date.setDate(date.getDate() - 2)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Wednesday") {
+                var first_date = new Date(date.setDate(date.getDate() - 3)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Thursday") {
+                var first_date = new Date(date.setDate(date.getDate() - 4)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Friday") {
+                var first_date = new Date(date.setDate(date.getDate() - 5)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate()) + 6).toLocaleDateString();
+            }
+            else if (day == "Saturday") {
+                var first_date = new Date(date.setDate(date.getDate() - 6)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate()) + 6).toLocaleDateString();
+            }
+            return {first_date, last_date};
+        }
+
+        $('#week_filter_button').on('click',function() {
+            let week = getFirstLastDayWeek();
+            let firstDay = week.first_date, lastDay = week.last_date;
+            var typeFilter = 'week';
+            var d = new Date();
+            var categoriePrm = '';
+            var professionPrm = '';
+            var dateDebutPrm = firstDay;
+            var dateFinPrm = lastDay;
+            var villePrm = '';
+            var communePrm = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('categorie_prm',categoriePrm);
+            fd.append('profession_prm',professionPrm);
+            fd.append('date_debut_prm',dateDebutPrm);
+            fd.append('date_fin_prm',dateFinPrm);
+            fd.append('ville_prm',villePrm);
+            fd.append('commune_prm',communePrm); 
+            $.ajax({
+                url: 'filter-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 768) {
+                            $('.promotions-right-container').append(response);
+                        }
+                        else{
+                            $('.promotions-left').css('transform','');
+                            $("body").removeClass('body-after');
+                            setTimeout(() => {
+                                $('.promotions-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $('#month_filter_button').on('click',function() {
+            var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+            var firstDay = new Date(y, m, 1).toLocaleDateString();
+            var lastDay = new Date(y, m + 1, 0).toLocaleDateString();
+            var typeFilter = 'month';
+            var d = new Date();
+            var categoriePrm = '';
+            var professionPrm = '';
+            var dateDebutPrm = firstDay;
+            var dateFinPrm = lastDay;
+            var villePrm = '';
+            var communePrm = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('categorie_prm',categoriePrm);
+            fd.append('profession_prm',professionPrm);
+            fd.append('date_debut_prm',dateDebutPrm);
+            fd.append('date_fin_prm',dateFinPrm);
+            fd.append('ville_prm',villePrm);
+            fd.append('commune_prm',communePrm); 
+            $.ajax({
+                url: 'filter-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 768) {
+                            $('.promotions-right-container').append(response);
+                        }
+                        else{
+                            $('.promotions-left').css('transform','');
+                            $("body").removeClass('body-after');
+                            setTimeout(() => {
+                                $('.promotions-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        // reset filter promotions
+        $('#reset_promotion_button').on('click',function() {
+            $.ajax({
+                url: 'load-all-promotions.php',
+                beforeSend: function(){
+                    $(".promotions-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        $('.promotions-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $('#promotion_categories option:eq(0)').prop('selected',true);
+                    $('.profession-promotion option:eq(0)').prop('selected',true);
+                    $('#promotion_localisation option:eq(0)').prop('selected',true);
+                    $('.commune-promotion-filter option:eq(0)').prop('selected',true);
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        // update product promotion overview
+        $('#update_promotion_container').on('click','[id^="product_promotion_overview_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var idPrd = $('#id_prd_ovrw_'+id).val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'update-promotion-product-update.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').prepend(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        }) 
+
+        // load user promotion to create product promotion
+        $('#update_promotion_container').on('click','#select_promotion_product',function(){
+            $.ajax({
+                url: 'load-user-promotion-promotion.php',
+                type: 'post',
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // load product promotion to create product promotion
+        $('#update_promotion_container').on('click','[id^="user_promotion_promotion_"]',function(){
+            id = $(this).attr("id").split("_")[3];
+            var idBtq = $('#id_btq_prm_'+id).val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_btq',idBtq);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-product-promotion-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // back to user promotions
+        $('#update_promotion_container').on('click','#back_to_promotion_user_promotion',function(){
+            $.ajax({
+                url: 'load-user-promotion-promotion.php',
+                type: 'post',
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // load form to create new product promotion
+        $('#update_promotion_container').on('click','#create_new_promotion_product',function(){
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'create-new-product-promotion-update.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // load product details to create product promotion
+        $('#update_promotion_container').on('click','[id^="product_promotion_promotion_details_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_prm_'+id).val();
+            var idBtq = $('#id_btq_prm').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'load-product-promotion-promotion-details.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // back to promotion product
+        $('#update_promotion_container').on('click','#back_to_promotion_product_promotion',function(){
+            var idBtq = $('#id_btq_prm').val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_btq',idBtq);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-product-promotion-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // select product image for product promotion
+        $('#update_promotion_container').on('click','[id^="promotion_product_image_"]',function(){
+            $('.promotion-product-image').removeClass('selected-product-promotion-image');
+            $('.promotion-product-image i').remove();
+            $('.promotion-product-image img').css('opacity','');
+            $(this).addClass('selected-product-promotion-image');
+            $(this).append('<i class="fas fa-check etat"></i>');
+            $(this).find('img').css('opacity','.6');
+        })
+
+        function backToPromotionProductPromotion(idBtq,idPrm){
+            var fd = new FormData();
+            fd.append('id_btq',idBtq);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-product-boutique-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        }
+
+        // create product promotion promotion 
+        $('#update_promotion_container').on('click','#valide_product_promotion',function(){
+            var idPrm = $('#id_updt_promotion').val();
+            var idBtq = $('#id_btq_prm').val();
+            var idPrd = $('#id_prm_prd').val();
+            var pricePrd = $('#prm_price_prd').val();
+            var mediaUrl = $('.selected-product-promotion-image img').attr('src');
+            if (pricePrd == 0 || pricePrd == '') {
+                $('#prm_price_prd').css('border','2px solid red');
+            }
+            else if (!$('.selected-product-promotion-image')[0]) {
+                $('.select-image-alert-message').show();
+            }
+            else{
+                var fd = new FormData();
+                fd.append('id_prm',idPrm);
+                fd.append('id_btq',idBtq);
+                fd.append('id_prd',idPrd);
+                fd.append('prix_prd',pricePrd);
+                fd.append('media_url',mediaUrl);
+                $.ajax({
+                    url: 'create-product-boutique-promotion.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $('#create_promotion_product_bottom_container').empty();
+                        $("#loader_create_promotion_product_button").show();
+                    },
+                    success: function(response){
+                        console.log(response);
+                        if(response != 0){
+                            backToPromotionProductPromotion(idBtq,idPrm);
+                        }
+                    },
+                    complete: function(){
+                        $("#loader_create_promotion_product_button").hide();
+                    }
+                });
+            }
+        })
+
+        // delete product promotion promotion
+        $('#update_promotion_container').on('click','[id^="delete_product_promotion_promotion_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_prm_'+id).val();
+            var idBtq = $('#id_btq_prm').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'delete-product-promotion-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        backToPromotionProductPromotion(idBtq,idPrm);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // update product boutique promotion overview
+        $('#update_promotion_container').on('click','[id^="product_boutique_promotion_overview_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_btq_ovrw_'+id).val();
+            var idBtq = $('#id_btq_prd_ovrw_'+id).val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'load-product-boutique-promotion-details.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // update product promotion promotion overview
+        $('#update_promotion_container').on('click','[id^="product_promotion_promotion_overview_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_btq_ovrw_'+id).val();
+            var idBtq = $('#id_btq_prd_ovrw_'+id).val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'load-product-promotion-promotion-details.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        }) 
+
+        // cancel product promotion overview
+        $('#update_promotion_container').on('click','#cancel_product_promotion_overview',function(){
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'create-new-product-promotion-update.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // delete product promotion overview
+        $('#update_promotion_container').on('click','#delete_product_promotion_overview',function(){
+            var idPrd = $('#id_promotion_product').val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'delete-promotion-product-overview-update.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+        
+        // create other promotion product
+        $('#update_promotion_container').on('click','#add_new_product_promotion',function(){
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_promotion_product').val();
+            var namePrd = $('#name_prm_prd').val();
+            var referencePrd = $('#reference_prm_prd').val();
+            var quantityPrd = $('#quantity_prm_prd').val();
+            var oldPricePrd = $('#old_price_prm_prd').val();
+            var newPricePrd = $('#new_price_prm_prd').val();
+            var fonctionalityPrd = $('#fonctionality_prm_prd').val();
+            var caracteristicPrd = $('#caracteristic_prm_prd').val();
+            var avantagePrd = $('#avantage_prm_prd').val();
+            var descriptionPrd = $('#description_prm_prd').val();
+            if (namePrd == ''){
+                $('#name_prm_prd').css('border','2px solid red');
+            }
+            else if (oldPricePrd == '0'){
+                $('#name_prm_prd').css('border','');
+                $('#old_price_prm_prd').css('border','2px solid red');
+            }
+            else if (newPricePrd == '0'){
+                $('#name_prm_prd').css('border','');
+                $('#old_price_prm_prd').css('border','');
+                $('#new_price_prm_prd').css('border','2px solid red');
+            }
+            else if ($('.promotion-product-images-preview').is(':empty')){
+                $('#name_prm_prd').css('border','');
+                $('#old_price_prm_prd').css('border','');
+                $('#new_price_prm_prd').css('border','');
+                $('.create-promotion-product-options').css('border','2px solid red');
+            }
+            else{
+                $('.create-promotion-product-options').css('border','');
+                var fd = new FormData();
+                fd.append('id_prm',idPrm);
+                fd.append('id_prd',idPrd);
+                fd.append('nom_prd',namePrd);
+                fd.append('reference_prd',referencePrd);
+                fd.append('quantite_prd',quantityPrd);
+                fd.append('ancien_prix_prd',oldPricePrd);
+                fd.append('nouveau_prix_prd',newPricePrd);
+                fd.append('fonctionalites_prd',fonctionalityPrd);
+                fd.append('caracteristiques_prd',caracteristicPrd);
+                fd.append('avantages_prd',avantagePrd);
+                fd.append('description_prd',descriptionPrd);
+                $.ajax({
+                    url: 'add-new-product-promotion-update.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $('#create_promotion_product_bottom_container').empty();
+                        $("#loader_create_promotion_product_bottom").show();
+                    },
+                    success: function(response){
+                        console.log(response);
+                        if(response != 0){
+                            $('#create_promotion_product_bottom_container').append(response);
+                        }
+                    },
+                    complete: function(){
+                        $("#loader_create_promotion_product_bottom").hide();
+                    }
+                });
+            }
+        })
+
+        // upload promotion product image 
+        $('#update_promotion_container').on('click','#add_promotion_product_image',function(){
+            $('#image_promotion_product').click();
+        });
+
+        $('#update_promotion_container').on('click','#image_promotion_product',function(e){
+            e.stopPropagation();
+        });
+
+        $('#update_promotion_container').on('change','#image_promotion_product',function(e){
+            $('#add_promotion_product_image_button').click();
+        });
+
+        // add image promotion product
+        $('#update_promotion_container').on('click','#add_promotion_product_image_button',function(e){
+            e.stopPropagation();
+            var form_data = new FormData();
+            var idPrm = $('#id_updt_promotion').val();
+            form_data.append('id_prm',idPrm);
+            var idPrd = $('#id_promotion_product').val();
+            form_data.append('id_prd',idPrd);
+            var totalfiles = document.getElementById('image_promotion_product').files.length;
+            for (let i = 0; i < totalfiles; i++) {
+                form_data.append("images[]", document.getElementById('image_promotion_product').files[i]);
+            }
+            $.ajax({
+                url: 'upload-images-prm-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    for(let i = 0; i < response.length; i++) {
+                        var src = response[i];
+                        $('.promotion-product-images-preview').append("<div class='prm-product-image-preview' id='prm_product_image_preview_"+i+"'><div id='prm_product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                    }
+                }
+            });
+        });
+
+        // remove promotion product image preview
+        $('#update_promotion_container').on('click','[id^="prm_product_delete_preview_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var form_data = new FormData();
+            var idPrd = $('#id_promotion_product').val();
+            form_data.append('id_prd',idPrd);
+            var mediaUrl = $('#prm_product_image_preview_'+id+' img').attr('src');
+            form_data.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-image-prm-product-preview.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#prm_product_image_preview_'+id).remove();
+                }
+            });
+        });
+
+        // load user boutique to create product promotion
+        $('#update_promotion_container').on('click','#select_boutique_product',function(){
+            $.ajax({
+                url: 'load-user-boutique-promotion.php',
+                type: 'post',
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // load product boutique to create product promotion
+        $('#update_promotion_container').on('click','[id^="user_boutique_promotion_"]',function(){
+            id = $(this).attr("id").split("_")[3];
+            var idBtq = $('#id_btq_prm_'+id).val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_btq',idBtq);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-product-boutique-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // delete product boutique promotion
+        $('#update_promotion_container').on('click','[id^="delete_product_boutique_promotion_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_prm_'+id).val();
+            var idBtq = $('#id_btq_prm').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'delete-product-boutique-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        backToBoutiqueProductPromotion(idBtq,idPrm);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // load product details to create product promotion
+        $('#update_promotion_container').on('click','[id^="product_boutique_promotion_details_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrm = $('#id_updt_promotion').val();
+            var idPrd = $('#id_prd_prm_'+id).val();
+            var idBtq = $('#id_btq_prm').val();
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            $.ajax({
+                url: 'load-product-boutique-promotion-details.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // back to boutique product
+        $('#update_promotion_container').on('click','#back_to_boutique_product_promotion',function(){
+            var idBtq = $('#id_btq_prm').val();
+            var idPrm = $('#id_updt_promotion').val();
+            var fd = new FormData();
+            fd.append('id_btq',idBtq);
+            fd.append('id_prm',idPrm);
+            $.ajax({
+                url: 'load-product-boutique-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // back to user boutiques
+        $('#update_promotion_container').on('click','#back_to_boutique_user_promotion',function(){
+            $.ajax({
+                url: 'load-user-boutique-promotion.php',
+                type: 'post',
+                beforeSend: function(){
+                    $('#create_promotion_product_bottom_container').empty();
+                    $("#loader_create_promotion_product_bottom").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#create_promotion_product_bottom_container').append(response);
+                    }
+                },
+                complete: function(){
+                    $("#loader_create_promotion_product_bottom").hide();
+                }
+            });
+        })
+
+        // final update promotion
         $('#update_promotion_container').on('click','#final_update_promotion_button',function(){
+            console.log('click');
             var idPrm = $('#id_updt_promotion').val();
             var tailPrm = $('#tail_updt_promotion').val();
             var titrePrm = $('#updt_titre_prm').val();
-            var categoriePrm = $('#updt_categorie_prm').val();
-            var sousCategoriePrm = $('#updt_sous_categorie_prm').val();
-            var lieuPrm = $('#updt_lieu_prm').val(); 
+            var categoriePrm = $('#categorie_prm').val();
+            var sousCategoriePrm = $('#sous_categorie_prm').val();
+            var villePrm = $('#ville_promotion').val();
+            var communePrm = $('#commune_promotion').val();  
             var adressePrm = $('#updt_adresse_prm').val();
             var latitudePrm = $('#updt_latitude_prm').val();
             var longitudePrm = $('#updt_longitude_prm').val();
             var dateDebutPrm = $('#updt_date_debut_prm').val();
             var dateFinPrm = $('#updt_date_fin_prm').val();
             var descriptionPrm = $('#updt_description_prm').val();
-            
-            var idPrd = $('#id_updt_promotion_product').val();
-            var namePrd = $('#updt_name_prm_prd').val();
-            var referencePrd = $('#updt_reference_prm_prd').val();
-            var quantityPrd = $('#updt_quantity_prm_prd').val();
-            var pricePrd = $('#updt_price_prm_prd').val();
-            var fonctionalityPrd = $('#updt_fonctionality_prm_prd').val();
-            var caracteristicPrd = $('#updt_caracteristic_prm_prd').val();
-            var avantagePrd = $('#updt_avantage_prm_prd').val();
-            var descriptionPrd = $('#updt_description_prm_prd').val();
 
+            var namePrd = $('#name_prm_prd').val();
+            var oldPricePrd = $('#old_price_prm_prd').val();
+            var newPricePrd = $('#new_price_prm_prd').val();
+            
             if ($('.promotion-update-images-preview').is(':empty')){
-                console.log('empty');
                 $('.create-promotion-options').css('border','2px solid red');
             }
             else if (titrePrm == '') {
@@ -1046,111 +2163,77 @@ if (isset($_SESSION['user'])) {
             else if (categoriePrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','2px solid red');
+                $('#categorie_prm').css('border','2px solid red');
             }
             else if (sousCategoriePrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','2px solid red');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','2px solid red');
             }
-            else if (lieuPrm == '') {
+            else if (villePrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','2px solid red');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','2px solid red');
+            }
+            else if (communePrm == '') {
+                $('.create-promotion-options').css('border','');
+                $('#updt_titre_prm').css('border','');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','');
+                $('#commune_promotion').css('border','2px solid red');
             }
             else if (adressePrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','');
+                $('#commune_promotion').css('border','');
                 $('#updt_adresse_prm').css('border','2px solid red');
             }
             else if (dateDebutPrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','');
+                $('#commune_promotion').css('border','');
                 $('#updt_adresse_prm').css('border','');
                 $('#updt_date_debut_prm').css('border','2px solid red');
             }
             else if (dateFinPrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','');
+                $('#commune_promotion').css('border','');
                 $('#updt_adresse_prm').css('border','');
                 $('#updt_date_debut_prm').css('border','');
                 $('#updt_date_fin_prm').css('border','2px solid red');
             }
-            else if (namePrd == ''){
+            else if (descriptionPrm == '') {
                 $('.create-promotion-options').css('border','');
                 $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
+                $('#categorie_prm').css('border','');
+                $('#sous_categorie_prm').css('border','');
+                $('#ville_promotion').css('border','');
+                $('#commune_promotion').css('border','');
                 $('#updt_adresse_prm').css('border','');
                 $('#updt_date_debut_prm').css('border','');
                 $('#updt_date_fin_prm').css('border','');
-                $('#updt_name_prm_prd').css('border','2px solid red');
-            }
-            else if (pricePrd == '0' || pricePrd == null){
-                ('.create-promotion-options').css('border','');
-                $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
-                $('#updt_adresse_prm').css('border','');
-                $('#updt_date_debut_prm').css('border','');
-                $('#updt_date_fin_prm').css('border','');
-                $('#updt_name_prm_prd').css('border','');
-                $('#updt_price_prm_prd').css('border','2px solid red');
-            }
-            else if ($('.promotion-product-update-images-preview').is(':empty')){
-                $('.create-promotion-options').css('border','');
-                $('#updt_titre_prm').css('border','');
-                $('#updt_categorie_prm').css('border','');
-                $('#updt_sous_categorie_prm').css('border','');
-                $('#updt_lieu_prm').css('border','');
-                $('#updt_adresse_prm').css('border','');
-                $('#updt_date_debut_prm').css('border','');
-                $('#updt_date_fin_prm').css('border','');
-                $('#updt_name_prm_prd').css('border','');
-                $('#updt_price_prm_prd').css('border','');
-                $('.create-promotion-product-options').css('border','2px solid red');
+                $('#updt_description_prm').css('border','2px solid red');
             }
             else{
-                $('.create-promotion-product-options').css('border','');
+                $('#updt_description_prm').css('border','');
                 var fd = new FormData();
                 fd.append('id_prm',idPrm);
-                fd.append('tail_prm',tailPrm);
-                fd.append('titre_prm',titrePrm);
-                fd.append('categorie_prm',categoriePrm);
-                fd.append('sous_categorie_prm',sousCategoriePrm);
-                fd.append('lieu_prm',lieuPrm);
-                fd.append('adresse_prm',adressePrm);
-                fd.append('latitude_prm',latitudePrm);
-                fd.append('longitude_prm',longitudePrm);
-                fd.append('date_debut_prm',dateDebutPrm);
-                fd.append('date_fin_prm',dateFinPrm);
-                fd.append('description_prm',descriptionPrm);
-
-                fd.append('id_prd',idPrd);
-                fd.append('nom_prd',namePrd);
-                fd.append('reference_prd',referencePrd);
-                fd.append('quantite_prd',quantityPrd);
-                fd.append('prix_prd',pricePrd);
-                fd.append('fonctionalites_prd',fonctionalityPrd);
-                fd.append('caracteristiques_prd',caracteristicPrd);
-                fd.append('avantages_prd',avantagePrd);
-                fd.append('description_prd',descriptionPrd);
                 $.ajax({
-                    url: 'update-promotion.php',
+                    url: 'verify-promotion-product-created.php',
                     type: 'post',
                     data: fd,
                     contentType: false,
@@ -1160,54 +2243,124 @@ if (isset($_SESSION['user'])) {
                         $("#loader_update_promotion_button").show();
                     },
                     success: function(response){
-                        if(response != 0){
-                            console.log(response);
-                            $('#promotion_user_overview_'+tailPrm).replaceWith(response);
+                        console.log('res '+response);
+                        if(response != 100){
+                            if (response == 0) {
+                                if (namePrd == ''){
+                                    $('#name_prm_prd').css('border','2px solid red');
+                                }
+                                else if (oldPricePrd == '0'){
+                                    $('#name_prm_prd').css('border','');
+                                    $('#old_price_prm_prd').css('border','2px solid red');
+                                }
+                                else if (newPricePrd == '0'){
+                                    $('#name_prm_prd').css('border','');
+                                    $('#old_price_prm_prd').css('border','');
+                                    $('#new_price_prm_prd').css('border','2px solid red');
+                                }
+                                else if ($('.promotion-product-images-preview').is(':empty')){
+                                    $('#name_prm_prd').css('border','');
+                                    $('#old_price_prm_prd').css('border','');
+                                    $('#new_price_prm_prd').css('border','');
+                                    $('.create-promotion-product-options').css('border','2px solid red');
+                                }
+                                else{
+                                    $('.create-promotion-product-options').css('border','');
+                                    updatePromotion(idPrm);
+                                }
+                            }
+                            else{
+                                updatePromotion(idPrm);
+                            }
                         }
                     },
                     complete: function(){
                         $(this).css('opacity','');
                         $("#loader_update_promotion_button").hide();
-                        $("#update_promotion").hide();
-                        $("body").removeClass('body-after');
-                        $('#update_promotion_container').empty();
-                        $('#update_promotion_container').append('<div id="loader_update_promotion" class="center"></div>');
                     }
                 });
             }
         });
 
-        $('#display_promotions_categories').click(function(){
-            $('.promotion-categories').css('transform','translateX(0)');
-        })
+        function updatePromotion (idPrm) {
+            var tailPrm = $('#tail_updt_promotion').val();
+            var titrePrm = $('#updt_titre_prm').val();
+            var categoriePrm = $('#categorie_prm').val();
+            var sousCategoriePrm = $('#sous_categorie_prm').val();
+            var villePrm = $('#ville_promotion').val(); 
+            var communePrm = $('#commune_promotion').val();
+            var adressePrm = $('#updt_adresse_prm').val();
+            var latitudePrm = $('#updt_latitude_prm').val();
+            var longitudePrm = $('#updt_longitude_prm').val();
+            var dateDebutPrm = $('#updt_date_debut_prm').val();
+            var dateFinPrm = $('#updt_date_fin_prm').val();
+            var descriptionPrm = $('#updt_description_prm').val();
 
-        $('#back_to_promotion_filter').click(function(){
-            $('.promotion-categories').css('transform','');
-        })
+            var idPrd = $('#id_promotion_product').val();
+            var namePrd = $('#name_prm_prd').val();
+            var referencePrd = $('#reference_prm_prd').val();
+            var quantityPrd = $('#quantity_prm_prd').val();
+            var oldPricePrd = $('#old_price_prm_prd').val();
+            var newPricePrd = $('#new_price_prm_prd').val();
+            var fonctionalityPrd = $('#fonctionality_prm_prd').val();
+            var caracteristicPrd = $('#caracteristic_prm_prd').val();
+            var avantagePrd = $('#avantage_prm_prd').val();
+            var descriptionPrd = $('#description_prm_prd').val();
 
-        var categoriePromotionTop = document.querySelectorAll('.categorie-promotion-top');
-        var categoriePromotionBottom = document.querySelectorAll('.categorie-promotion-bottom');
-        var clickCategorie = new Array(categoriePromotionTop.length);
+            var fd = new FormData();
+            fd.append('id_prm',idPrm);
+            fd.append('tail_prm',tailPrm);
+            fd.append('titre_prm',titrePrm);
+            fd.append('categorie_prm',categoriePrm);
+            fd.append('sous_categorie_prm',sousCategoriePrm);
+            fd.append('ville_prm',villePrm);
+            fd.append('commune_prm',communePrm);
+            fd.append('adresse_prm',adressePrm);
+            fd.append('latitude_prm',latitudePrm);
+            fd.append('longitude_prm',longitudePrm);
+            fd.append('date_debut_prm',dateDebutPrm);
+            fd.append('date_fin_prm',dateFinPrm);
+            fd.append('description_prm',descriptionPrm);
 
-        for (let k = 0; k < categoriePromotionTop.length; k++) {
-            clickCategorie[k] = 1;
-            categoriePromotionTop[k].addEventListener('click',(e)=>{
-                e.stopPropagation();
-                clickCategorie[k]++;
-                if (clickCategorie[k]%2 == 1) {
-                    categoriePromotionBottom[k].style.display = "";
+            fd.append('id_prd',idPrd);
+            fd.append('nom_prd',namePrd);
+            fd.append('reference_prd',referencePrd);
+            fd.append('quantite_prd',quantityPrd);
+            fd.append('ancien_prix_prd',oldPricePrd);
+            fd.append('nouveau_prix_prd',newPricePrd);
+            fd.append('fonctionalites_prd',fonctionalityPrd);
+            fd.append('caracteristiques_prd',caracteristicPrd);
+            fd.append('avantages_prd',avantagePrd);
+            fd.append('description_prd',descriptionPrd);
+            $.ajax({
+                url: 'update-promotion.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(this).css('opacity','.8');
+                    $("#loader_update_promotion_button").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                    }
+                },
+                complete: function(){
+                    $(this).css('opacity','');
+                    $("#loader_update_promotion_button").hide();
+                    if (windowWidth > 768) {
+                        $("#update_promotion").hide();
+                        $("body").removeClass('body-after');
+                    }
+                    else{
+                        $("#update_promotion").css('transform','');
+                    }
+                    setTimeout(() => {
+                        $("#update_promotion_container").empty();
+                    }, 400);
                 }
-                else{
-                    hidePrmCategories();
-                    categoriePromotionBottom[k].style.display = "initial";
-                }
-                categoriePromotionTop[k].scrollIntoView();
-            }) 
-        }
-
-        function hidePrmCategories (){
-            categoriePromotionBottom.forEach(c => {
-                c.style.display = "";
             });
         }
 

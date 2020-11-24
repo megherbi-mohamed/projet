@@ -74,7 +74,7 @@
         </div>
         <div class="hide-menu-left-list <?php echo $indexRespActive ?>" id="home_button"><div><i class="fas fa-home"></i></div><p>acceuil</p></div>
         <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div>
-        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-tools"></i></div><p>bout de chantier</p></div>
+        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-store"></i></div><p>bout de chantier</p></div>
         <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div>
         <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-ad"></i></div><p>promotions</p></div>
         <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
@@ -100,6 +100,9 @@
                 <div id="search_bar_button">
                     <i class="fas fa-search"></i>
                 </div>
+                <div id="parameters_button">
+                    <i class="fas fa-bars"></i>
+                </div>
             </div>
         </div>
         <div class="navbar-middle">
@@ -108,6 +111,12 @@
             <div><a class="<?php echo $promotionsActive; ?>" href="promotions">promotions</a></div>
             <div><a class="<?php echo $evenementsActive; ?>" href="evenements">évènements</a></div>
             <!-- <a class="<?php echo $recrutementsActive; ?>" href="./recrutements.php">recrutement</a> -->
+        </div>
+        <div class="navbar-middle-responsive">
+            <div id="go_home"><i class="fas fa-home"></i></div>
+            <div id="go_boutdechantier"><i class="fas fa-store"></i></div>
+            <div id="go_promotions"><i class="fas fa-ad"></i></div>
+            <div id="go_evenements"><i class="far fa-calendar-check"></i></a></div>
         </div>
         <div class="navbar-right">
             <div class="profile-image-desktop <?php echo $utilisateurActive ?>">
@@ -361,7 +370,7 @@
         <h4>Créer</h4>
     </div>
     <h4 class="create-h4">Créer</h4>
-    <div class="create-option" id="create_pub_button">
+    <div class="create-option" id="pre_create_publication">
         <div>
             <i class="far fa-edit"></i>
         </div>
@@ -426,68 +435,17 @@
     </div>
     <div id="loader_create_button" class="center"></div>
 </div>
+<!-- create pulication -->
 <div class="create-publication" id="create_publication">
-    <div class="create-publication-container">
-        <input type="hidden" id="id_publication">
-        <div class="create-publication-top">
-            <div class="cancel-create-mobile" id="cancel_create_publication_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Créer une publication</h4>
-            <div class="cancel-create" id="cancel_create_publication">
-                <i class="fas fa-times"></i>
-            </div>
-            <button id="crt_pubt_btn_resp">Publier</button>
-        </div>
-        <div class="create-publication-bottom">
-            <div class="create-publication-location">
-                <div>
-                    <input type="text" id="publication_location_text" placeholder="Entrer un lieu ...">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-            </div>
-            <div class="publication-preview-location">
-                <?php 
-                   $ville_query = $conn->prepare("SELECT * FROM villes");
-                   $ville_query->execute(); 
-                   while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <div id="publication_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
-                <?php } ?>    
-            </div>
-            <div class="create-publication-description">
-                <textarea id="publication_description" placeholder="Exprimez vos activités, services ..."></textarea>
-            </div>
-            <div class="publication-images-preview-container">
-                <div class="publication-images-preview"></div>
-                <div id="loader_pub_img" class="center"></div>
-            </div>
-            <div class="publication-video-preview-container">
-                <div class="publication-video-preview"></div>
-                <div id="loader_pub_img" class="center"></div>
-            </div>
-            <div class="create-publication-options">
-                <P>Ajouter des photos ou vidéo</P>
-                <div id="add_publication_image">
-                    <i class="far fa-images"></i>
-                </div>
-                <div id="add_publication_video">
-                    <i class="fas fa-video"></i>
-                </div>
-            </div>
-            <form enctype="multipart/form-data">
-                <input type="file" id="image" name="images[]" accept="image/*" multiple>
-                <input type="button" id="add_publication_image_button">
-            </form>
-            <form enctype="multipart/form-data">
-                <input type="file" id="video" name="video" accept="video/*">
-                <input type="button" id="add_publication_video_button">
-            </form>
-            <button id="create_publication_button">Publier</button>
-        </div>
-    </div>
-    <div id="loader_create_pub" class="center"></div>
+    <div class="create-publication-container" id="create_publication_container"></div>
+    <div id="loader_create_publication" class="center"></div>
 </div>
+<!-- update publication -->
+<div class="create-publication" id="update_publication">
+    <div class="create-publication-container" id="update_publication_container"></div>
+    <div id="loader_update_publication" class="center"></div>
+</div>
+<!-- create boutique -->
 <div class="create-publication" id="create_boutique">
     <div class="create-publication-container">
         <input type="hidden" id="id_boutique">
@@ -637,267 +595,15 @@
         <!-- <div id="loader_load" class="center-load"></div> -->
     </div>
 </div>
+<!-- create promotion -->
 <div class="create-publication" id="create_promotion">
-    <div class="create-publication-container" id="create_promotion_container">
-        <div class="create-publication-top">
-            <div class="cancel-create-mobile" id="cancel_create_promotion_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Créer une promotion!</h4>
-            <div class="cancel-create" id="cancel_create_promotion">
-                <i class="fas fa-times"></i>
-            </div>
-            <button id="next_create_promotion_resp">Suivant</button>
-        </div>
-        <div class="create-publication-bottom">
-            <div class="create-promotion-options">
-                <div class="create-promotion-option" id="add_promotion_image">
-                    <div>
-                        <P>Ajouter une photo de cette promotion</P>
-                        <i class="far fa-images"></i>
-                    </div>
-                </div>
-                <div class="create-promotion-option" id="add_promotion_video">
-                    <div>
-                        <P>Ajouter une vidéo de cette promotion</P>
-                        <i class="fas fa-video"></i>
-                    </div>
-                </div>
-            </div>
-            <div class="promotion-images-preview"></div>
-            <form enctype="multipart/form-data">
-                <input type="file" id="image_promotion" name="image" accept="image/*">
-                <input type="button" id="add_promotion_image_button">
-            </form>
-            <form enctype="multipart/form-data">
-                <input type="file" id="video_promotion" name="video" accept="video/*">
-                <input type="button" id="add_promotion_video_button">
-            </form>
-            <div class="promotion-input">
-                <input type="text" id="titre_prm" autocomplete="off">
-                <span class="titre-prm">Titre *</span>
-            </div>
-            <div class="promotion-input">
-                <span class="categorie-prm">Categorie *</span>
-                <select id="categorie_prm">
-                    <option value="">Categories</option>
-                    <option id="services" value="services">Services</option>
-                    <option id="artisants" value="artisants">Artisants</option>
-                    <option id="transports" value="transports">Transports</option>
-                    <option id="locations" value="locations">Locations</option>
-                    <option id="entreprises" value="entreprises">Entreprises</option>
-                    <option id="detaillons" value="detaillons">Detaillons</option>
-                    <option id="grossidtes" value="grossidtes">Grossistes</option>
-                    <option id="fabriquants" value="fabriquants">Fabriquants</option>
-                    <option id="import-export" value="import-export">Import-Export</option>
-                </select>
-            </div>
-            <div class="promotion-input sous-categorie-promotion">
-                <span class="sous-categorie-prm">Sous categorie *</span>
-                <select id="sous_categorie_prm">
-                    <option value="">Sous categories</option>
-                </select>
-            </div>
-            <div class="promotion-input sous-categorie-autre">
-                <span class="sous-categorie-prm">Sous categorie *</span>
-                <input type="text" id="sous_categorie_prm">
-            </div>
-            <div class="promotion-input">
-                <input type="text" id="lieu_prm" autocomplete="off">
-                <span class="lieu-prm">Lieu *</span>
-            </div>
-            <div class="promotion-preview-location">
-                <?php 
-                $ville_query = $conn->prepare("SELECT * FROM villes");
-                $ville_query->execute(); 
-                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <div id="promotion_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
-                <?php } ?>    
-            </div>
-            <div class="promotion-input">
-                <input type="text" id="adresse_prm" autocomplete="off">
-                <span class="adresse-prm">Adresse *</span>
-            </div>
-            <div class="promotion-localisation-gps">
-                <p>Ajouter une localisation gps (optionnelle)</p>
-                <button onclick="getLocation()">Ajouter</button>
-                <input type="hidden" id="latitude_prm">
-                <input type="hidden" id="longitude_prm">
-            </div>
-            <div class="promotion-input">
-                <input type="datetime-local" id="date_debut_prm">
-                <span class="date-debut-prm">Date debut promotion</span>
-            </div>
-            <div class="promotion-input">
-                <input type="datetime-local" id="date_fin_prm">
-                <span class="date-fin-prm">Date fin promotion</span>
-            </div>
-            <!-- <div class="promotion-input">
-                <select id="participants_prm">
-                    <option value="1">Afficher le nombre de participants</option>
-                    <option value="0">Ne pas afficher le nombre de participants</option>
-                </select>
-                <span class="participants-prm">Participants</span>
-            </div> -->
-            <div class="promotion-input">
-                <textarea id="description_prm"></textarea>
-                <span class="description-prm">Description</span>
-            </div>
-            <div class="create-promotion-product">
-                <p>Ajouter une description de votre produit</p>
-                <button id="next_create_promotion">Suivant</button>
-            </div>
-        </div>
-    </div>
-    <div class="create-promotion-product-container">
-        <div class="create-promotion-product-top">
-            <div class="cancel-create-promotion-product-mobile" id="cancel_create_promotion_product_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Produits details</h4>
-            <button id="final_create_promotion_button_resp">Créer</button>
-        </div>
-        <div class="create-publication-bottom create-promotion-product-bottom">
-            <div class="create-promotion-product-bottom-container" id="create_promotion_product_bottom_container">
-                <div class="select-boutique-product">
-                    <button id="select_boutique_product">Selectionner des produits depuis vos boutiques</button>
-                    <h5>Pourquoi cette option ?</h5>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aliquam nesciunt repellat voluptatum quis inventore asperiores aut reiciendis accusamus error corrupti!</p>
-                    <h4>OU créer un nouveau produit</h4>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="name_prm_prd" autocomplete="off">
-                    <span class="name-prm-prd">nom *</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="reference_prm_prd" autocomplete="off">
-                    <span class="reference-prm-prd">Reference</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="number" id="quantity_prm_prd" value="0">
-                    <span class="quantity-prm-prd">Quantité</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="price_prm_prd" value="0">
-                    <span class="price-prm-prd">Price *</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="fonctionality_prm_prd" autocomplete="off">
-                    <span class="fonctionality-prm-prd">fonctionalités</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="caracteristic_prm_prd" autocomplete="off">
-                    <span class="caracteristic-prm-prd">Caractéristiques</span>
-                </div>
-                <div class="promotion-input">
-                    <input type="text" id="avantage_prm_prd" autocomplete="off">
-                    <span class="avantage-prm-prd">Avantages</span>
-                </div>
-                <div class="promotion-input">
-                    <textarea id="description_prm_prd"></textarea>
-                    <span class="description-prm-prd">Description</span>
-                </div>
-                <div class="promotion-product-images-preview"></div>
-                <div class="create-promotion-product-options">
-                    <P>Ajouter des photos</P>
-                    <div id="add_promotion_product_image">
-                        <i class="far fa-images"></i>
-                    </div>
-                </div>
-                <form enctype="multipart/form-data">
-                    <input type="file" id="image_promotion_product" name="images[]" accept="image/*" multiple>
-                    <input type="button" id="add_promotion_product_image_button">
-                </form>
-            </div>
-            <div id="loader_create_promotion_product_bottom" class="center"></div>
-        </div>
-        <input type="hidden" id="id_promotion">
-        <input type="hidden" id="id_promotion_product">
-        <div class="create-promotion-button">
-            <div id="loader_create_promotion_button" class="button-center"></div>
-            <button id="final_create_promotion_button">Créer maintenant</button>
-        </div>
-    </div>
+    <div class="create-global-promotion-container" id="create_global_promotion_container"></div>
+    <div id="loader_create_promotion" class="center"></div>
 </div>
+<!-- create evenement -->
 <div class="create-publication" id="create_evenement">
-    <div class="create-publication-container">
-        <div class="create-publication-top">
-            <div class="cancel-create-mobile">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Créer un évènement</h4>
-            <div class="cancel-create">
-                <i class="fas fa-times"></i>
-            </div>
-        </div>
-        <div class="create-publication-bottom">
-            
-        </div>
-    </div>
-</div>
-<div class="update-publication">
-    <div class="update-publication-container">
-        <input type="hidden" id="publication_tail_updt">
-        <input type="hidden" id="id_publication_updt">
-        <input type="hidden" id="etat_commentaire_updt">
-        <div class="update-publication-top">
-            <div class="cancel-update-mobile" id="cancel_update_publication_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Modifier la publication</h4>
-            <div class="cancel-update" id="cancel_update_publication">
-                <i class="fas fa-times"></i>
-            </div>
-            <button id="update_publication_button_resp">Modifier</button>
-        </div>
-        <div class="update-publication-bottom">
-            <div class="update-publication-location">
-                <div>
-                    <input type="text" id="publication_location_text_updt" placeholder="Entrer un lieu ...">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-            </div>
-            <div class="publication-preview-location">
-                <?php 
-                $ville_query = $conn->prepare("SELECT * FROM villes");
-                $ville_query->execute(); 
-                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <div id="publication_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
-                <?php } ?>    
-            </div>
-            <div class="update-publication-description">
-                <textarea id="publication_description_updt" placeholder="Exprimez vous ..."></textarea>
-            </div>
-            <div class="publication-update-images-preview-container">
-                <div class="publication-update-images-preview"></div>
-                <div id="loader_pub_img" class="center"></div>
-            </div>
-            <div class="publication-update-video-preview-container">
-                <div class="publication-update-video-preview"></div>
-                <div id="loader_pub_img" class="center"></div>
-            </div>
-            <div class="update-publication-options">
-                <P>Ajouter des photos ou vidéo</P>
-                <div id="update_publication_image">
-                    <i class="far fa-images"></i>
-                </div>
-                <div id="update_publication_video">
-                    <i class="fas fa-video"></i>
-                </div>
-            </div>
-            <form enctype="multipart/form-data">
-                <input type="file" id="image_updt" name="images_updt[]" accept="image/*" multiple>
-                <input type="button" id="update_publication_image_button">
-            </form>
-            <form enctype="multipart/form-data">
-                <input type="file" id="video_updt" name="video_updt" accept="video/*">
-                <input type="button" id="update_publication_video_button">
-            </form>
-            <button id="update_publication_button">Modifier</button>
-        </div>
-    </div>
+    <div class="create-publication-container" id="create_evenement_container"></div>
+    <div id="loader_create_evenement" class="center"></div>
 </div>
 <div class="delete-hide-publication" id="hide_publication">
     <div class="delete-hide-publication-container" id="hide_publication_container">

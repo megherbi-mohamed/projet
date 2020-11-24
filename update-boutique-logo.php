@@ -10,14 +10,12 @@ $id_btq = $get_session_btq_row['id_user'];
 $data = htmlspecialchars($_POST['image']);
 list($type, $data) = explode(';', $data);
 list(, $data)      = explode(',', $data);
-
 $data = base64_decode($data);
 $imageName = time().'.png';
-
-$query = $conn->prepare("UPDATE boutiques SET logo_btq = 'boutique-logo/$imageName' WHERE id_btq = '$id_btq'");
+$query = $conn->prepare("UPDATE boutiques SET logo_btq = 'boutique-logo/$imageName' WHERE id_btq = $id_btq");
 if($query->execute()){
     if(file_put_contents('boutique-logo/'.$imageName, $data)){
-        echo 'done';
+        echo 1;
     }
     else{
         echo 0;

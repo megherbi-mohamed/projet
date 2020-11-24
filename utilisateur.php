@@ -1,10 +1,8 @@
 <?php 
-session_set_cookie_params(0);
 session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
     $id_session = htmlspecialchars($_SESSION['user']);
-    // echo $id_session;
     $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
                                             OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
     $get_session_id_query->execute();
@@ -20,23 +18,6 @@ if (isset($_SESSION['user'])) {
         header('Location: inscription-connexion.php');
     }
 }
-// else if (isset($_COOKIE['user'])) {
-//     $id_session = htmlspecialchars($_COOKIE['user']);
-//     $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
-//                                             OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
-//     $get_session_id_query->execute();
-//     $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
-//     $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
-//     $user_session_query->execute();
-//     if ($user_session_query->rowCount() > 0) {
-//         $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
-//         $uid = $id_session;
-//         $id_user = $row['id_user'];
-//     }
-//     else{
-//         header('Location: inscription-connexion.php');
-//     }
-// }
 else{
     header('Location: inscription-connexion.php');
 }
@@ -404,41 +385,24 @@ if (isset($_GET['user'])) {
                         $('.user-image-update-container').css('opacity','0.5');
                         $("#loader_updt_img").show();
                     },
-                    success: function (data) {
-                        $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
-                        $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
-                        $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>");
-                        $('body').removeClass('body-after');
-                        $(".user-image-update").css('display','');
-                    },
-                    complete: function(){
-                        $('.user-image-update-container').css('opacity','');
-                        $("#loader_updt_img").hide();
-                    }
-                });
-            });
-        });
-
-        $('.upload-result-resp').on('click', function (ev) {
-            $uploadCrop.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (resp) {
-                $.ajax({
-                    url: "update-user-image.php",
-                    type: "POST",
-                    data: {"image":resp},
-                    beforeSend: function(){
-                        $('.user-image-update-container').css('opacity','0.5');
-                        $("#loader_updt_img").show();
-                    },
-                    success: function (data) {
-                        $(".user-image-update").css('transform','');
-                        setTimeout(() => {
-                            $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
-                            $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
-                            $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>"); 
-                        }, 400);
+                    success: function (response) {
+                        if (response != 0) {
+                            if (windowWidth > 768) {
+                                $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
+                                $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
+                                $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>");
+                                $('body').removeClass('body-after');
+                                $(".user-image-update").css('display',''); 
+                            }
+                            else{
+                                $(".user-image-update").css('transform','');
+                                setTimeout(() => {
+                                    $('.user-picture img').replaceWith("<img id='user_img' src='"+resp+"' alt='logo'>");
+                                    $('.profile-image-desktop img').replaceWith("<img src='"+resp+"' alt='logo'>");
+                                    $('#profile_button img').replaceWith("<img id='profile_button' src='"+resp+"' alt='logo'>"); 
+                                }, 400);
+                            }
+                        }
                     },
                     complete: function(){
                         $('.user-image-update-container').css('opacity','');
@@ -462,9 +426,20 @@ if (isset($_GET['user'])) {
                         $("#loader_updt_cvrt").show();
                     },
                     success: function (data) {
-                        $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
-                        $('body').removeClass('body-after');
-                        $(".user-couverture-update").css('display','');
+                        if (response != 0) {
+                            if (windowWidth > 768) {
+                                $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
+                                $('body').removeClass('body-after');
+                                $(".user-couverture-update").css('display','');
+                            }
+                            else{
+                                $(".user-couverture-update").css('transform','');
+                                setTimeout(() => {
+                                    $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
+                                    $('body').removeClass('body-after');
+                                }, 400);
+                            }
+                        }
                     },
                     complete: function(){
                         $('.user-couverture-update-container').css('opacity','');

@@ -1,246 +1,1011 @@
-.search-evenement{
-    position: fixed;
-    width: 90.6%;
-    left: 51.5%;
-    transform: translateX(-51.3%);
-    top: 70px;
-    height: 55px;
-    margin-top: 0;
-    background: var(--primary-color);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
-    align-items: center;
-    z-index: 5;
+.categorie-search-bar{
+    margin-left: 10px;
+    display: flex;
 }
-.search-bar-evenement input{
-    border: var(--primary-color);
-    padding: 10px;
-    border-radius: 4px 0 0 4px;
-    width: 200px;
+.categorie-search-bar input{
+    display: none !important;
+}
+.categorie-search-bar div{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ecedee;
+    cursor: pointer;
+    position: relative;
+    margin-right: 15px;
+}
+.categorie-search-bar div:hover{
+    background: #e0e0e0;
+}
+.categorie-search-bar div i{
+    color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.evenements-recherche-responsive{
+    display: none;
+}
+.evenements-left{
+    width: 360px;
+    height: calc(100vh - 60px);
+    background: #ffffff;
+    position: fixed;
+    overflow: auto;
+}
+.evenements-left::-webkit-scrollbar{
+    width: 8px;
+}
+.evenements-left::-webkit-scrollbar-thumb{
+    background-color: #929292;
+    border-radius: 5px;
+}
+.evenements-left h2{
+    margin: 0;
+    padding: 20px 20px 0 20px;
+    box-sizing: border-box;
+}
+.evenements-left hr{
+    margin: 10px auto 0px;
+}
+.evenements-recherche{
+    width: 100%;
+    position: relative;
+    margin-top: 10px;
+    text-align: center;
+}
+.evenements-recherche input{
+    width: 90%;
+    background: #ecedee;
+    padding: 12.5px 10px 12.5px 35px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 22.5px;
     outline: none;
 }
-.search-bar-evenement button{
-    margin-left: -5px;
-    padding: 8px 25px;
+.evenements-recherche i{
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(126, 126, 126);
+}
+.evenements-user{
+    width: 100%;
+    padding: 10px 10px 0;
+    box-sizing: border-box;
+}
+.display-evenements-user{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 70% 15%;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+}
+.display-evenements-user:hover{
+    background: #ecedee;
+}
+.display-evenements-user div{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ecedee;
+    overflow: hidden;
+    position: relative;
+}
+.display-evenements-user div i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.display-evenements-user p{
+    margin: 0 0 0 10px;
+}
+.evenements-notification{
+    position: absolute !important;
+    top: 50% !important;
+    right: 22px!important;
+    transform: translateY(-50%);
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
+    background: transparent !important;
+}
+.evenements-notification span{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    color: #fff;
+    font-size: .75rem;
+    margin: 0;
+    font-weight: bold;
+}
+#evenements_ntf{
+    width: 100%;
+    height: 100%;
+    background: red;
+    display: none;
+}
+.evenements-right{
+    width: calc(100% - 360px);
+    min-height: calc(100vh - 60px);
+    margin-left: 360px;
+    position: relative;
+}
+.evenements-right-container{
+    width: 700px;
+    margin: auto;
+}
+/* filtrer evenements */
+.filter-evenements-options{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.filter-evenement-button{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 30% 20%;
+    align-items: center;
+    padding: 0 5px 5px 10px;
+    box-sizing: border-box;
+}
+.filter-evenement-button h4{
+    margin: 0;
+}
+#reset_evenement_button{
     border: none;
-    border: 2px rgb(255, 255, 255) solid;
-    background:var(--primary-color);
-    border-radius: 0 4px 4px 0;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
     outline: none;
     cursor: pointer;
+    justify-self: end;
+    width: 100%;
+}
+#filter_evenement_button{
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    justify-self: end;
+    width: 100%;
+}
+#filter_evenement_button:hover{
+    background: #e0e0e0;
+}
+.quick-filter-button{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 30% 36% 30%;
+    grid-gap: 2%;
+    align-items: center;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.quick-filter-button button{
+    border: none;
+    padding: 10px 5px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 17.5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    justify-self: end;
+    width: 100%;
+    font-size: .8rem;
+}
+.quick-filter-button button:hover{
+    background: #e0e0e0;
+}
+.filter-evenement{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.filter-evenement:hover{
+    background: #ecedee;
+}
+.filter-evenement div{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ecedee;
+    overflow: hidden;
+    position: relative;
+}
+.filter-evenement div i{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.filter-evenement p{
+    margin: 0;
+}
+.filter-ptomotion-option{
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-in-out;
+}
+.filter-evenement-input{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    align-items: center;
+    margin: 5px auto;
+}
+.filter-evenement-input p{
+    margin: 0;
+    font-size: .85rem;
+    font-weight: bold;
+}
+.filter-evenement-input input,
+.filter-evenement-input select{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+    background: rgba(209, 209, 209, 0.3);
+}
+/* evenement position */
+.evenement-position,
+.evenement-video{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 150;
+    overflow-y: auto;
+}
+.evenement-position-container,
+.evenement-video-container{
+    width: 530px;
+    margin: 10px auto;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+}
+.evenement-position-top,
+.evenement-video-top{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 85% 15%;
+    justify-items: center;
+    align-items: center;
+    border-bottom: 1px solid #ecedee;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+.evenement-position-top h4,
+.evenement-video-top h4{
+    margin: 10px 0 10px 10px;
+    font-size: 1rem;
+    justify-self: start;
+}
+.evenement-position-top div,
+.evenement-video-top div{
+    width: 40px;
+    height: 40px;
+    background: #ecedee;
+    position: relative;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.evenement-position-top div:hover,
+.evenement-video-top div:hover{
+    background: #e0e0e0;
+}
+.evenement-position-top div i,
+.evenement-video-top div i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.cancel-evenement-position-resp,
+.cancel-evenement-video-resp{
+    display: none;
+}
+.evenement-position-middle{
+    width: 100%;
+    height: 300px;
+    margin-bottom: 10px;
+}
+.evenement-position-bottom{
+    display: grid;
+    grid-template-columns: 70% 30%;
+    align-items: center;
+}
+.evenement-position-bottom p{
+    margin: 0;
+    font-size: .9rem;
+}
+.evenement-position-bottom button{
+    justify-self: end;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #000000dc;
+    border-radius: 5px;
     color: #fff;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
 }
-.search-bar-evenement button:hover{
-    transition: border 0.4s, background 0.4s, color 0.4s;
-    border: 2px var(--primary-color) solid;
-    background:rgb(255, 255, 255);
-    color: var(--primary-color);
+/* evenement video */
+.evenement-video-container{
+    width: 800px;
+    padding: 10px;
 }
-.filter-date input{
-    border: var(--primary-color);
-    padding: 8px;
-    border-radius: 4px;
-    width: 200px;
+.evenement-video-top div{
+    justify-self: end;
+}
+.evenement-video-bottom{
+    width: 100%;
+}
+.evenement-video-bottom video{
+    width: 100%;
+}
+#loader_load,
+#loader_update_evenement,
+#loader_evenement_details{
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 3px solid #ffffff; 
+    border-radius: 50%; 
+    border-top: 3px solid rgb(0, 0, 0); 
+    width: 40px; 
+    height: 40px; 
+    animation: spin 1s linear infinite; 
+}
+/* if there is no evenement */
+.empty-evn{
+    width: 100%;
+}
+.empty-evn p{
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: .9rem;
+    font-weight: bold;
+}
+/* delete evenement */
+.delete-evenement{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    display: none;
+    z-index: 150;
+    overflow-y: auto;
+}
+.delete-evenement-container{
+    width: 530px;
+    margin: 10px auto;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    -webkit-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
+}
+.delete-evenement-top{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 85% 15%;
+    justify-items: center;
+    align-items: center;
+    border-bottom: 1px solid #ecedee;
+    padding-bottom: 10px;
+    box-sizing: border-box;
+}
+.delete-evenement-top h4{
+    margin: 10px 0 10px 10px;
+    font-size: 1rem;
+    justify-self: start;
+}
+.delete-evenement-top div{
+    width: 40px;
+    height: 40px;
+    background: #ecedee;
+    position: relative;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.delete-evenement-top div:hover{
+    background: #e0e0e0;
+}
+.delete-evenement-top div i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.delete-evenement-middle p{
+    font-size: 0.9rem;
+    margin: 15px 10px;
+}
+.delete-evenement-bottom{
+    padding: 0 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    grid-gap: 3%;
+}
+#cancel_delete_evn_button{
+    color: #000;
+    font-weight: bold;
+    border: none;
+    background: #ffffff;
+    cursor: pointer;
     outline: none;
 }
-.evenement-presentation{
-    margin-top: 75px;
+#delete_evn_button{
+    color: #fff;
+    font-weight: bold;
+    background: #000000dc;
+    border: none;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+#delete_evn_button:hover{
+    background: #000000;
+}
+/* evenement overview */
+.evenement-overview{
+    width: 100%;
+    margin: 10px auto;
+    background: #ffffff;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 370px 330px;
+}
+.evenement-overview-left{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.evenement-overview-left-media{
+    width: 100%;
+    height: 210px;
+    position: relative;
+    border-radius: 0 5px 5px 0;
+    overflow: hidden;
+}
+.evenement-overview-left-media img,
+.evenement-overview-left-media video{
+    width: 120%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.evenement-overview-left-media div{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+}
+.evenement-overview-left-media div:hover{
+    background: #ecedee3b;
+}
+.evenement-overview-left-media div i{
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #ecedee;
+    font-size: 2.5rem;
+}
+.evenement-overview-left div i:hover{
+    color: #a8a7a7;
+}
+.evenement-overview-left div p{ 
+    position: absolute;
+    left: 0;
+    bottom: 10px;
+    background: #ecedeeaf;
+    color: #000;
+    margin: 0;
+    font-size: .75rem;
+    padding: 6px 8px;
+    border-radius: 0 3px 3px 0;
+}
+.evenement-overview-left div span{
+    font-weight: bold;
+    font-size: .75rem;
+    margin: 0;
+}
+.evenement-overview-right{
+    width: 100%;
+    padding: 10px 0 10px 10px;
+    box-sizing: border-box;
+}
+.evenement-overview-right h3{
+    margin: 0;
+}
+.evenement-overview-right-middle p:first-child{
+    margin: 8px 0 10px;
+    font-size: .95rem;
+    height: 50px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    width: 100%;
+}
+.evenement-overview-right-middle p:last-child{
+    margin: 5px 0;
+    font-size: .95rem;
+}
+.evenement-overview-right-middle h4{
+    margin: 5px 0;
+    font-size: .95rem;
+}
+.evenement-overview-right-middle span{
+    font-weight: 100;
+    font-size: .95rem;
+}
+.evenement-overview-right-bottom{
+    display: flex;
+    align-items: center;
+}
+.evenement-overview-right-bottom div{
+    text-align: center;
+    border: none;
+    padding: 7px;
+    width: 35px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    margin-left: 10px; 
+}
+.evenement-overview-right-bottom div:first-of-type{
+    margin-left: 0;
+}
+.evenement-overview-right-bottom button{
+    justify-self: end;
+    border: none;
+    padding: 8px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.evenement-overview-right-bottom button:hover,
+.evenement-overview-right-bottom div:hover{
+    background: #e0e0e0;
+}
+.evenement-overview-right-bottom p{
+    font:600 13.3333px Arial;
+    margin: 0 0 0 10px
+}
+/* user evenement overview */
+.evenement-user-overview{
+    width: 100%;
+    margin: 10px auto;
+    background: #ffffff;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 550px 150px;
+}
+.evenement-user-overview-left{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.evenement-user-overview-left-media{
     width: 100%;
     height: 100px;
     position: relative;
-    z-index: -1;
-    text-align: center;
+    border-radius: 0 5px 5px 0;
+    overflow: hidden;
 }
-.evenement-presentation img{
+.evenement-user-overview-left div img,
+.evenement-user-overview-left div video{
+    width: 120%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.evenement-user-overview-left-media div{
     width: 100%;
     height: 100%;
-}
-.evenement-presentation p{
-    position: absolute;
-    top:10%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    color: coral;
-}
-.evenements-list{
-    width: 90%;
-    margin: 95px auto 10px;
-    display: grid;
-    grid-template-columns: repeat(4,24.4%);
-    grid-gap: 1%;
-}
-.evenement-information{
-    height: 330px;
-    box-shadow: 0px 0px 3px -1px var(--primary-color);
     position: relative;
-    z-index: 1;
-    text-align: center;
-    background: #ffffff;
-}
-.evenement-information img{
-    width: 50%;
-}
-.evenement-information h5{
-    background: var(--primary-color);
-    text-align: center;
-    padding: 15px;
-    color: #fff;
-    margin: 5px 0;
-    box-sizing: border-box;
-}
-.evenement-information h3{
-    text-align: left;
-    padding: 0 20px 0;
-    margin: 5px 0;
-    font-size: 1rem;
-}
-.evenement-information h4{
-    text-align: left;
-    padding: 0 20px 0;
-    margin: 10px 0;
-    color: var(--primary-color);
-}
-.evenement-information p{
-    text-align: left;
-    color: rgb(49, 49, 49);
-    line-height: 8px;
-    font-weight: 400;
-    padding: 0 20px 0;
-    margin: 5px 0;
-}
-.evenement-information input{
-    position: absolute;
-    top: 88%;
-    right: 5px;
-    padding: 10px 20px;
-    border: none;
-    background: var(--primary-color);
-    color: #fff;
     cursor: pointer;
 }
-.evenement-tout-details{
-    width: 95%;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    grid-gap: 3%;
+.evenement-user-overview-left-media div:hover{
+    background: #ecedee3b;
 }
-.evenement-left-description{
-    text-align: center;
+.evenement-user-overview-left-media div i{
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    color: #ecedee;
+    font-size: 2rem;
 }
-.evenement-left-description img{
-    padding: 20px 10px;
-    border: 2px var(--primary-color) solid;
+.evenement-user-overview-left div i:hover{
+    color: #a8a7a7;
 }
-.evenement-left-description p{
+.evenement-user-overview-right{
     width: 100%;
-    background:var(--primary-color);
-    padding: 10px 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.evenement-user-overview-right-top{
+    display: grid;
+    grid-template-columns: 65% 35%;
+    align-items: center;
+}
+.evenement-user-overview-right-top h4{
+    margin: 0 0 5px;
+}
+.evenement-user-overview-right-top p{
+    margin: 0;
+    font-size: .9rem;
+    font-weight: bold;
+}
+.evenement-user-overview-right-top span{
+    font-weight: 100;
+    font-size: .9rem;
+}
+.evenement-user-overview-right-middle p{
+    margin: 5px 0 8px;
+    font-size: .85rem;
+    font-weight: bold;
+}
+.evenement-user-overview-right-middle span{
+    font-weight: 100;
+    font-size: .85rem;
+}
+.evenement-user-overview-right-bottom{
+    display: flex;
+}
+.evenement-user-overview-right-bottom button{
+    border: none;
+    padding: 6px 12px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+.evenement-user-overview-right-bottom button:hover{
+    background: #e0e0e0;
+}
+.evenement-user-overview-right-bottom button:last-of-type{
+    background: red !important;
     color: #fff;
 }
-.evenement-middle-description h4{
-    color: var(--primary-color);
-    font-size: 1.2rem;
+.evenement-user-overview-right-bottom button:last-of-type:hover{
+    background:rgb(180, 0, 0) !important;
 }
-.middle-description-images{
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(4,22%);
-    grid-gap: 2%;
+@media only screen and (max-width: 1250px) {
+    .evenements-left{
+        display: none;
+    }
+    .evenements-right{
+        width: 100%;
+        margin-left: 0;
+    }
 }
-.middle-description-images img{
-    margin-top: 110px;
-    width: 100%;
-    border: 1px var(--primary-color) solid;
-    padding: 5px;
-}
-.evenement-right-description img{
-    width: 50%;
-    border-radius: 50%;
-   }
-.evenement-right-description{
-    background: var(--primary-color);
-    text-align: center;
-}
-
 @media only screen and (max-width: 768px) {
-    .search-evenement{
+    .navbar{
+        height: 50px;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        z-index: 50;
+    }
+    .navbar-left{
+        display: none;
+    }
+    .evenements-recherche{
+        display: none;
+    }
+    .evenements-recherche-responsive{
         position: fixed;
+        top: 0;
+        z-index: 50;
+        height: 50px;
         width: 100%;
-        height: 85px;
-        top: 80px;
+        -webkit-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        -moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.3);
+        display: block;
+        background: #ffffff;
+    }
+    .evenements-recherche-responsive-container{
+        width: 91.5%;
+        margin: auto;
+        display: grid;
+        grid-template-columns: 13% 61% 13% 13%;
+        align-items: center;
+        justify-items: center;
+        background: #ffffff;
+        padding: 3.5px 0;
+        box-sizing: border-box;
+        height: 50px;
+    }
+    #evenements_recherche_responsive{
+        width: 100%;
+        position: relative;
+        display: none;
+    }
+    #evenements_recherche_responsive input{
+        width: 100%;
+        position: relative;
+        background: #ecedee;
+        padding: 8px 8px 10px 35px;
+        box-sizing: border-box;
+        border: none;
+        border-radius: 22.5px;
+        outline: none;
+    }
+    #evenements_recherche_responsive i{
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: rgb(126, 126, 126);
+    }
+    #back_history,
+    #display_categories,
+    #back_menu,
+    #display_evn_search_bar{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        position: relative;
+        background: #ecedee;
+    }
+    #back_menu{
+        display: none;
+        justify-self: start;
+    }
+    #display_evn_search_bar{
+        justify-self: end;
+    }
+    #back_history i,
+    #display_categories i,
+    #back_menu i,
+    #display_evn_search_bar i{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    .evenements-left{
+        display: block;
+        width: 80%;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.4s ease-in-out;
+        z-index: 60;
+        top: 0px;
+    }
+    .filter-evenement p {
+        margin: 0 10px;
+    }
+    .evenements-left h2,
+    .evenements-left hr:first-of-type{
+        display: none;
+    }
+    .evenements-recherche div{
+        display: block;
+    }
+    .evenements-right{
+        width: 100%;
+        margin-left: 0;
+        margin-top: 5px;
+    }
+    .evenements-right-container{
+        width: 100%;
+    }
+    .evenements-right-container{
+        width: 98%;
+    }
+    .evenement-overview{
         grid-template-columns: 100%;
-        z-index: 5;
-        margin-top: 0px;
-        padding: 5px;
-        box-sizing: border-box;
     }
-    .search-bar-evenement input{
-        border: var(--primary-color);
-        padding: 8px;
-        border-radius: 4px 0 0 4px;
-        width: 250px;
-        outline: none;
-        box-sizing: border-box;
+    .evenement-overview:last-of-type{
+        margin-bottom: 60px;
     }
-    .search-bar-evenement button{
-        margin-left: -5px;
-        padding: 6px 20px;
-        box-sizing: border-box;
-        outline: none;
+    .evenement-overview-right{
+        padding: 0 10px 10px;
     }
-    .filter-date{
+    .evenement-overview-right-top{
+        display: grid;
+        grid-template-columns: 50% 50%;
+        align-items: center;
+    }
+    .evenement-overview-right-middle p:first-child{
+        height: auto;
+        display: initial;
+    }
+    .evenement-position,
+    .evenement-video{
+        transform: translateX(100%);
+        transition: transform .4s ease-in-out;
+        display: block;
+    }
+    .evenement-position-container,
+    .evenement-video-container{
         width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow-y: auto;
+        border-radius: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 10px;
+        transform: none;
+        box-shadow: none;
+    }
+    .evenement-position-top,
+    .evenement-video-top{
+        grid-template-columns: 15% 85%;
+    }
+    .evenement-position-top div,
+    .evenement-voideo-top div{
+        width: 30px;
+        height: 30px;
+    }
+    .cancel-evenement-position,
+    .cancel-evenement-video{
+        display: none;
+    }
+    .cancel-evenement-position-resp,
+    .cancel-evenement-video-resp{
+        display: block;
+    }
+    .evenement-position-middle{
+        margin: 10px auto;
+        width: 100%;
+        height: calc(100vh - 152px);
+    }
+    .evenement-position-bottom{
+        display: grid;
+        grid-template-columns: 100%;
+        align-items: center;
         text-align: center;
     }
-    .filter-date input{
-        border: var(--primary-color);
-        padding: 6px;
-        border-radius: 4px;
-        width: 43%;
-        outline: none;
-        box-sizing: border-box;
-        outline: none;
-    }
-    .evenement-presentation p{
-        top:30%;
-        left: 50%;
+    .evenement-position-bottom button{
         width: 100%;
-        font-size: 1rem;
+        margin: 10px auto;
     }
-    .evenements-list{
-        width: 95%;
-        grid-template-columns: repeat(2,48%);
-        grid-gap: 2% 4%;
+    /* evenement video */
+    .evenement-video-bottom{
+        width: 100%;
+        height: 400px;
+        margin-bottom: 10px;
+        height: calc(100vh - 52px);
     }
-    .evenement-information{
-        height: 270px;
+    .evenement-user-overview{
+        border-radius: 5px;
+        grid-template-columns: 100%;
     }
-    .evenement-information img{
-        width: 100px;
+    .evenement-user-overview:last-child{
+        margin-bottom: 60px;
     }
-    .evenement-information h5{
+    .evenement-user-overview-left div{
+        height: 130px;
+        border-radius: 5px 5px 0 0;
+    }
+    .evenement-user-overview-right {
+        padding: 0 10px 10px;
+        box-sizing: border-box;
+    }
+    .evenement-user-overview-right-top {
+        grid-template-columns: 50% 50%;
+    }
+    .evenement-user-overview-right-top p {
+        justify-self: end;
+    }
+    .delete-evenement{
+        position: fixed;
+        width: 100%;
+        height: 30vh;
+        bottom: 0;
+        left: 0;
+        top: auto;
+        display: block;
+        z-index: 150;
+        transform: translateY(100%);
+        transition: transform 0.4s ease-in-out;
+    }
+    .delete-evenement-container{
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        padding: 10px 20px;
+        box-sizing: border-box;
+        background: #ffffff;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: none;
+        position: initial;
+        box-shadow: none;
+    }
+    /* filtrer evenements */
+    .filter-evenement-button{
+        grid-template-columns: 40% 35% 25%;
+        padding: 5px 5px 5px 10px;
+    }
+    .quick-filter-button{
+        grid-template-columns: 32% 35% 30%;
+        grid-gap: 2%;
+    }
+    .quick-filter-button button{
+        font-size: .7rem;
+    }
+    .filter-evenements-options{
         padding: 5px;
-    }
-    .evenement-information h3{
-        font-size: .8rem;
-        padding: 0 5px;
-    }
-    .evenement-information h4{
-        font-size: .9rem;
-        padding: 0 5px;
-    }
-    .evenement-information p{
-        font-size: .9rem;
-        padding: 0 5px;
-    }
-    .evenement-information input{
-        position: absolute;
-        top: 86%;
-        right: 5px;
-        padding: 7.5px 15px;
-        outline: none;
     }
 }

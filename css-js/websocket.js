@@ -84,17 +84,25 @@ function start(websocketServerLocation){
     });
 
     // create publication notification
-    $('#create_publication_button').click(function(){
-        // if ($('#publication_description').val() !== '') {
-            var typeNotification = 'publication';
+    $('#create_publication_container').on('click','#create_publication_button',function(){
+        var typeNotification = 'publication';
+        var lieuPub = $('#publication_location_text').val();
+        var idPub = $('#id_publication').val();
+        var descriptionPub = $('#publication_description').val();
+        var idUser = $('#id_session_porfile').val();
+        var numMedia = $('.image-preview').length + $('.video-preview').length;
+        if (lieuPub == '') {
+            $('#publication_location_text').css('border','2px solid red');
+        }
+        else if (numMedia == 0) {
+            $('#publication_location_text').css('border','');
+            $('.create-publication-options').css('border','2px solid red');
+        }
+        else{
             var fd = new FormData();
-            var idPubLieu = $('#publication_location_text').val();
-            fd.append('lieu_pub',idPubLieu);
-            var idPub = $('#id_publication').val();
             fd.append('id_pub',idPub);
-            var descriptionPub = $('#publication_description').val();
+            fd.append('lieu_pub',lieuPub);
             fd.append('description_pub',descriptionPub);
-            var idUser = $('#id_session_porfile').val();
             $.ajax({
                 url: 'create-publication.php',
                 type: 'post',
@@ -102,8 +110,12 @@ function start(websocketServerLocation){
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $("#loader_create_pub").show();
-                    $('#create_publication').css('opacity','0.5');
+                    if (windowWidth > 768) {
+                        $("#loader_create_publication_top_button").show();
+                    }
+                    else{
+                        $("#loader_create_publication_bottom_button").show();
+                    }
                 },
                 success: function(response){
                     console.log(response);
@@ -118,62 +130,70 @@ function start(websocketServerLocation){
                         } else {
                             console.log('error');
                         }
-                        $("body").removeClass('body-after');
-                        hideCreatePublication();
-                        $('.publication-images-preview div').remove();
-                        $('.publication-video-preview div').remove();
-                        $('.create-publication-container').css({'top':'','transform':''});
-                        window.location.href = "utilisateur/"+idUser;
+                        if (windowWidth > 768) {
+                            $("body").removeClass('body-after');
+                            $('#create_publication_container').css({'top':'','transform':''});
+                            $('#create_publication').hide();
+                            window.location.href = "utilisateur/"+idUser;
+                        }
+                        else{
+                            $('#create_publication').css('transform','');
+                            setTimeout(() => {
+                                window.location.href = "utilisateur/"+idUser;
+                            }, 400);
+                        }
                     }
                 },
                 complete: function(){
-                    $("#loader_create_pub").hide();
-                    $('#create_publication').css('opacity','');
-                }
-            });
-        // }
-    });
-
-    $('#crt_pubt_btn_resp').click(function(){
-        // if ($('#publication_description').val() !== '') {
-            var typeNotification = 'publication';
-            var fd = new FormData();
-            var idPubLieu = $('#publication_location_text').val();
-            fd.append('lieu_pub',idPubLieu);
-            var idPub = $('#id_publication').val();
-            fd.append('id_pub',idPub);
-            var descriptionPub = $('#publication_description').val();
-            fd.append('description_pub',descriptionPub);
-            var idUser = $('#id_session_porfile').val();
-            $.ajax({
-                url: 'create-publication.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        if ( js_flood == 0 ) {
-                            var msg = {
-                                typeNotification: typeNotification,
-                                uid: uid
-                            };
-                            websocket.send(JSON.stringify(msg));
-                            flood_js();
-                        } else {
-                            console.log('error');
-                        }
-                        hideCreatePublication();
-                        setTimeout(() => {
-                            $('.publication-images-preview div').remove();
-                            $('.publication-video-preview div').remove();
-                            window.location.href = "utilisateur/"+idUser;
-                        }, 400);
+                    if (windowWidth > 768) {
+                        $("#loader_create_publication_top_button").hide();
+                    }
+                    else{
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 }
             });
-        // }
+        }
     });
+
+    // $('#crt_pubt_btn_resp').click(function(){
+    //         var typeNotification = 'publication';
+    //         var fd = new FormData();
+    //         var lieuPub = $('#publication_location_text').val();
+    //         fd.append('lieu_pub',lieuPub);
+    //         var idPub = $('#id_publication').val();
+    //         fd.append('id_pub',idPub);
+    //         var descriptionPub = $('#publication_description').val();
+    //         fd.append('description_pub',descriptionPub);
+    //         var idUser = $('#id_session_porfile').val();
+    //         $.ajax({
+    //             url: 'create-publication.php',
+    //             type: 'post',
+    //             data: fd,
+    //             contentType: false,
+    //             processData: false,
+    //             success: function(response){
+    //                 if(response != 0){
+    //                     if ( js_flood == 0 ) {
+    //                         var msg = {
+    //                             typeNotification: typeNotification,
+    //                             uid: uid
+    //                         };
+    //                         websocket.send(JSON.stringify(msg));
+    //                         flood_js();
+    //                     } else {
+    //                         console.log('error');
+    //                     }
+    //                     hideCreatePublication();
+    //                     setTimeout(() => {
+    //                         $('.publication-images-preview div').remove();
+    //                         $('.publication-video-preview div').remove();
+    //                         window.location.href = "utilisateur/"+idUser;
+    //                     }, 400);
+    //                 }
+    //             }
+    //         });
+    // });
 
     // like publication notification
     $(document).on('click','[id^="like_pub_button_"]',function(){

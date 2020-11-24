@@ -1,5 +1,6 @@
 <?php
 include_once './bdd/connexion.php';
+$id_prm = htmlspecialchars($_POST['id_prm']);
 $id_btq = htmlspecialchars($_POST['id_btq']);
 $id_prd = htmlspecialchars($_POST['id_prd']);
 ?>
@@ -23,7 +24,7 @@ while ($get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC
 $i++;
 $img_prd = $get_product_media_row['media_url'];
 
-$get_product_promotion_media_query = $conn->prepare("SELECT media_url FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND media_url = '$img_prd'");
+$get_product_promotion_media_query = $conn->prepare("SELECT media_url FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND media_url = '$img_prd' AND id_prm = $id_prm");
 $get_product_promotion_media_query->execute();
 if ($get_product_promotion_media_query->rowCount() > 0) {
 ?>
@@ -41,10 +42,10 @@ if ($get_product_promotion_media_query->rowCount() > 0) {
 <input type="hidden" id="id_btq_prm" value="<?php echo $id_btq ?>">
 <input type="hidden" id="id_prm_prd" value="<?php echo $id_prd ?>">
 <?php 
-$get_product_promotion_price_query = $conn->prepare("SELECT prix_prm_prd FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq");
+$get_product_promotion_price_query = $conn->prepare("SELECT prix_prm_prd FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND id_prm = $id_prm");
 $get_product_promotion_price_query->execute();
 $prix_prm = 0;
-if ($get_product_promotion_price_query->rowCount()) {
+if ($get_product_promotion_price_query->rowCount() > 0) {
     $get_product_promotion_price_row = $get_product_promotion_price_query->fetch(PDO::FETCH_ASSOC);
     $prix_prm = $get_product_promotion_price_row['prix_prm_prd'];
 }

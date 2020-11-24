@@ -15,6 +15,619 @@
 //     return confirmationMessage; 
 // })
 
+// cancel create when refresh page
+$(window).on('beforeunload', function(){
+    if ($('#create_publication').is(':visible')) {
+        cancelCreatePublication ();
+    }
+    if ($('#create_boutique').is(':visible')) {
+        var fd= new FormData();
+        var idBtq = $('#id_boutique').val();
+        fd.append('id_btq',idBtq);
+        $.ajax({
+            url: 'pre-delete-boutique.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+                    // $("body").removeClass('body-after');
+                    // $('#create_boutique').hide();
+                    // $('.create-publication-container').css({'top':'','transform':''});
+                }    
+            }
+        });
+    }
+    if ($('#create_promotion').is(':visible')) {
+        cancelCreatePromotion ();
+    }
+    if ($('#create_evenement').is(':visible')) {
+        cancelCreateEvenement ();
+    }
+});
+
+// create publication
+$('#pre_create_publication').click(function(){
+    $.ajax({
+        url: 'pre-create-publication.php',
+        type: 'post',
+        beforeSend: function(){
+            hideCreatePublication();
+            if (windowWidth > 768) {
+                $("body").addClass('body-after');
+                $("body").css('overflow','hidden');
+                $('#create_publication').show();
+            }
+            else{
+                $('#create_publication').css('transform','translateX(0)'); 
+            }
+            $("#loader_create_publication").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_publication_container').append(response);
+            }   
+        },
+        complete: function(){
+            $("#loader_create_publication").hide();
+        }
+    });
+});
+
+// cancel create publication
+$('#create_publication_container').on('click','#cancel_create_publication',function(){
+    cancelCreatePublication ();
+})
+
+$('#create_publication').click(function(){
+    cancelCreatePublication ();
+})
+
+function cancelCreatePublication () {
+    var fd = new FormData();
+    var idPub = $('#id_publication').val();
+    fd.append('id_pub',idPub);
+    $.ajax({
+        url: 'pre-delete-publication.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_publication_container').empty();
+            $("#loader_create_publication").show();
+        },
+        success: function(response){
+            if(response != 0){
+                if (windowWidth > 768) {
+                    $("body").removeClass('body-after');
+                    $("#create_publication").hide();
+                }
+                else{
+                    $('#create_publication').css('transform',''); 
+                }
+            }    
+        },
+        complete: function(){
+            $("#loader_create_publication").hide();
+        }
+    });
+}
+
+// set publication location
+$('#create_publication_container').on('keyup',"#publication_location_text",function(){
+    var locationText = document.getElementById("publication_location_text");
+    var filter = locationText.value.toUpperCase();
+    var location = document.querySelectorAll("#publication_location_item p");
+    var locationItem= document.querySelectorAll("#publication_location_item");
+    for (let i = 0; i < locationItem.length; i++) {
+        txtValue = location[i].textContent || location[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            locationItem[i].style.display = "";
+            $('.publication-preview-location').css('display','initial');
+        } else {
+            locationItem[i].style.display = "none";
+        }
+    }
+    if ($(this).val() == '') {
+        $('.publication-preview-location').css('display','');
+    }
+}); 
+
+$('#create_publication_container').on('click',"#publication_location_item",function(){
+    $('.publication-preview-location').css('display','');
+    var locationText = $(this).find('p').text();
+    console.log(locationText);
+    $('#publication_location_text').val(locationText);
+})
+
+// set publication image 
+$('#create_publication_container').on('click','#add_publication_image',function(){
+    $('#image').val('');
+    $('#image').click();
+});
+
+$('#create_publication_container').on('click','#image',function(e){
+    e.stopPropagation();
+});
+
+$('#create_publication_container').on('change','#image',function () { 
+    $('#add_publication_image_button').click();
+});
+
+$('#create_publication_container').on('click','#add_publication_image_button',function(e){
+    e.stopPropagation();
+    var numImg = $('.image-preview').length;
+    if (numImg > 0) {
+        var lastImg = $('.image-preview').last().attr('id').split("_")[2];
+    }
+    else{
+        var lastImg = 0;
+    }
+    var numUpldImg = document.getElementById('image').files.length;
+    var idPub = $('#id_publication').val();
+    var form_data = new FormData();
+    form_data.append('id_pub',idPub);
+    for (let i = 0; i < 4 - numImg; i++) {
+        form_data.append("images[]", document.getElementById('image').files[i]);
+    }
+    $.ajax({
+        url: 'upload-images-publication.php', 
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            if ((numImg + numUpldImg) <= 4) {
+                for(let i = 0; i < numUpldImg; i++) {
+                    let id = lastImg + i;
+                    $('.publication-images-preview').append("<div class='image-preview' id='image_preview_"+id+"'><div id='loader_pub_img_"+id+"' class='center'></div></div>");
+                }
+            }
+            else if ((numImg + numUpldImg) >= 5) {
+                for(let i = 0; i < (4 - numImg); i++) {
+                    let id = lastImg + i;
+                    $('.publication-images-preview').append("<div class='image-preview' id='image_preview_"+id+"'><div id='loader_pub_img_"+id+"' class='center'></div></div>");
+                }
+            }
+        },
+        success: function (response) {
+            for(let i = 0; i < response.length; i++) {
+                var src = response[i];
+                let id = lastImg + i;
+                $('#image_preview_'+id).replaceWith("<div class='image-preview' id='image_preview_"+id+"'><div class='delete-preview' id='delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+            }
+        },
+        complete: function(){
+            numImg = $('.image-preview').length;
+            if (numImg >= 4) {
+                $('.create-publication-options').hide();
+            }
+        }
+    });
+});
+
+// remove publication image preview
+$('#create_publication_container').on('click','[id^="delete_preview_"]',function(){
+    var id = $(this).attr("id").split("_")[2];
+    var idPub = $('#id_publication').val();
+    var mediaUrl = $('#image_preview_'+id+' img').attr('src');
+    var fd = new FormData();
+    fd.append('id_pub',idPub);
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-publication-media.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#image_preview_'+id).replaceWith("<div class='image-preview' id='image_preview_"+id+"'><div id='loader_pub_img_"+id+"' class='center'></div></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('#image_preview_'+id).remove();
+            }
+        },
+        complete: function(){
+            var numImg = $('.image-preview').length;
+            if (numImg < 4) {
+                $('.create-publication-options').show();
+            }
+        }
+    });
+});
+
+// set publication video 
+$('#create_publication_container').on('click','#add_publication_video',function(){
+    $('#video').val('');
+    $('#video').click();
+})
+
+$('#create_publication_container').on('click','#video',function(e){
+    e.stopPropagation();
+});
+
+$('#create_publication_container').on('change','#video',function () { 
+    $('#add_publication_video_button').click();
+});
+
+$('#create_publication_container').on('click','#add_publication_video_button',function(e){
+    e.stopPropagation();
+    var idPub = $('#id_publication').val();
+    var form_data = new FormData();
+    form_data.append('id_pub',idPub);
+    form_data.append("video", $('#video')[0].files[0]);
+    $.ajax({
+        url: 'upload-video-publication.php', 
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('.publication-video-preview').append("<div class='video-preview' id='video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
+        success: function (response) {
+            if (windowWidth > 768) {
+                $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
+            }
+            $('#video_preview').replaceWith("<div class='video-preview' id='video_preview'><div class='delete-preview' id='delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            var numVideo = $('.video-preview').length;
+            if (numVideo >= 1) {
+                $('.create-publication-options').hide();
+            }
+        }
+    });
+});
+
+// remove publication video preview
+$('#create_publication_container').on('click','#delete_video',function(){
+    var fd = new FormData();
+    var idPub = $('#id_publication').val();
+    fd.append('id_pub',idPub);
+    var mediaUrl = $('.video-preview video source').attr('src');
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-publication-media.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#video_preview').replaceWith("<div class='video-preview' id='video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('#video_preview').remove();
+            }
+        },
+        complete: function(){
+            var numVideo = $('.video-preview').length;
+            if (numVideo == 0) {
+                $('.create-publication-options').show();
+            }
+        }
+    });
+});
+
+// update publications 
+$(document).on('click','[id^="update_publication_"]',function(){
+    var id = $(this).attr("id").split("_")[2];
+    var idPub = $('#id_pub_'+id).val();
+    var tailPub = $('#publication_tail_'+id).val();
+    var fd = new FormData();
+    fd.append('id_pub',idPub); 
+    fd.append('tail_pub',tailPub);
+    $.ajax({
+        url: 'load-update-publication.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            if (windowWidth > 768) {
+                $("body").addClass('body-after');
+                $("body").css('overflow','hidden');
+                $('#update_publication').show();
+            }
+            else{
+                $('#update_publication').css('transform','translateX(0)'); 
+            }
+            $("#loader_update_publication").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#update_publication_container').append(response);
+            }   
+        },
+        complete: function(){
+            $("#loader_update_publication").hide();
+        }
+    });
+});
+
+// cancel create publication
+$('#update_publication_container').on('click','#cancel_create_publication',function(){
+    cancelUpdatePublication ();
+})
+
+$('#update_publication').click(function(){
+    cancelUpdatePublication ();
+})
+
+function cancelUpdatePublication () {
+    if (windowWidth > 768) {
+        $("body").removeClass('body-after');
+        $("body").css('overflow','');
+        $('#update_publication_container').empty();
+        $('#update_publication').hide();
+    }
+    else{
+        $('#update_publication').css('transform','');
+        setTimeout(() => {
+            $('#update_publication_container').empty();
+        }, 400); 
+    }
+}
+
+// update publication location
+$('#update_publication_container').on('keyup',"#publication_location_text",function(){
+    var locationText = document.getElementById("publication_location_text");
+    var filter = locationText.value.toUpperCase();
+    var location = document.querySelectorAll("#publication_location_item p");
+    var locationItem= document.querySelectorAll("#publication_location_item");
+    for (let i = 0; i < locationItem.length; i++) {
+        txtValue = location[i].textContent || location[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            locationItem[i].style.display = "";
+            $('.publication-preview-location').css('display','initial');
+        } else {
+            locationItem[i].style.display = "none";
+        }
+    }
+    if ($(this).val() == '') {
+        $('.publication-preview-location').css('display','');
+    }
+}); 
+
+$('#update_publication_container').on('click',"#publication_location_item",function(){
+    $('.publication-preview-location').css('display','');
+    var locationText = $(this).find('p').text();
+    console.log(locationText);
+    $('#publication_location_text').val(locationText);
+})
+
+// update publication image 
+$('#update_publication_container').on('click','#add_publication_image',function(){
+    $('#image').click();
+});
+
+$('#update_publication_container').on('click','#image',function(e){
+    e.stopPropagation();
+});
+
+$('#update_publication_container').on('change','#image',function () { 
+    $('#add_publication_image_button').click();
+});
+
+$('#update_publication_container').on('click','#add_publication_image_button',function(e){
+    e.stopPropagation();
+    var numImg = $('.image-preview').length;
+    if (numImg > 0) {
+        var lastImg = $('.image-preview').last().attr('id').split("_")[2];
+    }
+    else{
+        var lastImg = 0;
+    }
+    var numUpldImg = document.getElementById('image').files.length;
+    var idPub = $('#id_publication').val();
+    var form_data = new FormData();
+    form_data.append('id_pub',idPub);
+    for (let i = 0; i < 4 - numImg; i++) {
+        form_data.append("images[]", document.getElementById('image').files[i]);
+    }
+    $.ajax({
+        url: 'upload-images-publication.php', 
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            for(let i = 0; i < numUpldImg; i++) {
+                let id = lastImg + i;
+                $('.publication-images-preview').append("<div class='image-preview' id='image_preview_"+id+"'><div id='loader_pub_img_"+id+"' class='center'></div></div>");
+            }
+        },
+        success: function (response) {
+            for(let i = 0; i < response.length; i++) {
+                var src = response[i];
+                let id = lastImg + i;
+                $('#image_preview_'+id).replaceWith("<div class='image-preview' id='image_preview_"+id+"'><div class='delete-preview' id='delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+            }
+        },
+        complete: function(){
+            numImg = $('.image-preview').length;
+            if (numImg >= 4) {
+                $('.create-publication-options').hide();
+            }
+        }
+    });
+});
+
+// remove publication image preview
+$('#update_publication_container').on('click','[id^="delete_preview_"]',function(){
+    var id = $(this).attr("id").split("_")[2];
+    var idPub = $('#id_publication').val();
+    var mediaUrl = $('#image_preview_'+id+' img').attr('src');
+    var fd = new FormData();
+    fd.append('id_pub',idPub);
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-image-publication-preview.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#image_preview_'+id).replaceWith("<div class='image-preview' id='image_preview_"+id+"'><div id='loader_pub_img_"+id+"' class='center'></div></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('#image_preview_'+id).remove();
+            }
+        },
+        complete: function(){
+            var numImg = $('.image-preview').length;
+            if (numImg < 4) {
+                $('.create-publication-options').show();
+            }
+        }
+    });
+});
+
+// update publication video 
+$('#update_publication_container').on('click','#add_publication_video',function(){
+    $('#video').click();
+})
+
+$('#update_publication_container').on('click','#video',function(e){
+    e.stopPropagation();
+});
+
+$('#update_publication_container').on('change','#video',function () { 
+    $('#add_publication_video_button').click();
+});
+
+$('#update_publication_container').on('click','#add_publication_video_button',function(e){
+    e.stopPropagation();
+    var idPub = $('#id_publication').val();
+    var fd = new FormData();
+    fd.append('id_pub',idPub);
+    fd.append("video", $('#video')[0].files[0]);
+    $.ajax({
+        url: 'upload-video-publication.php', 
+        type: 'post',
+        data: fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('.publication-video-preview').append("<div class='video-preview' id='video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
+        success: function (response) {
+            if (windowWidth > 768) {
+                $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
+            }
+            $('#video_preview').replaceWith("<div class='video-preview' id='video_preview'><div class='delete-preview' id='delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            var numVideo = $('.video-preview').length;
+            if (numVideo >= 1) {
+                $('.create-publication-options').hide();
+            }
+        }
+    });
+});
+
+// remove publication video preview
+$('#update_publication_container').on('click','#delete_video',function(){
+    var fd = new FormData();
+    var idPub = $('#id_publication').val();
+    fd.append('id_pub',idPub);
+    var mediaUrl = $('.video-preview video source').attr('src');
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-video-publication-preview.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#video_preview').replaceWith("<div class='video-preview' id='video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('#video_preview').remove();
+            }
+        },
+        complete: function(){
+            var numVideo = $('.video-preview').length;
+            if (numVideo == 0) {
+                $('.create-publication-options').show();
+            }
+        }
+    });
+});
+
+$('#update_publication_container').on('click','#update_publication_button',function(){
+    var idPub = $('#id_publication').val();
+    var lieuPub = $('#publication_location_text').val();
+    var descriptionPub = $('#publication_description').val();
+    var tailPub = $('#tail_publication').val();
+    var numMedia = $('.image-preview').length + $('.video-preview').length;
+    if (lieuPub == '') {
+        $('#publication_location_text').css('border','2px solid red');
+    }
+    else if (numMedia == 0) {
+        $('#publication_location_text').css('border','');
+        $('.create-publication-options').css('border','2px solid red');
+    }
+    else{
+        var fd = new FormData();
+        fd.append('id_pub',idPub);
+        fd.append('lieu_pub',lieuPub);
+        fd.append('description_pub',descriptionPub);
+        fd.append('tail_pub',tailPub);
+        $.ajax({
+            url: 'update-publication.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_top_button").show();
+                }
+                else{
+                    $("#loader_create_publication_bottom_button").show();
+                }
+            },
+            success: function(response){
+                if(response != 0){
+                    if (windowWidth > 768) {
+                        $("body").removeClass('body-after');
+                        $('#update_publication_container').css({'top':'','transform':''});
+                        $('#update_publication').hide();
+                        $('#user_publication_'+id).replaceWith(response);
+                    }
+                    else{
+                        $('#update_publication').css('transform','');
+                        setTimeout(() => {
+                            $('#user_publication_'+id).replaceWith(response);
+                        }, 400);
+                    }
+                }
+            },
+            complete: function(){
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_top_button").hide();
+                }
+                else{
+                    $("#loader_create_publication_bottom_button").hide();
+                }
+            }
+        });
+    }
+});
+
+//___________________________________________________________________________
+
 var pathName = window.location.pathname;
 
 $('#inscription_button').click(function(){
@@ -62,7 +675,7 @@ $(".user-logout").click(function() {
         $('.user-list-dropdown').css('transform','');
         setTimeout(() => {
             window.location = 'deconnexion.php';
-        }, 400);
+        }, 200);
     }
     else{
         window.location = 'deconnexion.php';
@@ -106,7 +719,7 @@ $('#display_user_profile').click(function() {
     }
     setTimeout(() => {
         window.location = 'utilisateur/'+idUser;
-    }, 400);
+    }, 200);
 });
 $('#display_parametres_profile').click(function() {
     if (windowWidth < 768) {
@@ -117,7 +730,7 @@ $('#display_parametres_profile').click(function() {
     }
     setTimeout(() => {
         window.location = 'profile-parametres/parametres';
-    }, 400);
+    }, 200);
 });
 
 // load user messages
@@ -133,7 +746,7 @@ $('#user_list_messages').click(function(e){
     }else{
         $('.user-list-dropdown').css('transform','');
         $('.user-create-options').css('transform','');
-        $('.user-list-messages').css('transform','translateX(0)');
+        $('.user-list-messages').css('transform','translateY(0)');
         $('.user-list-notifications').css('transform','');
         $('.categorie-professionnel').css('transform','');
     }
@@ -190,7 +803,7 @@ $('#user_list_notifications').click(function(e){
         $('.user-list-dropdown').css('transform','');
         $('.user-create-options').css('transform','');
         $('.user-list-messages').css('transform','');
-        $('.user-list-notifications').css('transform','translateX(0)');
+        $('.user-list-notifications').css('transform','translateY(0)');
         $('.categorie-professionnel').css('transform','');
     }
     $('.categorie-search-bar').css('z-index','');
@@ -303,8 +916,10 @@ if (windowWidth <= 768) {
         unsetGererBoutiqueSearchBar();
         unsetBoutiqueSearchBar();
         unsetPromotionsSearchBar();
+        unsetEvenementsSearchBar();
         $('.boutdechantier-left').css('transform','');
         $('.promotions-left').css('transform','');
+        $('.evenements-left').css('transform','');
         $('.recherche-left').css('transform','');
         $('.gerer-boutique-left').css('transform','');
         $('body').addClass('body-after');
@@ -336,6 +951,7 @@ if (windowWidth <= 768) {
         $('.hide-menu').css('transform','');
         $('.boutdechantier-left').css('transform','');
         $('.promotions-left').css('transform','');
+        $('.evenements-left').css('transform','');
         $('.recherche-left').css('transform','');
         $('.gerer-boutique-left').css('transform','');
         unsetBoutdechantierSearchBar();
@@ -343,6 +959,7 @@ if (windowWidth <= 768) {
         unsetGererBoutiqueSearchBar();
         unsetBoutiqueSearchBar();
         unsetPromotionsSearchBar();
+        unsetEvenementsSearchBar();
         $('body').removeClass('body-after');
         $('.navbar-right').removeClass('navbar-right-after');
         $('.navbar').css('box-shadow','');
@@ -369,6 +986,7 @@ if (windowWidth <= 768) {
         $('.hide-menu').css('transform','');
         $('.boutdechantier-left').css('transform','');
         $('.promotions-left').css('transform','');
+        $('.evenements-left').css('transform','');
         $('.recherche-left').css('transform','');
         $('.gerer-boutique-left').css('transform','');
         unsetBoutdechantierSearchBar();
@@ -376,6 +994,7 @@ if (windowWidth <= 768) {
         unsetGererBoutiqueSearchBar();
         unsetBoutiqueSearchBar();
         unsetPromotionsSearchBar();
+        unsetEvenementsSearchBar();
         $('body').removeClass('body-after');
         $('.navbar').css('box-shadow','');
         $('.navbar').css('-webkit-box-shadow','');
@@ -471,7 +1090,7 @@ $('[id^="go_gerer_boutique_"]').click(function(e){
                     $('.user-list-dropdown').css('transform','');
                     setTimeout(() => {
                         window.location = 'gerer-boutique/'+response;
-                    }, 400);
+                    }, 200);
                 }
             }
         }
@@ -559,7 +1178,7 @@ $('#user_list_button').click(function(e){
         $('.user-list-notifications').hide();
         $('.categorie-professionnel').hide();
     }else{
-        $('.user-list-dropdown').css('transform','translateX(0)');
+        $('.user-list-dropdown').css('transform','translateY(0)');
         $('.user-create-options').css('transform','');
         $('.user-list-messages').css('transform','');
         $('.user-list-notifications').css('transform','');
@@ -592,7 +1211,7 @@ $('#create_new').click(function(e){
         $('.categorie-professionnel').hide();
     }else{
         $('.user-list-dropdown').css('transform','');
-        $('.user-create-options').css('transform','translateX(0)');
+        $('.user-create-options').css('transform','translateY(0)');
         $('.user-list-messages').css('transform','');
         $('.user-list-notifications').css('transform','');
         $('.categorie-professionnel').css('transform','');
@@ -638,308 +1257,15 @@ function hideCreatePublication (){
 }
 
 // create publication
-$('#create_pub_button').click(function(){
-    $('#publication_description').focus();
-    $.ajax({
-        url: 'pre-create-publication.php',
-        type: 'post',
-        success: function(response){
-            if(response != 0){
-                $('#id_publication').val(response);
-                hideCreatePublication();
-                if (windowWidth > 768) {
-                    $("body").addClass('body-after');
-                    $('#create_publication').show();
-                }
-                else{
-                    $('#create_publication').css('transform','translateX(0)'); 
-                }
-            }   
-        }
-    });
-});
-
-$('#cancel_create_publication_resp').click(function(){
-    var fd= new FormData();
-    var idPub = $('#id_publication').val();
-    fd.append('id_pub',idPub);
-    $.ajax({
-        url: 'pre-delete-publication.php',
-        type: 'post',
-        data: fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                createPublication[0].style.transform = "";
-            }    
-        }
-    });
-})
-
-$('#cancel_create_publication').click(function(){
-    var fd = new FormData();
-    var idPub = $('#id_publication').val();
-    fd.append('id_pub',idPub);
-    $.ajax({
-        url: 'pre-delete-publication.php',
-        type: 'post',
-        data: fd,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                $("body").removeClass('body-after');
-                createPublication[0].style.display = "";
-                $('.publication-images-preview div').remove();
-                $('.publication-video-preview div').remove();
-                $('.create-publication-container').css({'top':'','transform':''});
-            }    
-        }
-    });
-})
-
-$(window).on('beforeunload', function(){
-    if ($('#create_publication').is(':visible')) {
-        var fd= new FormData();
-        var idPub = $('#id_publication').val();
-        fd.append('id_pub',idPub);
-        $.ajax({
-            url: 'pre-delete-publication.php',
-            type: 'post',
-            data: fd,
-            dataType: 'json',
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                    // $("body").removeClass('body-after');
-                    // hideCreatePublication();
-                    // $('.publication-images-preview div').remove();
-                    // $('.publication-video-preview div').remove();
-                    // $('.create-publication-container').css({'top':'','transform':''});
-                }    
-            }
-        });
-    }
-    if ($('#create_boutique').is(':visible')) {
-        var fd= new FormData();
-        var idBtq = $('#id_boutique').val();
-        fd.append('id_btq',idBtq);
-        $.ajax({
-            url: 'pre-delete-boutique.php',
-            type: 'post',
-            data: fd,
-            dataType: 'json',
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                    // $("body").removeClass('body-after');
-                    // $('#create_boutique').hide();
-                    // $('.create-publication-container').css({'top':'','transform':''});
-                }    
-            }
-        });
-    }
-    if ($('#create_promotion').is(':visible')) {
-        cancelCreatePromotion ();
-    }
-});
-
-$('#create_publication').click(function(){
-    $.ajax({
-        url: 'pre-delete-publication.php',
-        type: 'post',
-        success: function(response){
-            if(response != 0){
-                $("body").removeClass('body-after');
-                $('#create_publication').hide();
-                $('.publication-images-preview div').remove();
-                $('.publication-video-preview div').remove();
-                $('.create-publication-container').css({'top':'','transform':''});
-            }    
-        }
-    });
-})
 
 // publication action
-$("#publication_location_text").on('keyup',function(){
-    var locationText = document.getElementById("publication_location_text");
-    var filter = locationText.value.toUpperCase();
-    var location = document.querySelectorAll("#publication_location_item p");
-    var locationItem= document.querySelectorAll("#publication_location_item");
-    for (let i = 0; i < locationItem.length; i++) {
-        txtValue = location[i].textContent || location[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            locationItem[i].style.display = "";
-            $('.publication-preview-location').css('display','initial');
-        } else {
-            locationItem[i].style.display = "none";
-        }
-    }
-    if ($(this).val() == '') {
-        $('.publication-preview-location').css('display','');
-    }
-});
 
-var locationItem = document.querySelectorAll("#publication_location_item");
-var locationName = document.querySelector("#publication_location_text");
-var locationText = document.querySelectorAll("#publication_location_item p");
 
-for (let i = 0; i < locationItem.length; i++) {
-    locationItem[i].addEventListener('click',()=>{
-        $('.publication-preview-location').css('display','');
-        locationName.value = locationText[i].textContent;
-    });
-}
 
-$(".create-publication-bottom form").click(function(e){
-    e.stopPropagation();
-})
 
-// $('#publication_description').bind('input propertychange', function() {
-//     if ($('#publication_description').val() !== '') {
-//         $('.create-publication-bottom button').css('background','rgb(137, 218, 238)');
-//         $('.create-publication-bottom button').css('cursor','pointer');
-//     }
-//     else{
-//         $('.create-publication-bottom button').css('background','');
-//         $('.create-publication-bottom button').css('cursor','');
-//     }
-// });
 
-// upload publication image 
-$('#add_publication_image').click(function(){
-    $('#image').click();
-});
 
-$('#image').click(function(e){
-    e.stopPropagation();
-});
 
-$('#image').on('change', function () { 
-    $('#add_publication_image_button').click();
-});
-
-$('#add_publication_image_button').click(function(){
-    var form_data = new FormData();
-    var idPub = $('#id_publication').val();
-    form_data.append('id_pub',idPub);
-    // var totalfiles = document.getElementById('image').files.length;
-    for (let i = 0; i < 4; i++) {
-        form_data.append("images[]", document.getElementById('image').files[i]);
-    }
-    $.ajax({
-        url: 'upload-images-publication.php', 
-        type: 'post',
-        data: form_data,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        beforeSend: function(){
-            $("#loader_pub_img").show();
-        },
-        success: function (response) {
-            if (windowWidth > 768) {
-                $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
-            }
-            for(let i = 0; i < response.length; i++) {
-                console.log('add');
-                var src = response[i];
-                $('.publication-images-preview').append("<div class='image-preview' id='image_preview_"+i+"'><div id='delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
-            }
-        },
-        complete: function(){
-            $("#loader_pub_img").hide();
-        }
-    });
-});
-
-// upload publication video 
-$('#add_publication_video').click(function(){
-    $('#video').click();
-})
-
-$('#video').click(function(e){
-    e.stopPropagation();
-});
-
-$('#video').on('change', function () { 
-    $('#add_publication_video_button').click();
-});
-
-$('#add_publication_video_button').click(function(){
-    var form_data = new FormData();
-    var idPub = $('#id_publication').val();
-    form_data.append('id_pub',idPub);
-    form_data.append("video", $('#video')[0].files[0]);
-    $.ajax({
-        url: 'upload-video-publication.php', 
-        type: 'post',
-        data: form_data,
-        dataType: 'json',
-        contentType: false,
-        processData: false,
-        beforeSend: function(){
-            $("#loader_pub_img").show();
-        },
-        success: function (response) {
-            if (windowWidth > 768) {
-                $('.create-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
-            }
-            $('.publication-video-preview').append("<div class='video-preview'><div id='delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
-        },
-        complete: function(){
-            $("#loader_pub_img").hide();
-        }
-    });
-});
-
-// remove publication image preview
-$('.publication-images-preview').on('click','[id^="delete_preview_"]',function(){
-    var id = $(this).attr("id").split("_")[2];
-    var fd = new FormData();
-    var idPub = $('#id_publication').val();
-    fd.append('id_pub',idPub);
-    var mediaUrl = $('#image_preview_'+id+' img').attr('src');
-    fd.append('media_url',mediaUrl);
-    $.ajax({
-        url: 'delete-image-preview.php',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                $('#image_preview_'+id).remove();
-            }
-        }
-    });
-});
-
-// remove publication video preview
-$('.publication-video-preview').on('click','#delete_video',function(){
-    var fd = new FormData();
-    var idPub = $('#id_publication').val();
-    fd.append('id_pub',idPub);
-    var mediaUrl = $('.video-preview video source').attr('src');
-    fd.append('media_url',mediaUrl);
-    $.ajax({
-        url: 'delete-video-preview.php',
-        type: 'post',
-        data: fd,
-        contentType: false,
-        processData: false,
-        success: function(response){
-            if(response != 0){
-                $('.video-preview').remove();
-            }
-        }
-    });
-});
 
 //update publication image
 $('.update-publication-container').click(function(e){
@@ -1070,33 +1396,7 @@ $('.publication-update-video-preview').on('click','#delete_video',function(){
     });
 });
 
-// update publications 
-$(document).on('click','[id^="update_publication_"]',function(){
-    id = $(this).attr("id").split("_")[2];
-    var idPub = $('#id_pub_'+id).val(); 
-    var publicationTail = $('#publication_tail_'+id).val();
-    var publicationDescription = $('#publication_description_'+id).val();
-    var publicationLieu = $('#publication_lieu_'+id).val();
-    var etatCommentaire = $('#etat_commentaire_'+id).val();
-    
-    $('#id_publication_updt').val(idPub);
-    $('#publication_tail_updt').val(publicationTail);
-    $('#publication_location_text_updt').val(publicationLieu);
-    $('#publication_description_updt').val(publicationDescription);
-    $('#etat_commentaire_updt').val(etatCommentaire);
 
-    $('.publication-update-images-preview').load('publication-images-preview.php?id_pub='+idPub);
-    $('.publication-update-video-preview').load('publication-video-preview.php?id_pub='+idPub);
-
-    if (windowWidth < 768) {
-        $('.update-publication').css('transform','translateX(0)');
-    }
-    else{
-        $("body").addClass('body-after');
-        $('.update-publication').show();
-        $('.update-publication-container').css({'top':'0','transform':'translate(-50%,0%)'});
-    }
-});
 
 $('#cancel_update_publication_resp').click(function(){
     $('.update-publication').css('transform','');
@@ -1110,100 +1410,7 @@ $('#cancel_update_publication').click(function(){
     $('.publication-update-video-preview div').remove();
 })
 
-// valide create publication
-// $('#create_publication_button').click(function(){
-//     // if ($('#publication_description').val() !== '') {
-//         var fd = new FormData();
-//         var idPubLieu = $('#publication_location_text').val();
-//         fd.append('lieu_pub',idPubLieu);
-//         var idPub = $('#id_publication').val();
-//         fd.append('id_pub',idPub);
-//         var descriptionPub = $('#publication_description').val();
-//         fd.append('description_pub',descriptionPub);
-//         var idUser = $('#id_user_porfile').val();
-//         $.ajax({
-//             url: 'create-publication.php',
-//             type: 'post',
-//             data: fd,
-//             contentType: false,
-//             processData: false,
-//             success: function(response){
-//                 console.log(response);
-//                 if(response != 0){
-//                     $("body").removeClass('body-after');
-//                     hideCreatePublication();
-//                     $('.publication-images-preview div').remove();
-//                     $('.publication-video-preview div').remove();
-//                     $('.create-publication-container').css({'top':'','transform':''});
-//                     window.location.href = "utilisateur/"+idUser;
-//                 }
-//             }
-//         });
-//     // }
-// });
 
-// $('#create_publication_button_resp').click(function(){
-//     // if ($('#publication_description').val() !== '') {
-//         var fd = new FormData();
-//         var idPubLieu = $('#publication_location_text').val();
-//         fd.append('lieu_pub',idPubLieu);
-//         var idPub = $('#id_publication').val();
-//         fd.append('id_pub',idPub);
-//         var descriptionPub = $('#publication_description').val();
-//         fd.append('description_pub',descriptionPub);
-//         var idUser = $('#id_user_porfile').val();
-//         $.ajax({
-//             url: 'create-publication.php',
-//             type: 'post',
-//             data: fd,
-//             contentType: false,
-//             processData: false,
-//             success: function(response){
-//                 if(response != 0){
-//                     hideCreatePublication();
-//                     setTimeout(() => {
-//                         $('.publication-images-preview div').remove();
-//                         $('.publication-video-preview div').remove();
-//                         window.location.href = "utilisateur/"+idUser;
-//                     }, 300);
-//                 }
-//             }
-//         });
-//     // }
-// });
-
-// valide update publication
-$('#update_publication_button').click(function(){
-    // if ($('#publication_description').val() !== '') {
-        var fd = new FormData();
-        var idPubLieu = $('#publication_location_text_updt').val();
-        fd.append('lieu_pub',idPubLieu);
-        var idPub = $('#id_publication_updt').val();
-        fd.append('id_pub',idPub);
-        var id = $('#publication_tail_updt').val();
-        fd.append('id',id);
-        var descriptionPub = $('#publication_description_updt').val();
-        fd.append('description_pub',descriptionPub);
-        var etatCommentaire = $('#etat_commentaire_updt').val();
-        fd.append('etat_commentaire',etatCommentaire);
-
-        $.ajax({
-            url: 'update-publication.php',
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                    $("body").removeClass('body-after');
-                    $('.update-publication').hide();
-                    $('.update-publication-container').css({'top':'','transform':''});
-                    $('#user_publication_'+id).replaceWith(response);
-                }
-            }
-        });
-    // }
-});
 
 $('#update_publication_button_resp').click(function(){
     // if ($('#publication_description').val() !== '') {
@@ -1560,6 +1767,36 @@ function unsetPromotionsSearchBar(){
     $('#promotions_recherche_responsive').hide();
     $('body').removeClass('body-after');
     $('#recherche_text_resp').blur();
+}
+
+function setEvenementsSearchBar(){
+    $('.navbar-right').hide();
+    $('.show-hide-menu').hide();
+    $('.logo-name').hide();
+    $('#display_categories').hide();
+    $('#display_evn_search_bar').hide();
+    $('.evenements-recherche-responsive').css('z-index','55');
+    $('.evenements-recherche-responsive-container').css('grid-template-columns','12% 88%');
+    $('#back_menu').show();
+    $('#evenements_recherche_responsive').show();
+    setTimeout(() => {
+        $('body').addClass('body-after');
+        $('#recherche_text').focus();
+    }, 0);
+}
+
+function unsetEvenementsSearchBar(){
+    $('.navbar-right').show();
+    $('.show-hide-menu').show();
+    $('.logo-name').show();
+    $('#display_categories').show();
+    $('#display_evn_search_bar').show();
+    $('.evenements-recherche-responsive').css('z-index','');
+    $('.evenements-recherche-responsive-container').css('grid-template-columns','');
+    $('#back_menu').hide();
+    $('#evenements_recherche_responsive').hide();
+    $('body').removeClass('body-after');
+    $('#recherche_text').blur();
 }
 
 // hide publications
@@ -2588,39 +2825,32 @@ $('#create_promotion_button').click(function(){
         url: 'pre-create-promotion.php',
         type: 'post',
         beforeSend: function(){
-            $('.user-create-options').css('opacity','0.5');
-            $("#loader_create_button").show();
+            hideCreatePublication();
+            if (windowWidth > 768) {
+                $("body").addClass('body-after');
+                $('#create_promotion').show();
+            }
+            else{
+                $('#create_promotion').css('transform','translateX(0)');
+            }
+            $("#loader_create_promotion").show();
         },
         success: function(response){
             if(response != 0){
-                var n = response.search("_");
-                var idPrm = response.slice(0, n);
-                var idPrd = response.slice(n+1);
-                $('#id_promotion').val(idPrm);
-                $('#id_promotion_product').val(idPrd);
-                hideCreatePublication();
-                if (windowWidth > 768) {
-                    $("body").addClass('body-after');
-                    $('#create_promotion').show();
-                    $('#create_promotion_container').css({'top':'0','transform':'translate(-50%,0)'});
-                }
-                else{
-                    $('#create_promotion').css('transform','translateX(0)');
-                }
+                $('#create_global_promotion_container').prepend(response);
             }   
         },
         complete: function(){
-            $('.user-create-options').css('opacity','');
-            $("#loader_create_button").hide();
+            $("#loader_create_promotion").hide();
         }
     });
 })
 
-$('#cancel_create_promotion_resp').click(function(){
-    cancelCreatePromotion ();
+$('#create_global_promotion_container').click(function(e){
+    e.stopPropagation();
 })
 
-$('#cancel_create_promotion').click(function(){
+$('#create_global_promotion_container').on('click','#cancel_create_promotion',function(){
     cancelCreatePromotion ();
 })
 
@@ -2632,33 +2862,28 @@ function cancelCreatePromotion () {
     var fd = new FormData();
     var idPrm = $('#id_promotion').val();
     fd.append('id_prm',idPrm);
-    var idPrd = $('#id_promotion_product').val();
-    fd.append('id_prd',idPrd);
     $.ajax({
         url: 'pre-delete-promotion.php',
         type: 'post',
         data: fd,
-        dataType: 'json',
         contentType: false,
         processData: false,
         beforeSend: function(){
-            $('#create_promotion_container').css('opacity','0.5');
-            $('#create-promotion-product-container').css('opacity','0.5');
+            $('#create_global_promotion_container').empty();
             $("#loader_create_promotion").show();
         },
         success: function(response){
             if(response != 0){
-                $("body").removeClass('body-after');
-                createPublication[3].style.display = "";
-
-                $('#create_promotion_container').show();
-                $('.create-promotion-product-container').hide();
-                $('.promotion-input span').removeClass('active-create-bt-prd-span');
+                if (windowWidth > 768) {
+                    $("body").removeClass('body-after');
+                    $('#create_promotion').hide();
+                }
+                else{
+                    $('#create_promotion').css('transform','');
+                }
             }    
         },
         complete: function(){
-            $('#create_promotion_container').css('opacity','');
-            $('#create-promotion-product-container').css('opacity','');
             $("#loader_create_promotion").hide();
         }
     });
@@ -2668,9 +2893,6 @@ $(document).on('focus','.create-publication-bottom input',function(){
     var id = $(this).attr('id');
     if (id == 'titre_prm') {
         $('.titre-prm').addClass('active-promotion-span');
-    }
-    if (id == 'lieu_prm') {
-        $('.lieu-prm').addClass('active-promotion-span');
     }
     if (id == 'adresse_prm') {
         $('.adresse-prm').addClass('active-promotion-span');
@@ -2702,35 +2924,13 @@ $(document).on('focus','.create-publication-bottom textarea',function(){
     }
 })
 
-$("#lieu_prm").on('keyup',function(){
-    var locationText = document.getElementById("lieu_prm");
-    var filter = locationText.value.toUpperCase();
-    var location = document.querySelectorAll("#promotion_location_item p");
-    var locationItem = document.querySelectorAll("#promotion_location_item");
-    for (let i = 0; i < locationItem.length; i++) {
-        txtValue = location[i].textContent || location[i].innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            locationItem[i].style.display = "";
-            $('.promotion-preview-location').css('display','initial');
-        } else {
-            locationItem[i].style.display = "none";
-        }
+// select promotion ville and commune
+$("#create_global_promotion_container").on('change','#ville_promotion',function() {
+    var ville  = $(this).val();
+    if (ville !== '') {
+        $('.commune-promotion').load('commune-promotion.php?v='+ville);
     }
-    if ($(this).val() == '') {
-        $('.promotion-preview-location').css('display','');
-    }
-});
-
-var locationPrmItem = document.querySelectorAll("#promotion_location_item");
-var locationPrmName = document.querySelector("#lieu_prm");
-var locationPrmText = document.querySelectorAll("#promotion_location_item p");
-
-for (let i = 0; i < locationPrmItem.length; i++) {
-    locationPrmItem[i].addEventListener('click',()=>{
-        $('.promotion-preview-location').css('display','');
-        locationPrmName.value = locationPrmText[i].textContent;
-    });
-}
+})
 
 function getLocation() {
     if (navigator.geolocation) {
@@ -2772,7 +2972,7 @@ function getPosition(position) {
     $('.update-promotion-localisation-gps button').text('modifiée');
 }
 
-$('#categorie_prm').on('change',function() {
+$("#create_global_promotion_container").on('change','#categorie_prm',function() {
     var categorie  = $(this).val();
     if (categorie !== '') {
         $('.sous-categorie-promotion').load('categorie-promotion.php?c='+categorie);
@@ -2788,24 +2988,25 @@ $(document).on('change','#sous_categorie_prm',function() {
 })
 
 // upload promotion image 
-$('#add_promotion_image').click(function(){
+$("#create_global_promotion_container").on('click','#add_promotion_image',function(){
+    $('#image_promotion').val('');
     $('#image_promotion').click();
 });
 
-$('#image_promotion').click(function(e){
+$("#create_global_promotion_container").on('click','#image_promotion',function(e){
     e.stopPropagation();
 });
 
-$('#image_promotion').on('change', function () { 
+$("#create_global_promotion_container").on('change','#image_promotion',function () { 
     $('#add_promotion_image_button').click();
 });
 
 // add image promotion
-$('#add_promotion_image_button').click(function(){
-    var form_data = new FormData();
+$("#create_global_promotion_container").on('click','#add_promotion_image_button',function(){
     var idPrm = $('#id_promotion').val();
-    form_data.append('id_prm',idPrm);
     var imgPrm = $('#image_promotion')[0].files[0];
+    var form_data = new FormData();
+    form_data.append('id_prm',idPrm);
     form_data.append('image',imgPrm);
     $.ajax({
         url: 'upload-images-promotion.php', 
@@ -2814,112 +3015,134 @@ $('#add_promotion_image_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
-        success: function (response) {
-            if (windowWidth > 768) {
-                $('.create-publication-container').css({'top':'10px','transform':'translate(-50%,0%)'});
-            }
+        beforeSend: function(){
             $('.create-promotion-options').hide();
             $('.promotion-images-preview').show();
-            setTimeout(() => {
-                $('.promotion-images-preview').append("<div class='promotion-image-preview' id='promotion_image_preview'><div id='promotion_delete_image_preview'><i class='fas fa-times'></i></div><img src='"+response+"'></div>");
-            }, 200);
+            $('.promotion-images-preview').append("<div id='loader_promotion_image' class='center'></div>");
+        },
+        success: function (response) {
+            $('.promotion-images-preview').append("<div class='promotion-image-preview' id='promotion_image_preview'><div id='promotion_delete_image_preview'><i class='fas fa-times'></i></div><img src='"+response+"'></div>");
+        },
+        complete: function(){
+            $('#loader_promotion_image').remove();
         }
     });
 });
 
 // remove promotion image preview
-$('.promotion-images-preview').on('click','#promotion_delete_image_preview',function(){
-    var fd = new FormData();
+$('#create_global_promotion_container').on('click','#promotion_delete_image_preview',function(){
     var idPrm = $('#id_promotion').val();
-    fd.append('id_prm',idPrm);
     var mediaUrl = $('#promotion_image_preview img').attr('src');
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
     fd.append('media_url',mediaUrl);
     $.ajax({
-        url: 'delete-image-promotion-preview.php',
+        url: 'delete-promotion-media.php',
         type: 'post',
         data: fd,
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $('#promotion_image_preview').remove();
+            $('.promotion-images-preview').append("<div id='loader_promotion_image' class='center'></div>");
+        },
         success: function(response){
             if(response != 0){
                 $('.promotion-images-preview').hide();
                 $('.create-promotion-options').show();
-                $('#promotion_image_preview').remove();
             }
+        },
+        complete: function(){
+            $('#loader_promotion_image').remove();
         }
     });
 });
 
 // add video promotion
-$('#add_promotion_video').click(function(){
+$('#create_global_promotion_container').on('click','#add_promotion_video',function(){
+    $('#video_promotion').val('');
     $('#video_promotion').click();
 });
 
-$('#video_promotion').click(function(e){
+$('#create_global_promotion_container').on('click','#video_promotion',function(e){
     e.stopPropagation();
 });
 
-$('#video_promotion').on('change', function () { 
+$('#create_global_promotion_container').on('change','#video_promotion',function () { 
     $('#add_promotion_video_button').click();
 });
 
-$('#add_promotion_video_button').click(function(){
-    var form_data = new FormData();
+$('#create_global_promotion_container').on('click','#add_promotion_video_button',function(){
     var idPrm = $('#id_promotion').val();
-    form_data.append('id_prm',idPrm);
-    var imgPrm = $('#video_promotion')[0].files[0];
-    form_data.append('video',imgPrm);
+    var videoPrm = $('#video_promotion')[0].files[0];
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    fd.append('video',videoPrm);
+    console.log('click');
     $.ajax({
-        url: 'upload-video-promotion.php', 
+        url: 'upload-video-promotion.php',
         type: 'post',
-        data: form_data,
+        data: fd,
         dataType: 'json',
         contentType: false,
         processData: false,
-        success: function (response) {
-            if (windowWidth > 768) {
-                $('.create-publication-container').css({'top':'10px','transform':'translate(-50%,0%)'});
-            }
+        beforeSend: function(){
             $('.create-promotion-options').hide();
             $('.promotion-images-preview').show();
-            setTimeout(() => {
-                $('.promotion-images-preview').append("<div class='promotion-video-preview' id='promotion_video_preview'><div id='promotion_delete_video_preview'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
-            }, 200);
+            $('.promotion-images-preview').append("<div id='loader_promotion_image' class='center'></div>");
+        },
+        success: function(response){
+            $('.promotion-images-preview').append("<div class='promotion-video-preview' id='promotion_video_preview'><div id='promotion_delete_video_preview'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            $('#loader_promotion_image').remove();
         }
     });
 });
 
 // remove video promotion
-$('.promotion-images-preview').on('click','#promotion_delete_video_preview',function(){
-    var fd = new FormData();
+$('#create_global_promotion_container').on('click','#promotion_delete_video_preview',function(){
     var idPrm = $('#id_promotion').val();
-    fd.append('id_prm',idPrm);
     var mediaUrl = $('#promotion_video_preview video source').attr('src');
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
     fd.append('media_url',mediaUrl);
     $.ajax({
-        url: 'delete-image-promotion-preview.php',
+        url: 'delete-promotion-media.php',
         type: 'post',
         data: fd,
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $('#promotion_video_preview').remove();
+            $('.promotion-images-preview').append("<div id='loader_promotion_image' class='center'></div>");
+        },
         success: function(response){
             if(response != 0){
                 $('.promotion-images-preview').hide();
                 $('.create-promotion-options').show();
-                $('#promotion_video_preview').remove();
             }
+        },
+        complete: function(){
+            $('#loader_promotion_image').remove();
         }
     });
 });
 
-$('#next_create_promotion').click(function(){
+$('#create_global_promotion_container').on('click','#next_create_promotion',function(){
+    var idPrm = $('#id_promotion').val();
     var titrePrm = $('#titre_prm').val();
     var categoriePrm = $('#categorie_prm').val();
     var sousCategoriePrm = $('#sous_categorie_prm').val();
-    var lieuPrm = $('#lieu_prm').val(); 
-    var adressePrm = $('#adresse_prm').val(); 
+    var villePrm = $('#ville_promotion').val(); 
+    var communePrm = $('#commune_promotion').val();
+    var adressePrm = $('#adresse_prm').val();
+    var latitudePrm = $('#latitude_prm').val();
+    var longitudePrm = $('#longitude_prm').val();
     var dateDebutPrm = $('#date_debut_prm').val();
-    var dateFinPrm = $('#date_fin_prm').val(); 
+    var dateFinPrm = $('#date_fin_prm').val();
+    var descriptionPrm = $('#description_prm').val();
+
     if ($('.promotion-images-preview').is(':empty')){
         $('.create-promotion-options').css('border','2px solid red');
     }
@@ -2938,19 +3161,28 @@ $('#next_create_promotion').click(function(){
         $('#categorie_prm').css('border','');
         $('#sous_categorie_prm').css('border','2px solid red');
     }
-    else if (lieuPrm == '') {
+    else if (villePrm == '') {
         $('.create-promotion-options').css('border','');
         $('#titre_prm').css('border','');
         $('#categorie_prm').css('border','');
         $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','2px solid red');
+        $('#ville_promotion').css('border','2px solid red');
+    }
+    else if (communePrm == '') {
+        $('.create-promotion-options').css('border','');
+        $('#titre_prm').css('border','');
+        $('#categorie_prm').css('border','');
+        $('#sous_categorie_prm').css('border','');
+        $('#ville_promotion').css('border','');
+        $('#commune_promotion').css('border','2px solid red');
     }
     else if (adressePrm == '') {
         $('.create-promotion-options').css('border','');
         $('#titre_prm').css('border','');
         $('#categorie_prm').css('border','');
         $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
+        $('#ville_promotion').css('border','');
+        $('#commune_promotion').css('border','');
         $('#adresse_prm').css('border','2px solid red');
     }
     else if (dateDebutPrm == '') {
@@ -2958,7 +3190,8 @@ $('#next_create_promotion').click(function(){
         $('#titre_prm').css('border','');
         $('#categorie_prm').css('border','');
         $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
+        $('#ville_promotion').css('border','');
+        $('#commune_promotion').css('border','');
         $('#adresse_prm').css('border','');
         $('#date_debut_prm').css('border','2px solid red');
     }
@@ -2967,84 +3200,257 @@ $('#next_create_promotion').click(function(){
         $('#titre_prm').css('border','');
         $('#categorie_prm').css('border','');
         $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
+        $('#ville_promotion').css('border','');
+        $('#commune_promotion').css('border','');
         $('#adresse_prm').css('border','');
         $('#date_debut_prm').css('border','');
         $('#date_fin_prm').css('border','2px solid red');
     }
-    else{
+    else if (descriptionPrm == '') {
+        $('.create-promotion-options').css('border','');
+        $('#titre_prm').css('border','');
+        $('#categorie_prm').css('border','');
+        $('#sous_categorie_prm').css('border','');
+        $('#ville_promotion').css('border','');
+        $('#commune_promotion').css('border','');
+        $('#adresse_prm').css('border','');
+        $('#date_debut_prm').css('border','');
         $('#date_fin_prm').css('border','');
-        $('#create_promotion_container').css({'opacity':'0','z-index':'-1'});
-        $('.create-promotion-product-container').css({'opacity':'1','z-index':'150'});
-        $('.create-promotion-product-container').css({'top':'10px','transform':'translate(-50%,0%)'});
-        $('#create_promotion').scrollTop(0);
+        $('#description_prm').css('border','2px solid red');
+    }
+    else{
+        $('#description_prm').css('border','');
+        var fd = new FormData();
+        fd.append('id_prm',idPrm);
+        fd.append('titre_prm',titrePrm);
+        fd.append('categorie_prm',categoriePrm);
+        fd.append('sous_categorie_prm',sousCategoriePrm);
+        fd.append('ville_promotion',villePrm);
+        fd.append('commune_promotion',communePrm);
+        fd.append('adresse_prm',adressePrm);
+        fd.append('latitude_prm',latitudePrm);
+        fd.append('longitude_prm',longitudePrm);
+        fd.append('date_debut_prm',dateDebutPrm);
+        fd.append('date_fin_prm',dateFinPrm);
+        fd.append('description_prm',descriptionPrm);
+        $.ajax({
+            url: 'load-create-product-promotion.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_top_button").show();
+                }
+                else{
+                    $("#loader_create_publication_bottom_button").show();
+                }
+            },
+            success: function(response){
+                if(response != 0){
+                    $('#create_promotion').scrollTop(0); 
+                    $('#create_promotion_container').remove();
+                    $('#create_global_promotion_container').prepend(response);
+                }    
+            },
+            complete: function(){
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_top_button").hide();
+                }
+                else{
+                    $("#loader_create_publication_bottom_button").hide();
+                }
+            }
+        });
     }
 })
 
-$('#next_create_promotion_resp').click(function(){
-    var titrePrm = $('#titre_prm').val();
-    var categoriePrm = $('#categorie_prm').val();
-    var sousCategoriePrm = $('#sous_categorie_prm').val();
-    var lieuPrm = $('#lieu_prm').val(); 
-    var adressePrm = $('#adresse_prm').val();
-    var dateDebutPrm = $('#date_debut_prm').val();
-    var dateFinPrm = $('#date_fin_prm').val(); 
-    if ($('.promotion-images-preview').is(':empty')){
-        $('.create-promotion-options').css('border','2px solid red');
+// create other promotion product
+$('#create_global_promotion_container').on('click','#add_new_product_promotion',function(){
+    var idPrm = $('#id_promotion').val();
+    var idPrd = $('#id_promotion_product').val();
+    var namePrd = $('#name_prm_prd').val();
+    var referencePrd = $('#reference_prm_prd').val();
+    var quantityPrd = $('#quantity_prm_prd').val();
+    var oldPricePrd = $('#old_price_prm_prd').val();
+    var newPricePrd = $('#new_price_prm_prd').val();
+    var fonctionalityPrd = $('#fonctionality_prm_prd').val();
+    var caracteristicPrd = $('#caracteristic_prm_prd').val();
+    var avantagePrd = $('#avantage_prm_prd').val();
+    var descriptionPrd = $('#description_prm_prd').val();
+    if (namePrd == ''){
+        $('#name_prm_prd').css('border','2px solid red');
     }
-    else if (titrePrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','2px solid red');
+    else if (oldPricePrd == '0'){
+        $('#name_prm_prd').css('border','');
+        $('#old_price_prm_prd').css('border','2px solid red');
     }
-    else if (categoriePrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','');
-        $('#categorie_prm').css('border','2px solid red');
+    else if (newPricePrd == '0'){
+        $('#name_prm_prd').css('border','');
+        $('#old_price_prm_prd').css('border','');
+        $('#new_price_prm_prd').css('border','2px solid red');
     }
-    else if (sousCategoriePrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','');
-        $('#categorie_prm').css('border','');
-        $('#sous_categorie_prm').css('border','2px solid red');
-    }
-    else if (adressePrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','');
-        $('#categorie_prm').css('border','');
-        $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
-        $('#adresse_prm').css('border','2px solid red');
-    }
-    else if (dateDebutPrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','');
-        $('#categorie_prm').css('border','');
-        $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
-        $('#adresse_prm').css('border','');
-        $('#date_debut_prm').css('border','2px solid red');
-    }
-    else if (dateFinPrm == '') {
-        $('.create-promotion-options').css('border','');
-        $('#titre_prm').css('border','');
-        $('#categorie_prm').css('border','');
-        $('#sous_categorie_prm').css('border','');
-        $('#lieu_prm').css('border','');
-        $('#adresse_prm').css('border','');
-        $('#date_debut_prm').css('border','');
-        $('#date_fin_prm').css('border','2px solid red');
+    else if ($('.promotion-product-images-preview').is(':empty') && 
+            $('.promotion-product-video-preview').is(':empty')){
+        $('#name_prm_prd').css('border','');
+        $('#old_price_prm_prd').css('border','');
+        $('#new_price_prm_prd').css('border','');
+        $('.create-promotion-product-options').css('border','2px solid red');
     }
     else{
-        $('#date_fin_prm').css('border','');
-        $('#create_promotion_container').css({'opacity':'0','z-index':'-1'});
-        $('.create-promotion-product-container').css({'opacity':'1','z-index':'150'});
-        $('#create_promotion').scrollTop(0);
+        $('.create-promotion-product-options').css('border','');
+        var fd = new FormData();
+        fd.append('id_prm',idPrm);
+        fd.append('id_prd',idPrd);
+        fd.append('nom_prd',namePrd);
+        fd.append('reference_prd',referencePrd);
+        fd.append('quantite_prd',quantityPrd);
+        fd.append('ancien_prix_prd',oldPricePrd);
+        fd.append('nouveau_prix_prd',newPricePrd);
+        fd.append('fonctionalites_prd',fonctionalityPrd);
+        fd.append('caracteristiques_prd',caracteristicPrd);
+        fd.append('avantages_prd',avantagePrd);
+        fd.append('description_prd',descriptionPrd);
+        $.ajax({
+            url: 'add-new-product-promotion.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            beforeSend: function(){
+                $('#create_promotion_product_container').remove();
+                $("#loader_create_promotion").show();
+            },
+            success: function(response){
+                if(response != 0){
+                    $('#create_global_promotion_container').prepend(response);
+                }    
+            },
+            complete: function(){
+                $("#loader_create_promotion").hide();
+            }
+        });
     }
 })
 
 // choose create or select product promotion
+// cancel product promotion overview
+$('#create_global_promotion_container').on('click','#cancel_product_promotion_overview',function(){
+    var idPrm = $('#id_promotion').val();
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'create-new-product-promotion.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_promotion_product_container').remove();
+            $("#loader_create_promotion").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_global_promotion_container').prepend(response);
+            }
+        },
+        complete: function(){
+            $("#loader_create_promotion").hide();
+        }
+    });
+}) 
+
+// delete product promotion overview
+$('#create_global_promotion_container').on('click','#delete_product_promotion_overview',function(){
+    var idPrd = $('#id_promotion_product').val();
+    var idPrm = $('#id_promotion').val();
+    var fd = new FormData();
+    fd.append('id_prd',idPrd);
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'delete-promotion-product-overview.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_promotion_product_container').remove();
+            $("#loader_create_promotion").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_global_promotion_container').prepend(response);
+            }
+        },
+        complete: function(){
+            $("#loader_create_promotion").hide();
+        }
+    });
+}) 
+
+// update product promotion overview
+$('#create_global_promotion_container').on('click','[id^="product_promotion_overview_"]',function(){
+    var id = $(this).attr("id").split("_")[3];
+    var idPrd = $('#id_prd_ovrw_'+id).val();
+    var idPrm = $('#id_promotion').val();
+    var fd = new FormData();
+    fd.append('id_prd',idPrd);
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'update-promotion-product-overview.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_promotion_product_container').empty();
+            $("#loader_create_promotion").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_promotion_product_container').append(response);
+            }
+        },
+        complete: function(){
+            $("#loader_create_promotion").hide();
+        }
+    });
+}) 
+
+// update product boutique promotion overview
+$('#create_global_promotion_container').on('click','[id^="product_boutique_promotion_overview_"]',function(){
+    var id = $(this).attr("id").split("_")[4];
+    var idPrm = $('#id_promotion').val();
+    var idPrd = $('#id_prd_btq_ovrw_'+id).val();
+    var idBtq = $('#id_btq_prd_ovrw_'+id).val();
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    fd.append('id_prd',idPrd);
+    fd.append('id_btq',idBtq);
+    $.ajax({
+        url: 'load-product-boutique-promotion-details.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_promotion_product_bottom_container').empty();
+            $("#loader_create_promotion_product_bottom").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_promotion_product_bottom_container').append(response);
+            }
+        },
+        complete: function(){
+            $("#loader_create_promotion_product_bottom").hide();
+        }
+    });
+}) 
+
 // load user boutique to create product promotion
-$('#create_promotion_product_bottom_container').on('click','#select_boutique_product',function(){
+$('#create_global_promotion_container').on('click','#select_boutique_product',function(){
     $.ajax({
         url: 'load-user-boutique-promotion.php',
         type: 'post',
@@ -3063,7 +3469,8 @@ $('#create_promotion_product_bottom_container').on('click','#select_boutique_pro
     });
 })
 
-$('#create_promotion_product_bottom_container').on('click','#back_to_boutique_user_promotion',function(){
+// back to user boutiques
+$('#create_global_promotion_container').on('click','#back_to_boutique_user_promotion',function(){
     $.ajax({
         url: 'load-user-boutique-promotion.php',
         type: 'post',
@@ -3083,11 +3490,13 @@ $('#create_promotion_product_bottom_container').on('click','#back_to_boutique_us
 })
 
 // load product boutique to create product promotion
-$('#create_promotion_product_bottom_container').on('click','[id^="user_boutique_promotion_"]',function(){
+$('#create_global_promotion_container').on('click','[id^="user_boutique_promotion_"]',function(){
     id = $(this).attr("id").split("_")[3];
     var idBtq = $('#id_btq_prm_'+id).val();
+    var idPrm = $('#id_promotion').val();
     var fd = new FormData();
     fd.append('id_btq',idBtq);
+    fd.append('id_prm',idPrm);
     $.ajax({
         url: 'load-product-boutique-promotion.php',
         type: 'post',
@@ -3110,11 +3519,13 @@ $('#create_promotion_product_bottom_container').on('click','[id^="user_boutique_
 })
 
 // load product details to create product promotion
-$('#create_promotion_product_bottom_container').on('click','[id^="product_boutique_promotion_"]',function(){
-    var id = $(this).attr("id").split("_")[3];
+$('#create_global_promotion_container').on('click','[id^="product_boutique_promotion_details_"]',function(){
+    var id = $(this).attr("id").split("_")[4];
+    var idPrm = $('#id_promotion').val();
     var idPrd = $('#id_prd_prm_'+id).val();
     var idBtq = $('#id_btq_prm').val();
     var fd = new FormData();
+    fd.append('id_prm',idPrm);
     fd.append('id_prd',idPrd);
     fd.append('id_btq',idBtq);
     $.ajax({
@@ -3139,10 +3550,12 @@ $('#create_promotion_product_bottom_container').on('click','[id^="product_boutiq
 })
 
 // back to boutique product
-$('#create_promotion_product_bottom_container').on('click','#back_to_boutique_product_promotion',function(){
+$('#create_global_promotion_container').on('click','#back_to_boutique_product_promotion',function(){
     var idBtq = $('#id_btq_prm').val();
+    var idPrm = $('#id_promotion').val();
     var fd = new FormData();
     fd.append('id_btq',idBtq);
+    fd.append('id_prm',idPrm);
     $.ajax({
         url: 'load-product-boutique-promotion.php',
         type: 'post',
@@ -3164,9 +3577,10 @@ $('#create_promotion_product_bottom_container').on('click','#back_to_boutique_pr
     });
 })
 
-function backToBoutiqueProductPromotion(idBtq){
+function backToBoutiqueProductPromotion(idBtq,idPrm){
     var fd = new FormData();
     fd.append('id_btq',idBtq);
+    fd.append('id_prm',idPrm);
     $.ajax({
         url: 'load-product-boutique-promotion.php',
         type: 'post',
@@ -3178,6 +3592,7 @@ function backToBoutiqueProductPromotion(idBtq){
             $("#loader_create_promotion_product_bottom").show();
         },
         success: function(response){
+            console.log(response);
             if(response != 0){
                 $('#create_promotion_product_bottom_container').append(response);
             }
@@ -3189,7 +3604,7 @@ function backToBoutiqueProductPromotion(idBtq){
 }
 
 // select product image for product promotion
-$('#create_promotion_product_bottom_container').on('click','[id^="promotion_product_image_"]',function(){
+$('#create_global_promotion_container').on('click','[id^="promotion_product_image_"]',function(){
     $('.promotion-product-image').removeClass('selected-product-promotion-image');
     $('.promotion-product-image i').remove();
     $('.promotion-product-image img').css('opacity','');
@@ -3199,13 +3614,13 @@ $('#create_promotion_product_bottom_container').on('click','[id^="promotion_prod
 })
 
 // create product boutique promotion 
-$('#create_promotion_product_bottom_container').on('click','#valide_product_promotion',function(){
+$('#create_global_promotion_container').on('click','#valide_product_promotion',function(){
     var idPrm = $('#id_promotion').val();
     var idBtq = $('#id_btq_prm').val();
     var idPrd = $('#id_prm_prd').val();
     var pricePrd = $('#prm_price_prd').val();
     var mediaUrl = $('.selected-product-promotion-image img').attr('src');
-    if (pricePrd == '') {
+    if (pricePrd == 0 || pricePrd == '') {
         $('#prm_price_prd').css('border','2px solid red');
     }
     else if (!$('.selected-product-promotion-image')[0]) {
@@ -3230,7 +3645,7 @@ $('#create_promotion_product_bottom_container').on('click','#valide_product_prom
             },
             success: function(response){
                 if(response != 0){
-                    backToBoutiqueProductPromotion(idBtq);
+                    backToBoutiqueProductPromotion(idBtq,idPrm);
                 }
             },
             complete: function(){
@@ -3241,11 +3656,13 @@ $('#create_promotion_product_bottom_container').on('click','#valide_product_prom
 })
 
 // delete product boutique promotion
-$('#create_promotion_product_bottom_container').on('click','[id^="delete_product_boutique_promotion_"]',function(){
+$('#create_global_promotion_container').on('click','[id^="delete_product_boutique_promotion_"]',function(){
     var id = $(this).attr("id").split("_")[4];
+    var idPrm = $('#id_promotion').val();
     var idPrd = $('#id_prd_prm_'+id).val();
     var idBtq = $('#id_btq_prm').val();
     var fd = new FormData();
+    fd.append('id_prm',idPrm);
     fd.append('id_prd',idPrd);
     fd.append('id_btq',idBtq);
     $.ajax({
@@ -3260,7 +3677,7 @@ $('#create_promotion_product_bottom_container').on('click','[id^="delete_product
         },
         success: function(response){
             if(response != 0){
-                backToBoutiqueProductPromotion(idBtq);
+                backToBoutiqueProductPromotion(idBtq,idPrm);
             }
         },
         complete: function(){
@@ -3270,58 +3687,93 @@ $('#create_promotion_product_bottom_container').on('click','[id^="delete_product
 })
 
 // load form to create new product promotion
-$('#create_promotion_product_bottom_container').on('click','#create_new_promotion_product',function(){
+$('#create_global_promotion_container').on('click','#create_new_promotion_product',function(){
+    var idPrm = $('#id_promotion').val();
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
     $.ajax({
-        url: 'load-create-new-promotion-product.php',
+        url: 'create-new-product-promotion.php',
         type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
         beforeSend: function(){
-            $('#create_promotion_product_bottom_container').empty();
-            $("#loader_create_promotion_product_bottom").show();
+            $('#create_promotion_product_container').remove();
+            $('#create_promotion_container').remove();
+            $("#loader_create_promotion").show();
         },
         success: function(response){
             if(response != 0){
-                $('#create_promotion_product_bottom_container').append(response);
-            }
+                $('#create_global_promotion_container').prepend(response);
+            }    
         },
         complete: function(){
-            $("#loader_create_promotion_product_bottom").hide();
+            $("#loader_create_promotion").hide();
         }
     });
 })
 
 // create promotion product
-$('.create-promotion-product-container').click(function(e){
+$('#create_global_promotion_container').on('click','.create-promotion-product-container',function(e){
     e.stopPropagation();
 })
 
-$('#cancel_create_promotion_product_resp').click(function(e){
-    $('#create_promotion_container').css({'opacity':'','z-index':''});
-    $('.create-promotion-product-container').css({'opacity':'','z-index':''});
-    $('.create-promotion-product-container').css({'top':'','transform':''});
+$('#create_global_promotion_container').on('click','#cancel_create_promotion_product',function(e){
+    var idPrm = $('#id_promotion').val();
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'load-create-promotion.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_promotion_product_container').remove();
+            $("#loader_create_promotion").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_global_promotion_container').prepend(response);
+            }    
+        },
+        complete: function(){
+            $("#loader_create_promotion").hide();
+        }
+    });
 })
 
 // upload promotion product image 
-$('#add_promotion_product_image').click(function(){
+$('#create_global_promotion_container').on('click','#add_promotion_product_image',function(){
+    $('#video_promotion_product').val('');
     $('#image_promotion_product').click();
 });
 
-$('#image_promotion_product').click(function(e){
+$('#create_global_promotion_container').on('click','#image_promotion_product',function(e){
     e.stopPropagation();
 });
 
-$('#image_promotion_product').on('change', function () { 
+$('#create_global_promotion_container').on('change','#image_promotion_product',function(e){
     $('#add_promotion_product_image_button').click();
 });
 
-// add image promotion product
-$('#add_promotion_product_image_button').click(function(){
-    var form_data = new FormData();
+// set promotion product image
+$('#create_global_promotion_container').on('click','#add_promotion_product_image_button',function(e){
+    e.stopPropagation();
+    var numImg = $('.prm-product-image-preview').length;
+    if (numImg > 0) {
+        var lastImg = $('.prm-product-image-preview').last().attr('id').split("_")[2];
+    }
+    else{
+        var lastImg = 0;
+    }
+    var numUpldImg = document.getElementById('image_promotion_product').files.length;
     var idPrm = $('#id_promotion').val();
-    form_data.append('id_prm',idPrm);
     var idPrd = $('#id_promotion_product').val();
+    var form_data = new FormData();
     form_data.append('id_prd',idPrd);
-    var totalfiles = document.getElementById('image_promotion_product').files.length;
-    for (let i = 0; i < totalfiles; i++) {
+    form_data.append('id_prm',idPrm);
+    for (let i = 0; i < 4 - numImg; i++) {
         form_data.append("images[]", document.getElementById('image_promotion_product').files[i]);
     }
     $.ajax({
@@ -3331,144 +3783,644 @@ $('#add_promotion_product_image_button').click(function(){
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            if ((numImg + numUpldImg) <= 4) {
+                for(let i = 0; i < numUpldImg; i++) {
+                    let id = lastImg + i;
+                    $('.promotion-product-images-preview').append("<div class='prm-product-image-preview' id='prm_product_image_preview_"+id+"'><div id='loader_prm_prd_img_"+id+"' class='center'></div></div>");
+                }
+            }
+            else if ((numImg + numUpldImg) >= 5) {
+                for(let i = 0; i < (4 - numImg); i++) {
+                    let id = lastImg + i;
+                    $('.promotion-product-images-preview').append("<div class='prm-product-image-preview' id='prm_product_image_preview_"+id+"'><div id='loader_prm_prd_img_"+id+"' class='center'></div></div>");
+                }
+            }
+        },
         success: function (response) {
             for(let i = 0; i < response.length; i++) {
                 var src = response[i];
-                $('.promotion-product-images-preview').append("<div class='prm-product-image-preview' id='prm_product_image_preview_"+i+"'><div id='prm_product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                let id = lastImg + i;
+                $('#prm_product_image_preview_'+id).replaceWith("<div class='prm-product-image-preview' id='prm_product_image_preview_"+id+"'><div class='delete-preview' id='prm_product_delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+            }
+        },
+        complete: function(){
+            numImg = $('.prm-product-image-preview').length;
+            if (numImg >= 4) {
+                $('.create-promotion-product-options').hide();
             }
         }
     });
 });
 
 // remove promotion product image preview
-$('.promotion-product-images-preview').on('click','[id^="prm_product_delete_preview_"]',function(){
+$('#create_global_promotion_container').on('click','[id^="prm_product_delete_preview_"]',function(){
     var id = $(this).attr("id").split("_")[4];
-    var form_data = new FormData();
     var idPrd = $('#id_promotion_product').val();
-    form_data.append('id_prd',idPrd);
     var mediaUrl = $('#prm_product_image_preview_'+id+' img').attr('src');
+    var form_data = new FormData();
+    form_data.append('id_prd',idPrd);
     form_data.append('media_url',mediaUrl);
     $.ajax({
-        url: 'delete-image-prm-product-preview.php', 
+        url: 'delete-promotion-product-media.php', 
+        type: 'post',
+        data: form_data,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#prm_product_image_preview_'+id).replaceWith("<div class='prm-product-image-preview' id='prm_product_image_preview_"+id+"'><div id='loader_prm_prd_img_"+id+"' class='center'></div></div>");
+        },
+        success: function (response) {
+            if(response != 0){
+                $('#prm_product_image_preview_'+id).remove();
+            }
+        },
+        complete: function(){
+            var numImg = $('.prm-product-image-preview').length;
+            if (numImg < 4) {
+                $('.create-promotion-product-options').show();
+            }
+        }
+    });
+});
+
+// set promotion product video 
+$('#create_global_promotion_container').on('click','#add_promotion_product_video',function(){
+    $('#video_promotion_product').val('');
+    $('#video_promotion_product').click();
+})
+
+$('#create_global_promotion_container').on('click','#video_promotion_product',function(e){
+    e.stopPropagation();
+});
+
+$('#create_global_promotion_container').on('change','#video_promotion_product',function () { 
+    $('#add_promotion_product_video_button').click();
+});
+
+$('#create_global_promotion_container').on('click','#add_promotion_product_video_button',function(e){
+    e.stopPropagation();
+    var idPrm = $('#id_promotion').val();
+    var idPrd = $('#id_promotion_product').val();
+    var form_data = new FormData();
+    form_data.append('id_prd',idPrd);
+    form_data.append('id_prm',idPrm);
+    form_data.append("video", $('#video_promotion_product')[0].files[0]);
+    $.ajax({
+        url: 'upload-video-prm-product.php', 
         type: 'post',
         data: form_data,
         dataType: 'json',
         contentType: false,
         processData: false,
+        beforeSend: function(){
+            $('.promotion-product-video-preview').append("<div class='prm-product-video-preview' id='prm_product_video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
         success: function (response) {
-            $('#prm_product_image_preview_'+id).remove();
+            $('#prm_product_video_preview').replaceWith("<div class='prm-product-video-preview' id='prm_product_video_preview'><div class='delete-preview' id='prm_product_delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            var numVideo = $('.prm-product-video-preview').length;
+            if (numVideo >= 1) {
+                $('.create-promotion-product-options').hide();
+            }
+        }
+    });
+});
+
+// remove promotion product video preview
+$('#create_global_promotion_container').on('click','#prm_product_delete_video',function(){
+    var idPrd = $('#id_promotion_product').val();
+    var mediaUrl = $('.prm-product-video-preview video source').attr('src');
+    var fd = new FormData();
+    fd.append('id_prd',idPrd);
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-promotion-product-media.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#prm_product_video_preview').replaceWith("<div class='prm-product-video-preview' id='prm_product_video_preview'><div id='loader_pub_video' class='center'></div></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('#prm_product_video_preview').remove();
+            }
+        },
+        complete: function(){
+            var numVideo = $('.prm-product-video-preview').length;
+            if (numVideo == 0) {
+                $('.create-promotion-product-options').show();
+            }
         }
     });
 });
 
 // valide create promotion
-$('#final_create_promotion_button').click(function(){
+$('#create_global_promotion_container').on('click','#final_create_promotion_button',function(){
     var idPrm = $('#id_promotion').val();
-    var titrePrm = $('#titre_prm').val();
-    var categoriePrm = $('#categorie_prm').val();
-    var sousCategoriePrm = $('#sous_categorie_prm').val();
-    var lieuPrm = $('#lieu_prm').val(); 
-    var adressePrm = $('#adresse_prm').val();
-    var latitudePrm = $('#latitude_prm').val();
-    var longitudePrm = $('#longitude_prm').val();
-    var dateDebutPrm = $('#date_debut_prm').val();
-    var dateFinPrm = $('#date_fin_prm').val();
-    var descriptionPrm = $('#description_prm').val();
-    
+    var namePrd = $('#name_prm_prd').val();
+    var oldPricePrd = $('#old_price_prm_prd').val();
+    var newPricePrd = $('#new_price_prm_prd').val();
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'verify-promotion-product-created.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $(this).css('opacity','.8');
+            $("#loader_create_promotion_button").show();
+        },
+        success: function(response){
+            if(response != 100){
+                if (response == 0) {
+                    if (namePrd == ''){
+                        $('#name_prm_prd').css('border','2px solid red');
+                    }
+                    else if (oldPricePrd == '0'){
+                        $('#name_prm_prd').css('border','');
+                        $('#old_price_prm_prd').css('border','2px solid red');
+                    }
+                    else if (newPricePrd == '0'){
+                        $('#name_prm_prd').css('border','');
+                        $('#old_price_prm_prd').css('border','');
+                        $('#new_price_prm_prd').css('border','2px solid red');
+                    }
+                    else if ($('.promotion-product-images-preview').is(':empty')){
+                        $('#name_prm_prd').css('border','');
+                        $('#old_price_prm_prd').css('border','');
+                        $('#new_price_prm_prd').css('border','');
+                        $('.create-promotion-product-options').css('border','2px solid red');
+                    }
+                    else{
+                        $('.create-promotion-product-options').css('border','');
+                        createPromotion(idPrm);
+                    }
+                }
+                else{
+                    createPromotion(idPrm);
+                }
+            }
+        },
+        complete: function(){
+            $(this).css('opacity','');
+            $("#loader_create_promotion_button").hide();
+        }
+    });
+});
+
+function createPromotion (idPrm) {
     var idPrd = $('#id_promotion_product').val();
     var namePrd = $('#name_prm_prd').val();
     var referencePrd = $('#reference_prm_prd').val();
     var quantityPrd = $('#quantity_prm_prd').val();
-    var pricePrd = $('#price_prm_prd').val();
+    var oldPricePrd = $('#old_price_prm_prd').val();
+    var newPricePrd = $('#new_price_prm_prd').val();
     var fonctionalityPrd = $('#fonctionality_prm_prd').val();
     var caracteristicPrd = $('#caracteristic_prm_prd').val();
     var avantagePrd = $('#avantage_prm_prd').val();
     var descriptionPrd = $('#description_prm_prd').val();
-    
-    if (namePrd == ''){
-        $('#name_prm_prd').css('border','2px solid red');
+    var fd = new FormData();
+    fd.append('id_prm',idPrm);
+    fd.append('id_prd',idPrd);
+    fd.append('nom_prd',namePrd);
+    fd.append('reference_prd',referencePrd);
+    fd.append('quantite_prd',quantityPrd);
+    fd.append('ancien_prix_prd',oldPricePrd);
+    fd.append('nouveau_prix_prd',newPricePrd);
+    fd.append('fonctionalites_prd',fonctionalityPrd);
+    fd.append('caracteristiques_prd',caracteristicPrd);
+    fd.append('avantages_prd',avantagePrd);
+    fd.append('description_prd',descriptionPrd);
+    $.ajax({
+        url: 'create-promotion.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            if (windowWidth > 768) {
+                $("#loader_create_publication_bottom_button").show();
+            }
+            else{
+                $("#loader_create_publication_top_button").show();
+            }
+        },
+        success: function(response){
+            if(response != 0){
+                if (windowWidth > 768) {
+                    $("#create_promotion").hide();
+                    $("body").removeClass('body-after');
+                }
+                else{
+                    $("#create_promotion").css('transform','');
+                }
+            }
+        },
+        complete: function(){
+            if (windowWidth > 768) {
+                $("#loader_create_publication_bottom_button").hide();
+            }
+            else{
+                $("#loader_create_publication_top_button").hide();
+            }
+        }
+    });
+}
+
+// create evenement
+$('#create_evenement_button').click(function(){
+    $.ajax({
+        url: 'pre-create-evenement.php',
+        type: 'post',
+        beforeSend: function(){
+            hideCreatePublication();
+            if (windowWidth > 768) {
+                $("body").addClass('body-after');
+                $('#create_evenement').show();
+            }
+            else{
+                $('#create_evenement').css('transform','translateX(0)');
+            }
+            $("#loader_create_evenement").show();
+        },
+        success: function(response){
+            if(response != 0){
+                $('#create_evenement_container').prepend(response);
+            }   
+        },
+        complete: function(){
+            $("#loader_create_evenement").hide();
+        }
+    });
+})
+
+$('#create_evenement_container').click(function(e){
+    e.stopPropagation();
+})
+
+$('#create_evenement_container').on('click','#cancel_create_evenement',function(){
+    cancelCreateEvenement ();
+})
+
+$('#create_evenement').click(function(){
+    cancelCreateEvenement ();
+})
+
+function cancelCreateEvenement () {
+    var fd = new FormData();
+    var idPrm = $('#id_evenement').val();
+    fd.append('id_prm',idPrm);
+    $.ajax({
+        url: 'pre-delete-evenement.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#create_evenement_container').empty();
+            $("#loader_create_evenement").show();
+        },
+        success: function(response){
+            if(response != 0){
+                if (windowWidth > 768) {
+                    $("body").removeClass('body-after');
+                    $('#create_evenement').hide();
+                }
+                else{
+                    $('#create_evenement').css('transform','');
+                }
+            }    
+        },
+        complete: function(){
+            $("#loader_create_evenement").hide();
+        }
+    });
+}
+
+$(document).on('focus','.create-publication-bottom input',function(){
+    var id = $(this).attr('id');
+    if (id == 'titre_evn') {
+        $('.titre-evn').addClass('active-evenement-span');
     }
-    else if (pricePrd == '0'){
-        $('#name_prm_prd').css('border','');
-        $('#price_prm_prd').css('border','2px solid red');
+    if (id == 'adresse_evn') {
+        $('.adresse-evn').addClass('active-evenement-span');
     }
-    else if ($('.promotion-product-images-preview').is(':empty')){
-        $('#name_prm_prd').css('border','');
-        $('#price_prm_prd').css('border','');
-        $('.create-promotion-product-options').css('border','2px solid red');
+})
+
+$(document).on('focus','.create-publication-bottom textarea',function(){
+    var id = $(this).attr('id');
+    if (id == 'description_evn') {
+        $('.description-evn').addClass('active-evenement-span');
+    }
+})
+
+// select promotion ville and commune
+$("#create_evenement_container").on('change','#ville_evn',function() {
+    var ville  = $(this).val();
+    if (ville !== '') {
+        $('.commune-evenement').load('commune-evenement.php?v='+ville);
+    }
+})
+
+function getEvenementLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(getEvenementPosition, showError);
+    } else { 
+        $('.evenement-localisation-gps p').text("La geolocation ne support pas cette navigateur.");
+    }
+}
+
+function getEvenementPosition(position) {
+    var latitudeEvn = position.coords.latitude;
+    var longitudeEvn = position.coords.longitude;
+    $('#latitude_evn').val(latitudeEvn);
+    $('#longitude_evn').val(longitudeEvn);
+    $('.evenement-localisation-gps p').text('La position a été bien ajoutée');
+    $('.evenement-localisation-gps button').text('Ajoutée');
+}
+
+// upload evenement image 
+$("#create_evenement_container").on('click','#add_evenement_image',function(){
+    $('#image_evenement').val('');
+    $('#image_evenement').click();
+});
+
+$("#create_evenement_container").on('click','#image_evenement',function(e){
+    e.stopPropagation();
+});
+
+$("#create_evenement_container").on('change','#image_evenement',function () { 
+    $('#add_evenement_image_button').click();
+});
+
+// add image evenement
+$("#create_evenement_container").on('click','#add_evenement_image_button',function(){
+    var idEvn = $('#id_evenement').val();
+    var imgEvn = $('#image_evenement')[0].files[0];
+    var form_data = new FormData();
+    form_data.append('id_evn',idEvn);
+    form_data.append('image',imgEvn);
+    $.ajax({
+        url: 'upload-images-evenement.php', 
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('.create-evenement-options').hide();
+            $('.evenement-images-preview').show();
+            $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+        },
+        success: function (response) {
+            console.log(response);
+            $('.evenement-images-preview').append("<div class='evenement-image-preview' id='evenement_image_preview'><div id='evenement_delete_image_preview'><i class='fas fa-times'></i></div><img src='"+response+"'></div>");
+        },
+        complete: function(){
+            $('#loader_evenement_image').remove();
+        }
+    });
+});
+
+// remove evenement image preview
+$('#create_evenement_container').on('click','#evenement_delete_image_preview',function(){
+    var idEvn = $('#id_evenement').val();
+    var mediaUrl = $('#evenement_image_preview img').attr('src');
+    var fd = new FormData();
+    fd.append('id_evn',idEvn);
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-evenement-media.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#evenement_image_preview').remove();
+            $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('.evenement-images-preview').hide();
+                $('.create-evenement-options').show();
+            }
+        },
+        complete: function(){
+            $('#loader_evenement_image').remove();
+        }
+    });
+});
+
+// add video evenement
+$('#create_evenement_container').on('click','#add_evenement_video',function(){
+    $('#video_evenement').val('');
+    $('#video_evenement').click();
+});
+
+$('#create_evenement_container').on('click','#video_evenement',function(e){
+    e.stopPropagation();
+});
+
+$('#create_evenement_container').on('change','#video_evenement',function () { 
+    $('#add_evenement_video_button').click();
+});
+
+$('#create_evenement_container').on('click','#add_evenement_video_button',function(){
+    var idEvn = $('#id_evenement').val();
+    var videoEvn = $('#video_evenement')[0].files[0];
+    var fd = new FormData();
+    fd.append('id_evn',idEvn);
+    fd.append('video',videoEvn);
+    console.log('click');
+    $.ajax({
+        url: 'upload-video-evenement.php',
+        type: 'post',
+        data: fd,
+        dataType: 'json',
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('.create-evenement-options').hide();
+            $('.evenement-images-preview').show();
+            $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+        },
+        success: function(response){
+            $('.evenement-images-preview').append("<div class='evenement-video-preview' id='evenement_video_preview'><div id='evenement_delete_video_preview'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+        },
+        complete: function(){
+            $('#loader_evenement_image').remove();
+        }
+    });
+});
+
+// remove video evenement
+$('#create_evenement_container').on('click','#evenement_delete_video_preview',function(){
+    var idEvn = $('#id_evenement').val();
+    var mediaUrl = $('#evenement_video_preview video source').attr('src');
+    var fd = new FormData();
+    fd.append('id_evn',idEvn);
+    fd.append('media_url',mediaUrl);
+    $.ajax({
+        url: 'delete-evenement-media.php',
+        type: 'post',
+        data: fd,
+        contentType: false,
+        processData: false,
+        beforeSend: function(){
+            $('#evenement_video_preview').remove();
+            $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+        },
+        success: function(response){
+            if(response != 0){
+                $('.evenement-images-preview').hide();
+                $('.create-evenement-options').show();
+            }
+        },
+        complete: function(){
+            $('#loader_evenement_image').remove();
+        }
+    });
+});
+
+// valide create evenement
+$('#create_evenement_container').on('click','#final_create_evenement_button',function(){
+    var idEvn = $('#id_evenement').val();
+    var titreEvn = $('#titre_evn').val();
+    var typeEvn = $('#type_evn').val();
+    var descriptionEvn = $('#description_evn').val();
+    var dateDebutEvn = $('#date_debut_evn').val();
+    var dateFinEvn = $('#date_debut_evn').val();
+    var nombrePersonneEvn = $('#nombre_personne_evn').val();
+    var convierAmisEvn = $('#convier_amis_evn').val();
+    var langueEvn = $('#langue_evn').val();
+    var confidentialiteEvn = $('#confidentialite_evn').val();
+    var tarifEvn = $('#tarif_evn').val();
+    var villeEvn = $('#ville_evn').val();
+    var communeEvn = $('#commune_evn').val();
+    var adresseEvn = $('#adresse_evn').val();
+    var latitudeEvn = $('#latitude_evn').val();
+    var longitudeEvn = $('#longitude_evn').val();
+    var fd = new FormData();
+    fd.append('id_evn', idEvn);
+    fd.append('titre_evn', titreEvn);
+    fd.append('type_evn', typeEvn);
+    fd.append('description_evn', descriptionEvn);
+    fd.append('date_debut_evn', dateDebutEvn);
+    fd.append('date_fin_evn', dateFinEvn);
+    fd.append('nombre_personne_evn', nombrePersonneEvn);
+    fd.append('convier_amis_evn', convierAmisEvn);
+    fd.append('langue_evn', langueEvn);
+    fd.append('confidentialite_evn', confidentialiteEvn);
+    fd.append('tarif_evn', tarifEvn);
+    fd.append('ville_evn', villeEvn);
+    fd.append('commune_evn', communeEvn);
+    fd.append('adresse_evn', adresseEvn);
+    fd.append('latitude_evn', latitudeEvn);
+    fd.append('longitude_evn', longitudeEvn);
+    if (titreEvn == '') {
+        $('#titre_evn').css('border','2px solid red');
+    }
+    else if (typeEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','2px solid red');
+    }
+    else if (descriptionEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','2px solid red');
+    }
+    else if (dateDebutEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','2px solid red');
+    }
+    else if (dateFinEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','');
+        $('#date_fin_evn').css('border','2px solid red');
+    }
+    else if (confidentialiteEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','');
+        $('#date_fin_evn').css('border','');
+        $('#confidentialite_evn').css('border','2px solid red');
+    }
+    else if (villeEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','');
+        $('#date_fin_evn').css('border','');
+        $('#confidentialite_evn').css('border','');
+        $('#ville_evn').css('border','2px solid red');
+    }
+    else if (communeEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','');
+        $('#date_fin_evn').css('border','');
+        $('#confidentialite_evn').css('border','');
+        $('#ville_evn').css('border','');
+        $('#commune_evn').css('border','2px solid red');
+    }
+    else if (adresseEvn == '') {
+        $('#titre_evn').css('border','');
+        $('#type_evn').css('border','');
+        $('#description_evn').css('border','');
+        $('#date_debut_evn').css('border','');
+        $('#date_fin_evn').css('border','');
+        $('#confidentialite_evn').css('border','');
+        $('#ville_evn').css('border','');
+        $('#commune_evn').css('border','');
+        $('#adresse_evn').css('border','2px solid red');
     }
     else{
-        $('.create-promotion-product-options').css('border','');
-        var fd = new FormData();
-        fd.append('id_prm',idPrm);
-        fd.append('titre_prm',titrePrm);
-        fd.append('categorie_prm',categoriePrm);
-        fd.append('sous_categorie_prm',sousCategoriePrm);
-        fd.append('lieu_prm',lieuPrm);
-        fd.append('adresse_prm',adressePrm);
-        fd.append('latitude_prm',latitudePrm);
-        fd.append('longitude_prm',longitudePrm);
-        fd.append('date_debut_prm',dateDebutPrm);
-        fd.append('date_fin_prm',dateFinPrm);
-        fd.append('description_prm',descriptionPrm);
-
-        fd.append('id_prd',idPrd);
-        fd.append('nom_prd',namePrd);
-        fd.append('reference_prd',referencePrd);
-        fd.append('quantite_prd',quantityPrd);
-        fd.append('prix_prd',pricePrd);
-        fd.append('fonctionalites_prd',fonctionalityPrd);
-        fd.append('caracteristiques_prd',caracteristicPrd);
-        fd.append('avantages_prd',avantagePrd);
-        fd.append('description_prd',descriptionPrd);
         $.ajax({
-            url: 'create-promotion.php',
+            url: 'create-evenement.php',
             type: 'post',
             data: fd,
             contentType: false,
             processData: false,
             beforeSend: function(){
-                $(this).css('opacity','.8');
-                $("#loader_create_promotion_button").show();
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_bottom_button").show();
+                }
+                else{
+                    $("#loader_create_publication_top_button").show();
+                }
             },
             success: function(response){
+                console.log(response);
                 if(response != 0){
-                    console.log(response);
+                    if (windowWidth > 768) {
+                        $("#create_evenement").hide();
+                        $("body").removeClass('body-after');
+                    }
+                    else{
+                        $("#create_evenement").css('transform','');
+                    }
                 }
             },
             complete: function(){
-                $(this).css('opacity','');
-                $("#loader_create_promotion_button").hide();
-                $("#create_promotion").hide();
-                $("body").removeClass('body-after');
-                $('#create_promotion_container').css({'top':'','transform':''});
-                
-                $('.promotion-images-preview').hide();
-                $('.create-promotion-options').show();
-                $('#promotion_image_preview').remove();
-                $('#promotion_video_preview').remove();
-                $('.promotion-product-images-preview').empty();
-                
-                $('#id_promotion').val("")
-                $('#titre_prm').val("");
-                $('#categorie_prm').val("");
-                $('#sous_categorie_prm').val();
-                $('#lieu_prm').val(""); 
-                $('#adresse_prm').val("");
-                $('#date_debut_prm').val("");
-                $('#date_fin_prm').val("");
-                $('#description_prm').val("");
-                
-                $('#id_promotion_product').val("");
-                $('#name_prm_prd').val("");
-                $('#reference_prm_prd').val("");
-                $('#quantity_prm_prd').val("0");
-                $('#price_prm_prd').val("0");
-                $('#fonctionality_prm_prd').val("");
-                $('#caracteristic_prm_prd').val("");
-                $('#avantage_prm_prd').val("");
-                $('#description_prm_prd').val("");
+                if (windowWidth > 768) {
+                    $("#loader_create_publication_bottom_button").hide();
+                }
+                else{
+                    $("#loader_create_publication_top_button").hide();
+                }
             }
         });
     }
-});
+})

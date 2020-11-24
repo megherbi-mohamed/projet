@@ -18,7 +18,6 @@ $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user =
 $user_session_query->execute();
 $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
 ?>
-
 <div class="user-publication" id="user_publication_<?php echo $id ?>">
     <div class="user-publication-top">
         <div class="user-publication-top-left">

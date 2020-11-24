@@ -14,10 +14,10 @@ $media_url = htmlspecialchars($_POST['media_url']);
 $prix_prd = htmlspecialchars($_POST['prix_prd']);
 $etat = 1;
 
-$get_product_promotion_query = $conn->prepare("SELECT id_prd_prm FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq");
+$get_product_promotion_query = $conn->prepare("SELECT id_prd_prm FROM produit_boutique_promotion WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND id_prm = $id_prm");
 $get_product_promotion_query->execute();
 if ($get_product_promotion_query->rowCount() > 0) {
-    $update_product_promotion_query = $conn->prepare("UPDATE produit_boutique_promotion SET media_url = '$media_url', prix_prm_prd = '$prix_prd' WHERE id_btq_prd = $id_prd AND id_btq = $id_btq");
+    $update_product_promotion_query = $conn->prepare("UPDATE produit_boutique_promotion SET media_url = '$media_url', prix_prm_prd = '$prix_prd' WHERE id_btq_prd = $id_prd AND id_btq = $id_btq AND id_prm = $id_prm");
     if ($update_product_promotion_query->execute()) {
         echo 1;
     }

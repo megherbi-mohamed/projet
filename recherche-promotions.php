@@ -8,7 +8,7 @@ $get_session_idSender_query->execute();
 $get_session_idSender_row = $get_session_idSender_query->fetch(PDO::FETCH_ASSOC);
 $id_user = $get_session_idSender_row['id_user'];
 $text = htmlspecialchars($_POST['text']);
-$get_all_promotions_query = $conn->prepare("SELECT * FROM promotions WHERE titre_prm LIKE '%$text%' OR categorie_prm LIKE '%$text%' OR sous_categorie_prm LIKE '%$text%' OR lieu_prm LIKE '%$text%' OR adresse_prm LIKE '%$text%' ORDER BY id_prm DESC");
+$get_all_promotions_query = $conn->prepare("SELECT * FROM promotions WHERE titre_prm LIKE '%$text%' OR categorie_prm LIKE '%$text%' OR sous_categorie_prm LIKE '%$text%' OR ville_prm LIKE '%$text%' OR commune_prm LIKE '%$text%' OR adresse_prm LIKE '%$text%' ORDER BY id_prm DESC");
 $get_all_promotions_query->execute();
 $i = 0;
 if ($get_all_promotions_query->rowCount() > 0) {
@@ -57,7 +57,7 @@ while ($get_all_promotions_row = $get_all_promotions_query->fetch(PDO::FETCH_ASS
             <p><?php echo $get_all_promotions_row['description_prm'] ?></p>
             <h4>Commencer le : <span><?php echo $ddp.' à '.$tdp.'h' ?></span>
             , fin le : <span><?php echo $dfp.' à '.$tfp.'h' ?></span></h4>
-            <p><?php echo $get_all_promotions_row['lieu_prm'] ?>, Algérie</p>
+            <p><?php echo $get_all_promotions_row['commune_prm'].', '.$get_all_promotions_row['commune_prm'] ?></p>
         </div>
         <div class="promotion-overview-right-bottom">
             <input type="hidden" id="latitude_prm_<?php echo $i ?>" value="<?php echo $get_all_promotions_row['latitude_prm'] ?>">

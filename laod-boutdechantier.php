@@ -30,14 +30,14 @@ $get_product_media_query = $conn->prepare("SELECT * FROM bt_produits_media WHERE
 $get_product_media_query->execute();
 $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
 ?>
-    <div class="bt-product">
-        <div class="bt-product-img">
-            <img src="<?php echo $get_product_media_row['media_url'] ?>" alt="">
-        </div>
-        <div class="bt-product-description">
-            <p><?php echo $get_product_row['lieu_prd'] ?></p>
-            <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
-        </div>
+<div class="bt-product">
+    <div class="bt-product-img">
+        <img src="<?php echo $get_product_media_row['media_url'] ?>" alt="">
     </div>
+    <div class="bt-product-description">
+        <p><?php echo $get_product_row['commune_prd'] ?></p>
+        <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
+    </div>
+</div>
 <?php } ?>
 </div>

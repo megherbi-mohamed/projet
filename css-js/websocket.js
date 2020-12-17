@@ -1,9 +1,3 @@
-// var websocket = false;
-// var js_flood = 0;
-// var status_websocket = 0;
-// $(document).ready(function() {
-//     start(websocket_server);
-// });
 function waitForSocketConnection(socket, callback){
     setTimeout(
         function () {
@@ -156,45 +150,6 @@ function start(websocketServerLocation){
         }
     });
 
-    // $('#crt_pubt_btn_resp').click(function(){
-    //         var typeNotification = 'publication';
-    //         var fd = new FormData();
-    //         var lieuPub = $('#publication_location_text').val();
-    //         fd.append('lieu_pub',lieuPub);
-    //         var idPub = $('#id_publication').val();
-    //         fd.append('id_pub',idPub);
-    //         var descriptionPub = $('#publication_description').val();
-    //         fd.append('description_pub',descriptionPub);
-    //         var idUser = $('#id_session_porfile').val();
-    //         $.ajax({
-    //             url: 'create-publication.php',
-    //             type: 'post',
-    //             data: fd,
-    //             contentType: false,
-    //             processData: false,
-    //             success: function(response){
-    //                 if(response != 0){
-    //                     if ( js_flood == 0 ) {
-    //                         var msg = {
-    //                             typeNotification: typeNotification,
-    //                             uid: uid
-    //                         };
-    //                         websocket.send(JSON.stringify(msg));
-    //                         flood_js();
-    //                     } else {
-    //                         console.log('error');
-    //                     }
-    //                     hideCreatePublication();
-    //                     setTimeout(() => {
-    //                         $('.publication-images-preview div').remove();
-    //                         $('.publication-video-preview div').remove();
-    //                         window.location.href = "utilisateur/"+idUser;
-    //                     }, 400);
-    //                 }
-    //             }
-    //         });
-    // });
-
     // like publication notification
     $(document).on('click','[id^="like_pub_button_"]',function(){
         var id = $(this).attr("id").split("_")[3];
@@ -234,18 +189,116 @@ function start(websocketServerLocation){
 
     // commentaire publication notification
     $(document).on('keypress','[id^="commentaire_text_"]',function(event) {
+        var commentaireText = $(this).val();
         if (event.which == 13) {
-            var id = $(this).attr("id").split("_")[2];
+            if (commentaireText !== '') {
+                var id = $(this).attr("id").split("_")[2];
+                var typeNotification = 'commentaire';
+                var fd = new FormData();
+                var to_id = $(document).find('#id_user').val();
+                fd.append('id_recever_ntf',to_id);
+                var idPub = $(document).find('#id_pub_'+id).val();
+                fd.append('id_pub',idPub);
+                fd.append('commentaire_text',commentaireText);
+                var nomUser = $('#commentaire_nom_user_'+id).val();
+                var imgUser = $('#commentaire_img_user_'+id).val();
+                $.ajax({
+                    url: 'comment-publication.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        if(response != 0){
+                            $('[id^="commentaire_text_"]').val('');
+                            $('[id^="commentaire_text_"]').blur();
+                            if (windowWidth > 768) {
+                                $('#user_publication_bottom_preview_'+id).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+                            }
+                            if ( js_flood == 0 ) {
+                                var msg = {
+                                    typeNotification: typeNotification,
+                                    commentaire: commentaireText,
+                                    imgUser: imgUser,
+                                    nomUser: nomUser,
+                                    uid: uid,
+                                    to_id: to_id,
+                                    idPub: idPub
+                                };
+                                websocket.send(JSON.stringify(msg));
+                                flood_js();
+                            } else {
+                                console.log('error');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    });
+
+    // // commentaire publication notification
+    // $(document).on('keypress','#send_comment_button',function(event) {
+    //     var commentaireText = $('#commentaire_pub_text').val();
+    //     if (event.which == 13) {
+    //         if (commentaireText !== '') {
+    //             var id = $(this).attr("id").split("_")[2];
+    //             var typeNotification = 'commentaire';
+    //             var fd = new FormData();
+    //             var to_id = $(document).find('#id_user').val();
+    //             fd.append('id_recever_ntf',to_id);
+    //             var idPub = $(document).find('#id_pub').val();
+    //             fd.append('id_pub',idPub);
+    //             fd.append('commentaire_text',commentaireText);
+    //             var nomUser = $('#commentaire_nom_user').val();
+    //             var imgUser = $('#commentaire_img_user').val();
+    //             $.ajax({
+    //                 url: 'comment-publication.php',
+    //                 type: 'post',
+    //                 data: fd,
+    //                 contentType: false,
+    //                 processData: false,
+    //                 success: function(response){
+    //                     if(response != 0){
+    //                         $('[id^="commentaire_pub_text"]').val('');
+    //                         $('[id^="commentaire_pub_text"]').blur();
+    //                         if (windowWidth > 768) {
+    //                             $('#user_publication_bottom_preview_'+id).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+    //                         }
+    //                         if ( js_flood == 0 ) {
+    //                             var msg = {
+    //                                 typeNotification: typeNotification,
+    //                                 commentaire: commentaireText,
+    //                                 imgUser: imgUser,
+    //                                 nomUser: nomUser,
+    //                                 uid: uid,
+    //                                 to_id: to_id,
+    //                                 idPub: idPub
+    //                             };
+    //                             websocket.send(JSON.stringify(msg));
+    //                             flood_js();
+    //                         } else {
+    //                             console.log('error');
+    //                         }
+    //                     }
+    //                 }
+    //             });
+    //         }
+    //     }
+    // });
+
+    $('#send_comment_button').click(function(event) {
+        var commentaireText = $('#commentaire_pub_text').val();
+        if (commentaireText !== '') {
             var typeNotification = 'commentaire';
             var fd = new FormData();
             var to_id = $(document).find('#id_user').val();
             fd.append('id_recever_ntf',to_id);
-            var idPub = $(document).find('#id_pub_'+id).val();
+            var idPub = $(document).find('#id_pub').val();
             fd.append('id_pub',idPub);
-            var commentaireText = $(this).val();
             fd.append('commentaire_text',commentaireText);
-            var nomUser = $('#commentaire_nom_user_'+id).val();
-            var imgUser = $('#commentaire_img_user_'+id).val();
+            var nomUser = $('#commentaire_nom_user').val();
+            var imgUser = $('#commentaire_img_user').val();
             $.ajax({
                 url: 'comment-publication.php',
                 type: 'post',
@@ -254,10 +307,10 @@ function start(websocketServerLocation){
                 processData: false,
                 success: function(response){
                     if(response != 0){
-                        $('[id^="commentaire_text_"]').val('');
-                        $('[id^="commentaire_text_"]').blur();
-                        if (windowWidth > 768) {
-                            $('#user_publication_bottom_preview_'+id).prepend("<img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div>"); 
+                        $('#commentaire_pub_text').val('');
+                        $('#commentaire_pub_text').blur();
+                        if (windowWidth < 768) {
+                            $('.display-user-publications-comments-container').prepend("<div class='publicaiton-comment'><img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div></div>"); 
                         }
                         if ( js_flood == 0 ) {
                             var msg = {
@@ -278,51 +331,6 @@ function start(websocketServerLocation){
                 }
             });
         }
-    });
-
-    $('#send_comment_button').click(function(event) {
-        console.log('click');
-        var typeNotification = 'commentaire';
-        var fd = new FormData();
-        var to_id = $(document).find('#id_user').val();
-        fd.append('id_recever_ntf',to_id);
-        var idPub = $(document).find('#id_pub').val();
-        fd.append('id_pub',idPub);
-        var commentaireText = $('#commentaire_pub_text').val();
-        fd.append('commentaire_text',commentaireText);
-        var nomUser = $('#commentaire_nom_user').val();
-        var imgUser = $('#commentaire_img_user').val();
-        $.ajax({
-            url: 'comment-publication.php',
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                    $('#commentaire_pub_text').val('');
-                    $('#commentaire_pub_text').blur();
-                    if (windowWidth < 768) {
-                        $('.display-user-publications-comments-container').prepend("<div class='publicaiton-comment'><img src='./"+imgUser+"' alt=''><div><h4>"+nomUser+"</h4><p>"+commentaireText+"</p></div></div>"); 
-                    }
-                    if ( js_flood == 0 ) {
-                        var msg = {
-                            typeNotification: typeNotification,
-                            commentaire: commentaireText,
-                            imgUser: imgUser,
-                            nomUser: nomUser,
-                            uid: uid,
-                            to_id: to_id,
-                            idPub: idPub
-                        };
-                        websocket.send(JSON.stringify(msg));
-                        flood_js();
-                    } else {
-                        console.log('error');
-                    }
-                }
-            }
-        });
     });
 
     // follow user notification
@@ -676,6 +684,24 @@ function start(websocketServerLocation){
             });
         }
     });
+
+    function updateReceverMessage(userId,senderId){
+        var fd = new FormData();
+        fd.append('id_user',userId);
+        fd.append('id_sender',senderId);
+        $.ajax({
+            url: 'update-messagerie-recever.php',
+            type: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
+            success: function(response){
+                if(response != 0){
+
+                }
+            }
+        });
+    }
 
     websocket.onmessage = function(ev) {
         var msg = JSON.parse(ev.data); 

@@ -146,7 +146,7 @@ if ($get_prm_prd_query->execute()) {
             <div class="promotion-product-images-preview-container">
                 <div class="promotion-product-images-preview">
                     <?php
-                    $get_product_images_query = $conn->prepare("SELECT * FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = $id_prd AND media_type = 'i'");
+                    $get_product_images_query = $conn->prepare("SELECT media_url FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = $id_prd AND media_type = 'i'");
                     $get_product_images_query->execute();
                     $i = 0;
                     while ($get_product_images_row = $get_product_images_query->fetch(PDO::FETCH_ASSOC)){
@@ -164,7 +164,7 @@ if ($get_prm_prd_query->execute()) {
             <div class="promotion-product-video-preview-container">
                 <div class="promotion-product-video-preview">
                     <?php
-                    $get_product_video_query = $conn->prepare("SELECT * FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = $id_prd AND media_type = 'v'");
+                    $get_product_video_query = $conn->prepare("SELECT media_url FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = $id_prd AND media_type = 'v'");
                     $get_product_video_query->execute();
                     if ($get_product_video_query->rowCount() > 0) {
                         $get_product_video_row = $get_product_video_query->fetch(PDO::FETCH_ASSOC);

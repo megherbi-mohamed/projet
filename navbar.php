@@ -1,68 +1,71 @@
 <?php 
-    $indexActive = ''; $indexRespActive = '';
-    $promotionsActive = ''; $promotionsRespActive = '';
-    $evenementsActive = ''; $evenementsRespActive = '';
-    $boutdechantierActive = ''; $boutdechantierRespActive = '';
-    $utilisateurActive = '';
-    // $recrutementsActive = '';
+$indexActive = ''; $indexRespActive = ''; $indexActiveResponsive = '';
+$promotionsActive = ''; $promotionsRespActive = ''; $promotionsActiveResponsive = '';
+$evenementsActive = ''; $evenementsRespActive = ''; $evenementsActiveResponsive = '';
+$boutdechantierActive = ''; $boutdechantierRespActive = ''; $boutdechantierActiveResponsive = '';
+$utilisateurActive = '';
+// $recrutementsActive = '';
+if ($_SERVER['REQUEST_URI'] == '/projet/index') {
+    $indexActive = 'active';
+    $indexActiveResponsive = 'active-navbar-icon';
+    $indexRespActive = 'hide-menu-left-list-active';
+}
+elseif ($_SERVER['REQUEST_URI'] == '/projet/promotions') {
+    $promotionsActive = 'active';
+    $promotionsActiveResponsive = 'active-navbar-icon';
+    $promotionsRespActive = 'hide-menu-left-list-active';
+}
+elseif ($_SERVER['REQUEST_URI'] == '/projet/evenements') {
+    $evenementsActive = 'active';
+    $evenementsActiveResponsive = 'active-navbar-icon';
+    $evenementsRespActive = 'hide-menu-left-list-active';
+}
+elseif ($_SERVER['REQUEST_URI'] == '/projet/boutdechantier') {
+    $boutdechantierActive = 'active';
+    $boutdechantierActiveResponsive = 'active-navbar-icon';
+    $boutdechantierRespActive = 'hide-menu-left-list-active';
+}
+// elseif ($_SERVER['REQUEST_URI'] == '/projet/recrutements.php'|| $_SERVER['REQUEST_URI'] == '/projet/offre.php') {
+//     $recrutementsActive = 'active';
+// }
+elseif ($_SERVER['REQUEST_URI'] == '/projet/offre.php') {
+    $offreActive = 'active';
+}
+elseif ($_SERVER['REQUEST_URI'] == '/projet/utilisateur') {
+    $utilisateurActive = 'profile-image-desktop-active';
+}
 
-    if ($_SERVER['REQUEST_URI'] == '/projet/index') {
-        $indexActive = 'active';
-        $indexRespActive = 'hide-menu-left-list-active';
-    }
-    elseif ($_SERVER['REQUEST_URI'] == '/projet/promotions') {
-        $promotionsActive = 'active';
-        $promotionsRespActive = 'hide-menu-left-list-active';
-    }
-    elseif ($_SERVER['REQUEST_URI'] == '/projet/evenements') {
-        $evenementsActive = 'active';
-        $evenementsRespActive = 'hide-menu-left-list-active';
-    }
-    elseif ($_SERVER['REQUEST_URI'] == '/projet/boutdechantier') {
-        $boutdechantierActive = 'active';
-        $boutdechantierRespActive = 'hide-menu-left-list-active';
-    }
-    // elseif ($_SERVER['REQUEST_URI'] == '/projet/recrutements.php'|| $_SERVER['REQUEST_URI'] == '/projet/offre.php') {
-    //     $recrutementsActive = 'active';
-    // }
-    elseif ($_SERVER['REQUEST_URI'] == '/projet/offre.php') {
-        $offreActive = 'active';
-    }
-    elseif ($_SERVER['REQUEST_URI'] == '/projet/utilisateur') {
-        $utilisateurActive = 'profile-image-desktop-active';
+if (isset($_SESSION['user'])) {
+
+    $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = '$id_user' AND etat_sender_msg = '$id_user' GROUP BY id_recever");    
+    $num_msg_query->execute();
+    $num_msg_row = $num_msg_query->rowCount();
+    $show_message = '';
+    if ($num_msg_row > 0) {
+        $show_message = 'style="display:block"';
     }
 
-    if (isset($_SESSION['user'])) {
+    $id = ','.$id_user.',';
+    $num_ntf1_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE (type_ntf = 'publication' OR type_ntf = 'produit') AND vu_ntf NOT LIKE '%$id%' AND id_sender_ntf IN (SELECT id_abn_user AS id FROM abonnes WHERE id_user = $id_user) AND (type_ntf = 'publication' OR type_ntf = 'produit') AND id_recever_ntf IN (SELECT id_abn_user AS id FROM abonnes WHERE id_user = $id_user)");    
+    $num_ntf1_query->execute();
 
-        $num_msg_query = $conn->prepare("SELECT id_msg FROM messages WHERE id_sender = '$id_user' AND etat_sender_msg = '$id_user' GROUP BY id_recever");    
-        $num_msg_query->execute();
-        $num_msg_row = $num_msg_query->rowCount();
-        $show_message = '';
-        if ($num_msg_row > 0) {
-            $show_message = 'style="display:block"';
-        }
+    $num_ntf2_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE id_recever_ntf = $id_user AND id_sender_ntf != $id_user AND etat_ntf = 1");    
+    $num_ntf2_query->execute();
 
-        $id = ','.$id_user.',';
-        $num_ntf1_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE (type_ntf = 'publication' OR type_ntf = 'produit') AND vu_ntf NOT LIKE '%$id%' AND id_sender_ntf IN (SELECT id_abn_user AS id FROM abonnes WHERE id_user = $id_user) AND (type_ntf = 'publication' OR type_ntf = 'produit') AND id_recever_ntf IN (SELECT id_abn_user AS id FROM abonnes WHERE id_user = $id_user)");    
-        $num_ntf1_query->execute();
-
-        $num_ntf2_query = $conn->prepare("SELECT id_ntf FROM publications_notifications WHERE id_recever_ntf = $id_user AND id_sender_ntf != $id_user AND etat_ntf = 1");    
-        $num_ntf2_query->execute();
-
-        $num_ntf_row = $num_ntf1_query->rowCount() + $num_ntf2_query->rowCount();
-        $show_notification = '';
-        if ($num_ntf_row > 0) {
-            $show_notification = 'style="display:block"';
-        }
-
-        $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = '{$row["id_user"]}'");    
-        $num_prd_query->execute();
-        $num_prd = $num_prd_query->rowCount();
-        $etat_panier = '';
-        if ($num_prd > 0) {
-            $etat_panier = 'active-panier-num';
-        }else{ $etat_panier = ''; }
+    $num_ntf_row = $num_ntf1_query->rowCount() + $num_ntf2_query->rowCount();
+    $show_notification = '';
+    if ($num_ntf_row > 0) {
+        $show_notification = 'style="display:block"';
     }
+
+    $num_prd_query = $conn->prepare("SELECT id FROM produit_panier WHERE id_user = '{$row["id_user"]}'");    
+    $num_prd_query->execute();
+    $num_prd = $num_prd_query->rowCount();
+    $etat_panier = '';
+    if ($num_prd > 0) {
+        $etat_panier = 'active-panier-num';
+    }else{ $etat_panier = ''; }
+}
 ?>
 <?php $session='1'; if(!isset($_SESSION['user'])){$session='0';}?> 
 <input type="hidden" id="vs" value="<?php echo $session;?>">
@@ -73,13 +76,13 @@
             <h4>Nhannik</h4>
         </div>
         <div class="hide-menu-left-list <?php echo $indexRespActive ?>" id="home_button"><div><i class="fas fa-home"></i></div><p>acceuil</p></div>
-        <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div>
+        <!-- <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div> -->
         <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-store"></i></div><p>bout de chantier</p></div>
-        <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div>
-        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-ad"></i></div><p>promotions</p></div>
+        <!-- <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div> -->
+        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-tag"></i></div><p>promotions</p></div>
         <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
         <div class="hide-menu-footer">
-            <h4>Nhanik &copy; 2020</h4>
+            <h4>Nhannik &copy; 2020</h4>
         </div>
     </div>
 </div>
@@ -100,9 +103,39 @@
                 <div id="search_bar_button">
                     <i class="fas fa-search"></i>
                 </div>
-                <div id="parameters_button">
-                    <i class="fas fa-bars"></i>
+                <?php 
+                $numUrlPart = substr_count($_SERVER['REQUEST_URI'],'/');
+                if ($numUrlPart == 2) {
+                    $url = explode('/', $_SERVER['REQUEST_URI'], 2)[1];
+                }
+                else if ($numUrlPart >= 3) {
+                    $url = 'projet/'.explode('/', $_SERVER['REQUEST_URI'], -1)[2];
+                }
+                if ($url == 'projet/profile-parametres') { ?>
+                <div id="parameters_profile_button">
+                    <i class="fas fa-cog"></i>
                 </div>
+                <?php } else if ($url == 'projet/evenements') { ?>
+                <div id="parameters_evenements_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/promotions') { ?>
+                <div id="parameters_promotions_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/gerer-boutique') { ?>
+                <div id="parameters_gererboutique_button">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <?php } else if ($url == 'projet/boutdechantier') { ?>
+                <div id="parameters_boutdechantier_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/recherche') {?>
+                <div id="parameters_recherche_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } ?>
             </div>
         </div>
         <div class="navbar-middle">
@@ -113,10 +146,10 @@
             <!-- <a class="<?php echo $recrutementsActive; ?>" href="./recrutements.php">recrutement</a> -->
         </div>
         <div class="navbar-middle-responsive">
-            <div id="go_home"><i class="fas fa-home"></i></div>
-            <div id="go_boutdechantier"><i class="fas fa-store"></i></div>
-            <div id="go_promotions"><i class="fas fa-ad"></i></div>
-            <div id="go_evenements"><i class="far fa-calendar-check"></i></a></div>
+            <a href="index"><div  class="<?php echo $indexActiveResponsive; ?>" id="go_home"><i class="fas fa-home"></i></div></a>
+            <a href="boutdechantier"><div class="<?php echo $boutdechantierActiveResponsive; ?>" id="go_boutdechantier"><i class="fas fa-store"></i></div></a>
+            <a href="promotions"><div class="<?php echo $promotionsActiveResponsive; ?>" id="go_promotions"><i class="fas fa-tag"></i></div></a>
+            <a href="evenements"><div class="<?php echo $evenementsActiveResponsive; ?>" id="go_evenements"><i class="far fa-calendar-check"></i></div></a>
         </div>
         <div class="navbar-right">
             <div class="profile-image-desktop <?php echo $utilisateurActive ?>">
@@ -134,213 +167,137 @@
     </div>
 </div>
 <div class="categorie-professionnel">
-    <div class="categorie-professionnel-top">
-        <div id="cancel_search_bar">
-            <i class="fas fa-arrow-left"></i>
+    <?php if ($url == 'projet/recherche' || $url == 'projet/gerer-boutique' || $url == 'projet/boutique' || $url == 'projet/utilisateur' || $url == 'projet/index') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_tout" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_tout">
+    <?php } ?> 
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_tout">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_tout_text" placeholder="Recherche dans toutes les categories" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_recherche_text" class="center"></div>
+            </div>
         </div>
-        <div class="categorie-search-bar-rspsv">
-            <input type="text" id="categorie_search" placeholder="Saisissez votre recherche" autocomplete="off">
-            <i class="fas fa-search"></i>
-            <button style="display:none" id="categorie_search_btn"></button>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_tout_container"></div>
+            <div id="loader_search_all" class="center"></div>
         </div>
     </div>
-    <div class="categorie-professionnel-bottom">
-        <div class="categorie-professionnel-bottom-top">
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/bureau-icon.png" alt="">
-                    <p>Services</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'services'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>  
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/service-icon.png" alt="">
-                    <p>Artisants</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_professionnel">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/transport-icon.png" alt="">
-                    <p>Transports</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/service-icon.png" alt="">
-                    <p>Locations</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/entreprise-icon.png" alt="">
-                    <p>Entreprises</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/detaillon-icon.png" alt="">
-                    <p>Detaillons</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/grossiste-icon.png" alt="">
-                    <p>Grossistes</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/fabriquant-icon.png" alt="">
-                    <p>Fabriquants</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/importateur-icon.png" alt="">
-                    <p>Import - Export</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_professionnel_text" placeholder="Rechercher - professionnels ou entreprises" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_professionnel_recherche_text" class="center"></div>
             </div>
         </div>
-        <div class="categorie-professionnel-bottom-bottom"></div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_professionnel_container"></div>
+            <div id="loader_search_professionnel" class="center"></div>
+        </div>
+    </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutique">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_boutique_text" placeholder="Rechercher - boutiques" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_boutique_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_boutique_container"></div>
+            <div id="loader_search_boutique" class="center"></div>
+        </div>
+    </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_product">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_product_text" placeholder="Rechercher - produits boutique" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_product_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_product_container"></div>
+            <div id="loader_search_product" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/boutdechantier') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutdechantier" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutdechantier">
+    <?php } ?> 
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_boutdechantier_text" placeholder="Rechercher - produits bout de chantier" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_boutdechantier_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_boutdechantier_container"></div>
+            <div id="loader_search_boutdechantier" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/promotions') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_promotion" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_promotion">
+    <?php } ?>
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_promotion_text" placeholder="Recherchs - promotions" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_promotion_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_promotion_container"></div>
+            <div id="loader_search_promotion" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/evenements') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_evenement" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_evenement">
+    <?php } ?>
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_evenement_text" placeholder="Rechercher - evenements" autocomplete="off">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_evenement_container"></div>
+            <div id="loader_search_evenement" class="center"></div>
+        </div>
     </div>
 </div>
 <div class="user-list-dropdown">
-    <div class="user-list-dropdown-top">
-        <div id="cancel_user_list_dropdown">
-            <i class="fas fa-arrow-left"></i>
-        </div>
-        <h4>Profile</h4>
-    </div>
-    <div class="user-profile" id="display_user_profile">
-        <img src="<?php if($row['img_user']==''){echo'./images/profile.png';}else{echo './'.$row['img_user'];}?>" alt="profile user">
-        <div>
-            <p><?php echo $row['nom_user']; ?></p>
-            <p>Voir votre profile</p>
-        </div>
-    </div>
-    <hr>
-    <div class="user-menu-boutiques">
-        <?php
-        $btq_menu_query = $conn->prepare("SELECT * FROM boutiques WHERE id_createur = $id_user");
-        $btq_menu_query->execute();
-        $i = 0;
-        while($btq_menu_row = $btq_menu_query->fetch(PDO::FETCH_ASSOC)){
-        $i++;
-        ?>
-        <div id="go_gerer_boutique_<?php echo $i ?>">
-            <?php if ($btq_menu_row['logo_btq'] != '') { ?>
-                <img src="./<?php echo $btq_menu_row['logo_btq'] ?>" alt="">
-            <?php }else if($btq_menu_row['logo_btq'] == ''){ ?>
-                <img src="./boutique-logo/logo.png" alt="">
-            <?php } ?>
-            <p><?php echo $btq_menu_row['nom_btq'] ?></p>
-            <input type="hidden" id="id_gb_<?php echo $i ?>" value="<?php echo $btq_menu_row['id_btq'] ?>">
-        </div>
-        <?php } ?>
-    </div>
-    <hr>
-    <div class="user-update-profile" id="display_parametres_profile">
-        <div>
-            <i class="fas fa-cog"></i>
-        </div>
-        <p>Paramètres du profile</p>
-    </div>
-    <div class="user-feedback">
-        <div>
-            <i class="fas fa-question-circle"></i>
-        </div>
-        <div>
-            <p>Poser vos questions</p>
-            <p>Aidez nous à ameliorer Nhannik</p>
-        </div>
-    </div>
-    <div class="user-logout">
-        <div>
-            <i class="fas fa-sign-out-alt"></i>
-        </div>
-        <p>Se déconnecter</p>
-    </div>
+    <div class="user-list-dropdown-container"></div>
+    <div id="loader_dropdown_list" class="center"></div>
 </div>
 <div class="user-list-messages">
     <div class="user-list-messages-top">
@@ -390,7 +347,7 @@
     </div>
     <div class="create-option" id="create_bt_prd_button">
         <div>
-            <i class="fas fa-tag"></i>
+            <i class="fas fa-store"></i>
         </div>
         <div>
             <p>Bout de chantier</p>
@@ -417,7 +374,7 @@
     </div> -->
     <div class="create-option" id="create_promotion_button">
         <div>
-            <i class="fas fa-ad"></i>
+            <i class="fas fa-tag"></i>
         </div>
         <div>
             <p>promotion</p>
@@ -447,153 +404,13 @@
 </div>
 <!-- create boutique -->
 <div class="create-publication" id="create_boutique">
-    <div class="create-publication-container">
-        <input type="hidden" id="id_boutique">
-        <div class="create-publication-top">
-            <div class="cancel-create-mobile" id="cancel_create_boutique_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Créer une Boutique!</h4>
-            <div class="cancel-create" id="cancel_create_boutique">
-                <i class="fas fa-times"></i>
-            </div>
-            <button type="button" id="create_boutique_button_resp">Créer</button>
-        </div>
-        <div class="create-publication-bottom create-boutique-bottom">
-            <div class="boutique-input">
-                <span class="nom-btq">Nom boutique *</span>
-                <input type="text" id="nom_boutique" autocomplete="off">
-            </div>
-            <div class="categories-boutique boutique-input">
-                <select id="categorie_boutique">
-                    <option value="">Categories</option>
-                    <option id="services" value="services">Services</option>
-                    <option id="artisants" value="artisants">Artisants</option>
-                    <option id="transports" value="transports">Transports</option>
-                    <option id="locations" value="locations">Locations</option>
-                    <option id="entreprises" value="entreprises">Entreprises</option>
-                    <option id="detaillons" value="detaillons">Detaillons</option>
-                    <option id="grossidtes" value="grossidtes">Grossistes</option>
-                    <option id="fabriquants" value="fabriquants">Fabriquants</option>
-                    <option id="import-export" value="import-export">Import-Export</option>
-                </select> 
-                <span class="categorie-btq">Categorie *</span>
-            </div>
-            <div class="sous-categorie-boutique boutique-input">
-                <select id="sous_categorie_boutique">
-                    <option value="">Professions</option>
-                </select>
-                <span class="sous-categori-btq">Profession *</span>
-            </div>
-            <div class="sous-categorie-autre boutique-input">
-                <input type="text" id="sous_categorie_boutique">
-                <span class="sous-categorie-btq">Profession *</span>
-            </div>
-            <div class="boutique-input">
-                <select id="ville_boutique">
-                    <option value="">Ville</option>
-                    <?php 
-                    $ville_query = $conn->prepare("SELECT * FROM villes");
-                    $ville_query->execute(); 
-                    while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
-                    <?php } ?>
-                </select>
-                <span class="ville-btq">Ville *</span>
-            </div>
-            <div class="commune-boutique boutique-input"> 
-                <select id="commune_boutique">
-                    <option value="">Commune</option>
-                </select>
-                <span class="commun-btq">Commune *</span>
-            </div>
-            <div class="boutique-input">
-                <input type="text" id="adresse_boutique" autocomplete="off"> 
-                <span class="adresse-btq">Adresse *</span>
-            </div>
-            <div class="boutique-input">
-                <input type="text" id="email_boutique" autocomplete="off">
-                <span class="email-btq">Email *</span>
-            </div>
-            <div class="boutique-input">
-                <input type="text" id="tlph_boutique" autocomplete="off">
-                <span class="tlph-btq">Téléphone *</span>
-            </div>
-            <button type="button" id="create_boutique_button">Créer maintenant</button>
-        </div>
-    </div>
-    <div id="loader_create_pub" class="center"></div>
+    <div class="create-publication-container" id="create_boutique_container"></div>
+    <div id="loader_create_boutique" class="center"></div>
 </div>
+<!-- create bt product -->
 <div class="create-publication" id="create_bt_product">
-    <div class="create-publication-container">
-        <input type="hidden" id="id_bt_prd">
-        <div class="create-publication-top">
-            <div class="cancel-create-mobile" id="cancel_create_bt_prd_resp">
-                <i class="fas fa-arrow-left"></i>
-            </div>
-            <h4>Créer une annconce!</h4>
-            <div class="cancel-create" id="cancel_create_bt_prd">
-                <i class="fas fa-times"></i>
-            </div>
-            <button id="create_bt_product_button_resp">Créer</button>
-        </div>
-        <div class="create-publication-bottom">
-            <div class="bt-product-input">
-                <input type="text" id="lieu_bt_prd">
-                <span class="lieu-bt-prd">Lieu *</span>
-            </div>
-            <div class="bt-prd-preview-location">
-                <?php 
-                $ville_query = $conn->prepare("SELECT * FROM villes");
-                $ville_query->execute(); 
-                while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <div id="bt_prd_location_item"><p><?php echo $ville_row['ville']; ?></p></div>
-                <?php } ?>    
-            </div>
-            <div class="bt-product-input">
-                <input type="text" id="name_bt_prd">
-                <span class="name-bt-prd">Titre *</span>
-            </div>
-            <div class="bt-product-input">
-                <input type="text" id="categorie_bt_prd">
-                <span class="categorie-bt-prd">Categorie</span>
-            </div>
-            <div class="bt-product-input">
-                <input type="text" id="description_bt_prd">
-                <span class="description-bt-prd">Description</span>
-            </div>
-            <div class="bt-product-input">
-                <input type="number" id="quantity_bt_prd" value="0">
-                <span class="quanntite-bt-prd">Quantite *</span>
-            </div>
-            <div class="bt-product-input">
-                <select id="type_bt_prd">
-                    <option value="payant">Payant</option>
-                    <option value="gratuit">Gratuit</option>
-                </select>
-                <span class="type-bt-prd">Type *</span>
-            </div>
-            <div class="bt-product-input">
-                <input type="text" step="000000.00" id="price_bt_prd" value="0">
-                <span class="price-bt-prd">Prix *</span>
-            </div>
-            <div class="bt-product-images-preview"></div>
-            <div class="create-product-options">
-                <P>Ajouter des photos</P>
-                <div id="add_bt_product_image">
-                    <i class="far fa-images"></i>
-                </div>
-            </div>
-            <form enctype="multipart/form-data">
-                <input type="file" id="image_bt_prd" name="images_prd[]" accept="image/*" multiple>
-                <input type="button" id="add_bt_product_image_button">
-            </form>
-            <button id="create_bt_product_button">Ajouter maintenant</button>
-        </div>
-        <!-- <div id="loader_load" class="center-load"></div> -->
-    </div>
+    <div class="create-publication-container" id="create_bt_product_container"></div>
+    <div id="loader_create_bt_product" class="center"></div>
 </div>
 <!-- create promotion -->
 <div class="create-publication" id="create_promotion">
@@ -668,47 +485,66 @@
         </div>
     </div>
 </div>
-<?php } else if (isset($_SESSION['btq'])) {
-$get_btq_auth_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = '{$_SESSION["btq"]}'");    
-$get_btq_auth_query->execute();
-$get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
-?>
+<div class="delete-hide-publication" id="delete_history">
+    <div class="delete-hide-publication-container" id="delete_history_container">
+        <input type="hidden" id="type_recherche">
+        <div class="delete-hide-publication-top">
+            <h4>Supprimer l'historiques ?</h4>
+            <div class="cancel-delete-hide-publication" id="cancel_delete_history">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+        <div class="delete-hide-publication-middle">
+            <p>Voulez vous vraiment Supprimer l'historiques ?</p>
+        </div>
+        <div class="delete-hide-publication-bottom">
+            <div></div>
+            <div></div>
+            <button id="cancel_delete_history_button">Annuler</button>
+            <button id="delete_history_button">Supprimer</button>
+        </div>
+    </div>
+</div>
+<?php } else if (isset($_SESSION['btq'])) { ?>
 <div class="navbar">
     <div class="navbar-container">
         <div class="navbar-left">
             <div class="logo-name">
                 <h4>Nhannik</h4>
             </div>
+            <div id="parameters_gererboutique_button">
+                <i class="fas fa-cog"></i>
+            </div>
         </div>
         <div class="navbar-middle"></div>
+        <div class="navbar-middle-responsive"></div>
         <div class="navbar-right">
             <div class="profile-btq-desktop">
-                <img src="<?php if($get_btq_row['logo_btq']==''){echo'./images/profile.png';}else{echo './'.$get_btq_row['logo_btq'];}?>" alt="btq_img">
-                <p style="color:#000;width:100px"><?php echo $get_btq_row['nom_btq']; ?></p>
+                <img src="<?php if($btq_inf_row['logo_btq']==''){echo'./images/profile.png';}else{echo './'.$btq_inf_row['logo_btq'];}?>" alt="btq_img">
+                <p style="color:#000;width:100px"><?php echo $btq_inf_row['nom_btq']; ?></p>
             </div>
             <div class="btq-deconnexion-button" id="btq_logout">
                 <p>Deconnexion</p>
             </div>
-            <input type="hidden" id="id_btq_adm" value="<?php echo $get_btq_row['id_btq'] ?>">
+            <input type="hidden" id="id_btq_adm" value="<?php echo $_SESSION['btq'] ?>">
         </div>
     </div>
 </div>
 <input type="hidden" id="ville_boutique">
 <input type="hidden" id="categorie_boutique">
 <input type="hidden" id="sous_categorie_boutique">
-<?php }else{ ?>
+<?php } else { ?>
     <div class="hide-menu">
     <div class="hide-menu-left">
         <div class="hide-menu-logo">
             <h4>Nhannik</h4>
         </div>
         <div class="hide-menu-left-list <?php echo $indexRespActive ?>" id="home_button"><div><i class="fas fa-home"></i></div><p>acceuil</p></div>
-        <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div>
-        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-tools"></i></div><p>bout de chantier</p></div>
-        <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div>
-        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-ad"></i></div><p>promotions</p></div>
+        <!-- <div class="hide-menu-left-list" id="categories_button"><div><i class="fas fa-list"></i></div><p>categories</p></div> -->
+        <div class="hide-menu-left-list <?php echo $boutdechantierRespActive ?>" id="boutdechantier_button"><div><i class="fas fa-store"></i></div><p>bout de chantier</p></div>
+        <!-- <div class="hide-menu-left-list" id="recrutements_button"><div><i class="fas fa-briefcase"></i></div><p>recrutements</p></div> -->
+        <div class="hide-menu-left-list <?php echo $promotionsRespActive ?>" id="promotions_button"><div><i class="fas fa-tag"></i></div><p>promotions</p></div>
         <div class="hide-menu-left-list <?php echo $evenementsRespActive ?>" id="evenements_button"><div><i class="far fa-calendar-check"></i></div><p>évènements</p></div>
-        
         <div class="hide-menu-login">
             <div id="gestion_boutique_button_responsive">
                 <p>Gerer boutique</p>
@@ -717,9 +553,8 @@ $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
                 <p>Inscrire/Connecter</p>
             </div>
         </div>
-        
         <div class="hide-menu-footer">
-            <h4>Nhanik &copy; 2020</h4>
+            <h4>Nhannik &copy; 2020</h4>
         </div>
     </div>
 </div>
@@ -740,6 +575,39 @@ $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
                 <div id="search_bar_button">
                     <i class="fas fa-search"></i>
                 </div>
+                <?php 
+                $numUrlPart = substr_count($_SERVER['REQUEST_URI'],'/');
+                if ($numUrlPart == 2) {
+                    $url = explode('/', $_SERVER['REQUEST_URI'], 2)[1];
+                }
+                else if ($numUrlPart >= 3) {
+                    $url = 'projet/'.explode('/', $_SERVER['REQUEST_URI'], -1)[2];
+                }
+                if ($url == 'projet/profile-parametres') { ?>
+                <div id="parameters_profile_button">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <?php } else if ($url == 'projet/evenements') { ?>
+                <div id="parameters_evenements_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/promotions') { ?>
+                <div id="parameters_promotions_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/gerer-boutique') { ?>
+                <div id="parameters_gererboutique_button">
+                    <i class="fas fa-cog"></i>
+                </div>
+                <?php } else if ($url == 'projet/boutdechantier') { ?>
+                <div id="parameters_boutdechantier_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } else if ($url == 'projet/recherche') {?>
+                <div id="parameters_recherche_button">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <?php } ?>
             </div>
         </div>
         <div class="navbar-middle">
@@ -748,6 +616,12 @@ $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
             <div><a class="<?php echo $promotionsActive; ?>" href="promotions">promotions</a></div>
             <div><a class="<?php echo $evenementsActive; ?>" href="evenements">évènements</a></div>
             <!-- <a class="<?php echo $recrutementsActive; ?>" href="./recrutements.php">recrutement</a> -->
+        </div>
+        <div class="navbar-middle-responsive">
+            <a href="index"><div  class="<?php echo $indexActiveResponsive; ?>" id="go_home"><i class="fas fa-home"></i></div></a>
+            <a href="boutdechantier"><div class="<?php echo $boutdechantierActiveResponsive; ?>" id="go_boutdechantier"><i class="fas fa-store"></i></div></a>
+            <a href="promotions"><div class="<?php echo $promotionsActiveResponsive; ?>" id="go_promotions"><i class="fas fa-tag"></i></div></a>
+            <a href="evenements"><div class="<?php echo $evenementsActiveResponsive; ?>" id="go_evenements"><i class="far fa-calendar-check"></i></div></a>
         </div>
         <div class="navbar-right-login">
             <div id="gestion_boutique_button">
@@ -762,155 +636,132 @@ $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
     </div>
 </div>
 <div class="categorie-professionnel">
-    <div class="categorie-professionnel-top">
-        <div id="cancel_search_bar">
-            <i class="fas fa-arrow-left"></i>
+    <?php if ($url == 'projet/inscription-connexion' || $url == 'projet/gestion-boutique-connexion' || $url == 'projet/recherche' || $url == 'projet/gerer-boutique' || $url == 'projet/boutique' || $url == 'projet/utilisateur' || $url == 'projet/index') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_tout" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_tout">
+    <?php } ?> 
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_tout">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_tout_text" placeholder="Recherche dans toutes les categories" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_recherche_text" class="center"></div>
+            </div>
         </div>
-        <div class="categorie-search-bar-rspsv">
-            <input type="text" id="categorie_search" placeholder="Saisissez votre recherche" autocomplete="off">
-            <i class="fas fa-search"></i>
-            <button style="display:none" id="categorie_search_btn"></button>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_tout_container"></div>
+            <div id="loader_search_all" class="center"></div>
         </div>
     </div>
-    <div class="categorie-professionnel-bottom">
-        <div class="categorie-professionnel-bottom-top">
-        <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/bureau-icon.png" alt="">
-                    <p>Services</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'services'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>  
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/service-icon.png" alt="">
-                    <p>Artisants</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_professionnel">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
             </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/transport-icon.png" alt="">
-                    <p>Transports</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/service-icon.png" alt="">
-                    <p>Locations</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
-                    $categories_query->execute();
-                    while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/entreprise-icon.png" alt="">
-                    <p>Entreprises</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/detaillon-icon.png" alt="">
-                    <p>Detaillons</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/grossiste-icon.png" alt="">
-                    <p>Grossistes</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/fabriquant-icon.png" alt="">
-                    <p>Fabriquants</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="categorie-profss">
-                <div class="categorie-profss-top">
-                    <img src="./icons/importateur-icon.png" alt="">
-                    <p>Import - Export</p>
-                </div>
-                <div class="categorie-profss-bottom">
-                    <?php 
-                        $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
-                        $categories_query->execute();
-                        while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                        ?>
-                        <a href="./recherche.php?r=<?php echo $categories_row['sous_categories'] ?>"><li><?php echo $categories_row['sous_categories'] ?></li></a>
-                    <?php } ?>
-                </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_professionnel_text" placeholder="Rechercher - professionnels ou entreprises" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_professionnel_recherche_text" class="center"></div>
             </div>
         </div>
-        <div class="categorie-professionnel-bottom-bottom"></div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_professionnel_container"></div>
+            <div id="loader_search_professionnel" class="center"></div>
+        </div>
+    </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutique">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_boutique_text" placeholder="Rechercher - boutiques" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_boutique_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_boutique_container"></div>
+            <div id="loader_search_boutique" class="center"></div>
+        </div>
+    </div>
+    <div class="categorie-recherche-tout" id="categorie_recherche_product">
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_product_text" placeholder="Rechercher - produits boutique" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_product_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_product_container"></div>
+            <div id="loader_search_product" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/boutdechantier') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutdechantier" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_boutdechantier">
+    <?php } ?> 
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_boutdechantier_text" placeholder="Rechercher - produits bout de chantier" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_boutdechantier_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_boutdechantier_container"></div>
+            <div id="loader_search_boutdechantier" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/promotions') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_promotion" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_promotion">
+    <?php } ?>
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_promotion_text" placeholder="Recherchs - promotions" autocomplete="off">
+                <i class="fas fa-search"></i>
+                <div id="loader_promotion_recherche_text" class="center"></div>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_promotion_container"></div>
+            <div id="loader_search_promotion" class="center"></div>
+        </div>
+    </div>
+    <?php if ($url == 'projet/evenements') { ?>
+    <div class="categorie-recherche-tout" id="categorie_recherche_evenement" style="visibility:visible;transform:translate(0)">
+    <?php } else { ?>    
+    <div class="categorie-recherche-tout" id="categorie_recherche_evenement">
+    <?php } ?>
+        <div class="categorie-professionnel-top">
+            <div class="cancel-categorie-recherche" id="cancel_recherche_other_search">
+                <i class="fas fa-arrow-left"></i>
+            </div>
+            <div class="categorie-search-bar-rspsv">
+                <input type="text" id="recherche_evenement_text" placeholder="Rechercher - evenements" autocomplete="off">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+        <div class="categorie-professionnel-bottom">
+            <div class="categorie-professionnel-bottom-container" id="recherche_evenement_container"></div>
+            <div id="loader_search_evenement" class="center"></div>
+        </div>
     </div>
 </div>
 <input type="hidden" id="ville_boutique">

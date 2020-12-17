@@ -11,9 +11,14 @@ $btq_inf_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = $id_btq"
 $btq_inf_query->execute();
 $btq_inf_row = $btq_inf_query->fetch(PDO::FETCH_ASSOC);
 
-$id_session = htmlspecialchars($_SESSION['user']);
-$get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
-                                        OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+if (isset($_SESSION['user'])) {
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+    OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+}
+else if (isset($_SESSION['btq'])) {
+    $get_session_id_query = $conn->prepare("SELECT id_createur AS id_user FROM boutiques WHERE id_btq = $id_btq");
+}
 $get_session_id_query->execute();
 $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
 $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");

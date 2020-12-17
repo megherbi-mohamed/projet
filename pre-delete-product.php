@@ -1,28 +1,44 @@
 <?php
-session_start();
 include_once './bdd/connexion.php';
-$id_session = htmlspecialchars($_SESSION['user']);
-$get_session_idSender_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
-                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
-$get_session_idSender_query->execute();
-$get_session_idSender_row = $get_session_idSender_query->fetch(PDO::FETCH_ASSOC);
-$id_user = $get_session_idSender_row['id_user'];
 $id_prd = htmlspecialchars($_POST['id_prd']);
-$delete_prd_query = $conn->prepare("DELETE FROM produit_boutique WHERE etat = 1 AND id_user = $id_user AND id_prd = '$id_prd'");
+$delete_prd_query = $conn->prepare("DELETE FROM produit_boutique WHERE id_prd = $id_prd AND etat = 1");
 if ($delete_prd_query->execute()) { 
-    $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '$id_prd' AND etat = 1");
-    if($get_product_media_query->execute()){
-        while($get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC)){
-            unlink($get_product_media_row['media_url']);
-        }
-        $delete_product_media_query = $conn->prepare("DELETE FROM produits_media WHERE id_prd = '$id_prd' AND etat = 1");
-        if ($delete_product_media_query->execute()) {
-            echo 1;
+    $get_prd_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = $id_prd");
+    if($get_prd_media_query->execute()) {
+        if ($get_prd_media_query->rowCount() > 0) {
+            while($get_prd_media_row = $get_prd_media_query->fetch(PDO::FETCH_ASSOC)){
+                if ($get_prd_media_row['etat'] == 1) {
+                    $id_prd_m = $get_prd_media_row['id_prd_m'];
+                    $delete_prd_media_query = $conn->prepare("DELETE FROM produits_media WHERE id_prd = $id_prd AND id_prd_m = $id_prd_m");
+                    if ($delete_prd_media_query->execute() && unlink($get_prd_media_row['media_url'])) {
+                        echo 1;
+                    }
+                    else{
+                        echo 0;
+                        break;
+                    }
+                }
+                else if ($get_prd_media_row['etat'] == 0 && $get_prd_media_row['etat_updt'] == 1) {
+                    $id_prd_m = $get_prd_media_row['id_prd_m'];
+                    $update_prd_media_query = $conn->prepare("UPDATE produits_media SET etat_updt = 0 WHERE id_prd = $id_prd AND id_prd_m = $id_prd_m");
+                    if ($update_prd_media_query->execute()) {
+                        echo 1;
+                    }
+                    else{
+                        echo 0;
+                        break;
+                    }
+                }
+                else{
+                    echo 1;
+                }
+            }
         }
         else{
-            echo 0;
+            echo 1;
         }
-    }else{
+    }
+    else{
         echo 0;
     }
 }

@@ -9,9 +9,7 @@ $id_btq = $get_session_btq_row['id_user'];
 $matricule_adm = htmlspecialchars($_POST['matricule_adm']);
 $nom_adm = htmlspecialchars($_POST['nom_adm']);
 $mtp_adm = htmlspecialchars($_POST['mtp_adm']);
-
 $hash_mtp_adm = hash('sha256', $mtp_adm);
-
 $messagerie = htmlspecialchars($_POST['messagerie']);
 $notifications = htmlspecialchars($_POST['notifications']);
 $modification = htmlspecialchars($_POST['modification']);
@@ -21,7 +19,6 @@ $suppression_prd = htmlspecialchars($_POST['suppression_prd']);
 $creation_ctg = htmlspecialchars($_POST['creation_ctg']);
 $modification_ctg = htmlspecialchars($_POST['modification_ctg']);
 $suppression_ctg = htmlspecialchars($_POST['suppression_ctg']);
-
 $creat_madmin_query = $conn->prepare("INSERT INTO admin_boutique (id_btq,matricule_adm,nom_adm,mtp_adm,messagerie,notifications,modification,creation_prd,modification_prd,suppression_prd,creation_ctg,modification_ctg,suppression_ctg) 
 VALUES (:id_btq,:matricule_adm,:nom_adm,:mtp_adm,:messagerie,:notifications,:modification,:creation_prd,:modification_prd,:suppression_prd,:creation_ctg,:modification_ctg,:suppression_ctg)");
 $creat_madmin_query->bindParam(':id_btq', $id_btq);
@@ -183,7 +180,10 @@ if($creat_madmin_query->execute()){
             </div>
         </div>
     </div>
-    <button id="update_boutique_admin">Modifier</button>
+    <div class="create-publication-bottom-button">
+        <div id="loader_create_publication_bottom_button" style="top:20px" class="button-center"></div>
+        <button id="update_boutique_admin">Enregistrer les modifications</button>
+    </div>
 </div>    
 <?php
     }else{

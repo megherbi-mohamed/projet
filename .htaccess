@@ -1,16 +1,28 @@
 RewriteEngine On
-RewriteCond %{SCRIPT_FILENAME} !-d
-RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
 
 RewriteRule ^inscription-connexion(.*)$ inscription-connexion.php [L]
 RewriteRule ^gestion-boutique-connexion(.*)$ gestion-boutique-connexion.php [L]
 
 RewriteRule ^index(.*)$ index.php [L]
+RewriteRule ^gestion-boutique-connexion(.*)$ gestion-boutique-connexion.php [L]
 
+RewriteRule ^boutdechantier/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ boutdechantier.php?type=$1&categorie=$2&ville=$3&commune=$4 [NC,L,QSA]
+RewriteRule ^boutdechantier/([^/]+)/([^/]+)/?$ boutdechantier.php?type=$1&text=$2 [NC,L,QSA]
+RewriteRule ^boutdechantier/([^/]+)/?$ boutdechantier.php?type=$1 [NC,L,QSA]
 RewriteRule ^boutdechantier(.*)$ boutdechantier.php [L]
 
+RewriteRule ^promotions/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ promotions.php?type=$1&categorie=$2&profession=$3&debut=$4&fin=$5&ville=$6&commune=$7 [NC,L,QSA]
+RewriteRule ^promotions/([^/]+)/([^/]+)/?$ promotions.php?type=$1&text=$2 [NC,L,QSA]
+RewriteRule ^promotions/([^/]+)/?$ promotions.php?type=$1 [NC,L,QSA]
 RewriteRule ^promotions(.*)$ promotions.php [L]
 
+RewriteRule ^evenements/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ evenements.php?type=$1&categorie=$2&debut=$3&fin=$4&ville=$5&commune=$6 [NC,L,QSA]
+RewriteRule ^evenements/([^/]+)/([^/]+)/?$ evenements.php?type=$1&text=$2 [NC,L,QSA]
+RewriteRule ^evenements/([^/]+)/?$ evenements.php?type=$1 [NC,L,QSA]
 RewriteRule ^evenements(.*)$ evenements.php [L]
 
 RewriteRule ^utilisateur/(\d+)?$ utilisateur.php?user=$1 [L]
@@ -30,4 +42,5 @@ RewriteRule ^gerer-boutique/([^/]+)(/([^/]+))?$ gerer-boutique.php?btq=$1&updt=$
 
 RewriteRule ^messagerie/(.*)$ messagerie.php?user=$1 [L]
 
-RewriteRule ^recherche/(.*)$ recherche.php?r=$1 [L]
+RewriteRule ^recherche/([^/]+)/([^/]+)/([^/]+)/?$ recherche.php?type_r=$1&type_f=$2&text=$3 [NC,L,QSA]
+RewriteRule ^recherche/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ recherche.php?type_r=$1&type_f=$2&categorie=$3&profession=$4&ville=$5&commune=$6 [NC,L,QSA]

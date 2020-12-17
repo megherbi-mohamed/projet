@@ -11,7 +11,7 @@ $id_prm = htmlspecialchars($_POST['id_prm']);
 $get_prm_query = $conn->prepare("SELECT * FROM promotions WHERE id_user = $id_user AND id_prm = $id_prm AND etat = 1");
 if($get_prm_query->execute()){
     $get_prm_row = $get_prm_query->fetch(PDO::FETCH_ASSOC);
-    $get_promotion_media_query = $conn->prepare("SELECT media_url FROM promotions_media WHERE id_prm = $id_prm");
+    $get_promotion_media_query = $conn->prepare("SELECT media_url,media_type FROM promotions_media WHERE id_prm = $id_prm");
     if($get_promotion_media_query->execute()){
         $get_promotion_media_row = $get_promotion_media_query->fetch(PDO::FETCH_ASSOC);
 ?>
@@ -45,12 +45,21 @@ if($get_prm_query->execute()){
             </div>
         </div>
         <div class="promotion-images-preview" style="display:block">
+            <?php if($get_promotion_media_row['media_type'] == 'i') { ?>
             <div class="promotion-image-preview" id="promotion_image_preview">
                 <div id="promotion_delete_image_preview">
                     <i class="fas fa-times"></i>
                 </div>
                 <img src="<?php echo $get_promotion_media_row['media_url'] ?>">
             </div>
+            <?php } else { ?>
+            <div class="promotion-video-preview" id="promotion_video_preview">
+                <div id="promotion_delete_video_preview">
+                    <i class="fas fa-times"></i>
+                </div>
+                <video controls><source src="<?php echo $get_promotion_media_row['media_url'] ?>"></video>
+            </div>
+            <?php } ?>
         </div>
         <form enctype="multipart/form-data">
             <input type="file" id="image_promotion" name="image" accept="image/*">

@@ -3,15 +3,12 @@ session_start();
 include_once './bdd/connexion.php';
 if (isset($_SESSION['user'])) {
     $id_session = htmlspecialchars($_SESSION['user']);
-
     $get_session_id_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
                                             OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
     $get_session_id_query->execute();
     $get_session_id_row = $get_session_id_query->fetch(PDO::FETCH_ASSOC);
-
     $user_session_query = $conn->prepare("SELECT * FROM utilisateurs WHERE id_user = {$get_session_id_row['id_user']}");
     $user_session_query->execute();
-
     if ($user_session_query->rowCount() > 0) {
         $row = $user_session_query->fetch(PDO::FETCH_ASSOC);
         $uid = $id_session;
@@ -434,6 +431,7 @@ if (isset($_SESSION['user'])) {
                     $("#loader_load").show();
                 },
                 success: function(response){
+                    console.log(response);
                     history.pushState('parametres','', '/projet/profile-parametres/parametres');
                     if (windowWidth < 768) {
                         $('.parametres-profile-left').css('transform','');
@@ -577,14 +575,68 @@ if (isset($_SESSION['user'])) {
             }
         })
 
+        $(document).on('focus','.update-profile-informations-top textarea',function(){
+            var id = $(this).attr('id');
+            if (id == 'description_user') {
+                $(".description-user").attr('class', 'active-updt-prf-span');
+            }
+        })
+
+        // select categorie user
+        $(document).on('change','#categorie_user',function() {
+            var categorie  = $(this).val();
+            if (categorie !== '') {
+                $('.profession-user').load('categorie-user.php?c='+categorie);
+            }
+        })
+
+        // $(document).on('change','#sous_categorie_user',function() {
+        //     var profession = $(this).val();
+        //     if (profession == 'autre') {
+        //         $('.sous-categorie-user').hide(); 
+        //         $('.sous-categorie-autre').show(); 
+        //     }
+        // })
+
+        // select user ville and commune
+        $(document).on('change','#ville_user',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-user').load('commune-user.php?v='+ville);
+            }
+        })
+
+        // get user location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(getUserPosition, showError);
+            } else { 
+                $('.user-localisation-gps p').text("La geolocation ne support pas cette navigateur.");
+                $('.update-user-localisation-gps p').text("La geolocation ne support pas cette navigateur.");
+            }
+        }
+
+        function getUserPosition(position) {
+            var latitudeUser = position.coords.latitude;
+            var longitudeUser = position.coords.longitude;
+            $('#latitude_user').val(latitudeUser);
+            $('#longitude_user').val(longitudeUser);
+            $('.user-localisation-gps p').text('La position a été bien modifiée');
+            $('.user-localisation-gps button').text('modifiée');
+        }
+
         $(document).on('click','#update_profile_button',function(){
             var nomUser = $('#nom_user').val();
             var nomEntrpUser = $('#nom_entrp_user').val();
+            var categorieUser = $('#categorie_user').val();
+            var professionUser = $('#profession_user').val();
             var villeUser = $('#ville_user').val();
-            var commune_user = $('#commune_user').val();
+            var communeUser = $('#commune_user').val();
             var adresseUser = $('#adresse_user').val();
             var tlphUser = $('#tlph_user').val();
-            var dscrpUser = $('#dscrp_user').val();
+            var descriptionUser = $('#description_user').val();
+            var latitudeUser = $('#latitude_user').val();
+            var longitudeUser = $('#longitude_user').val();
             if (nomUser == '') {
                 $('#nom_user').css('border','2px solid red');
             }
@@ -592,16 +644,59 @@ if (isset($_SESSION['user'])) {
                 $('#nom_user').css('border','');
                 $('#nom_entrp_user').css('border','2px solid red');
             }
-            else{
+            else if(nomEntrpUser == ''){
+                $('#nom_user').css('border','');
+                $('#nom_entrp_user').css('border','2px solid red');
+            }
+            else if(categorieUser == ''){
+                $('#nom_user').css('border','');
                 $('#nom_entrp_user').css('border','');
+                $('#categorie_user').css('border','2px solid red');
+            }
+            else if(professionUser == ''){
+                $('#nom_user').css('border','');
+                $('#nom_entrp_user').css('border','');
+                $('#categorie_user').css('border','');
+                $('#profession_user').css('border','2px solid red');
+            }
+            else if(villeUser == ''){
+                $('#nom_user').css('border','');
+                $('#nom_entrp_user').css('border','');
+                $('#categorie_user').css('border','');
+                $('#profession_user').css('border','2');
+                $('#ville_user').css('border','2px solid red');
+            }
+            else if(communeUser == ''){
+                $('#nom_user').css('border','');
+                $('#nom_entrp_user').css('border','');
+                $('#categorie_user').css('border','');
+                $('#profession_user').css('border','2');
+                $('#ville_user').css('border','');
+                $('#commune_user').css('border','2px solid red');
+            }
+            else if(tlphUser == ''){
+                $('#nom_user').css('border','');
+                $('#nom_entrp_user').css('border','');
+                $('#categorie_user').css('border','');
+                $('#profession_user').css('border','2');
+                $('#ville_user').css('border','');
+                $('#commune_user').css('border','');
+                $('#tlph_user').css('border','2px solid red');
+            }
+            else{
+                $('#tlph_user').css('border','');
                 var fd = new FormData();
                 fd.append('nom_user',nomUser);
                 fd.append('nom_entrp_user',nomEntrpUser);
+                fd.append('categorie_user',categorieUser);
+                fd.append('profession_user',professionUser);
                 fd.append('ville_user',villeUser);
-                fd.append('commune_user',commune_user);
+                fd.append('commune_user',communeUser);
                 fd.append('adresse_user',adresseUser);
                 fd.append('tlph_user',tlphUser);
-                fd.append('dscrp_user',dscrpUser);
+                fd.append('description_user',descriptionUser);
+                fd.append('latitude_user',latitudeUser);
+                fd.append('longitude_user',longitudeUser);
                 $.ajax({
                     url: 'update-profile-informations.php',
                     type: 'post',
@@ -609,20 +704,32 @@ if (isset($_SESSION['user'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $(".update-profile-informations").css('opacity','0.5');
-                        $("#loader_load").show();
+                        $("#loader_update_user_profile").show();
                     },
                     success: function(response){
+                        console.log(response);
                         if(response != 0){
-                            $('.pp-message-alert').css('transform','translateY(0)');
+                            $.ajax({
+                                url: 'load-profile-parametres.php',
+                                beforeSend: function(){
+                                    $(".parametres-prfile-right-container").empty();
+                                    $("#loader_load").show();
+                                },
+                                success: function(response){
+                                    $('.parametres-prfile-right-container').append(response);
+                                },
+                                complete: function(response){
+                                    $("#loader_load").hide();
+                                }
+                            });
+                            // $('.pp-message-alert').css('transform','translateY(0)');
                         }
                     },
                     complete: function(){
-                        $("#loader_load").hide();
-                        $(".update-profile-informations").css('opacity','');
-                        setTimeout(() => {
-                            $('.pp-message-alert').css('transform','');
-                        }, 4000);
+                        $("#loader_update_user_profile").hide();
+                        // setTimeout(() => {
+                        //     $('.pp-message-alert').css('transform','');
+                        // }, 4000);
                     }
                 });
             }

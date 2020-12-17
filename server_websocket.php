@@ -2,11 +2,9 @@
 error_reporting(0);
 include 'bdd/connexion.php';
 set_time_limit(0);
-
 $port = '3030';
 $host = '0.0.0.0';
 $null = NULL; //null 
-
 //Create TCP/IP sream socket
 $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 //reuseable port
@@ -37,24 +35,20 @@ while ( true ) {
             $user_id = $expl_value[0];
         }
         
-        $get_session_user_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$user_id' OR id_user_1 = '$user_id' OR id_user_2 = '$user_id' 
-                                                    OR id_user_3 = '$user_id' OR id_user_4 = '$user_id' OR id_user_5 = '$user_id'");
+        $get_session_user_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = $user_id OR id_user_1 = $user_id OR id_user_2 = $user_id 
+                                                    OR id_user_3 = $user_id OR id_user_4 = $user_id OR id_user_5 = $user_id");
         $get_session_user_query->execute();
         $get_session_user_row = $get_session_user_query->fetch(PDO::FETCH_ASSOC);
         $id_user = $get_session_user_row['id_user'];
-
         $get_current_sessions_query = $conn->prepare("SELECT session_1,session_2,session_3,session_4,session_5 FROM sessions_active WHERE id_user = $id_user");
         $get_current_sessions_query->execute();
         $get_current_sessions_row = $get_current_sessions_query->fetch(PDO::FETCH_ASSOC);
-        
         $session1 = $get_current_sessions_row['session_1'];
         $session2 = $get_current_sessions_row['session_2'];
         $session3 = $get_current_sessions_row['session_3'];
         $session4 = $get_current_sessions_row['session_4'];
         $session5 = $get_current_sessions_row['session_5'];
-        
         $sessions = array($session1,$session2,$session3,$session4,$session5);
-        
         if (!in_array($user_id, $sessions)) {
             if ($session1 == null) {
                 $insert_session_query = $conn->prepare("UPDATE sessions_active SET session_1 = '$user_id' WHERE id_user = $id_user");
@@ -77,7 +71,6 @@ while ( true ) {
                 $insert_session_query->execute();
             }
         }
-
 		//make room for new socket
         $found_socket = array_search($socket, $changed);
         unset($changed[$found_socket]);
@@ -96,7 +89,6 @@ while ( true ) {
             $typeNotification = $tst_msg->typeNotification; 
             if ($typeNotification == 'message') {
                 $user_id = $tst_msg->uid; //sender id
-
                 $to_id = $tst_msg->to_id; //destination id
                 $get_all_recever_query = $conn->prepare("SELECT * FROM gerer_connexion WHERE id_user = '$to_id' OR id_user_1 = '$to_id' OR id_user_2 = '$to_id' 
                 OR id_user_3 = '$to_id' OR id_user_4 = '$to_id' OR id_user_5 = '$to_id'");

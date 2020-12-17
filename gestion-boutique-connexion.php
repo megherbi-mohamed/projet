@@ -1,10 +1,10 @@
 <?php 
-session_start();
+// session_start();
 include_once './bdd/connexion.php';
-if (!empty( $_SESSION['btq'])) {
-    header('Location: index.php');
-    exit;
-}
+// if (!empty($_SESSION['btq'])) {
+//     header('Location: gerer-boutique/'.$_SESSION['btq']);
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -27,18 +27,21 @@ if (!empty( $_SESSION['btq'])) {
             <h4>Connexion au gestionnaire boutique</h4>
             <div>
                 <span class="cnx-id-btq">Identifiant</span>
-                <input type="text" id="cnx_id_btq" name="id_btq">
-                <p id="cnx_id_err"></p>
+                <input type="text" id="cnx_id_btq">
             </div>
             <div>
                 <span class="cnx-mtp-btq">Mot de passe</span>
-                <input type="password" id="cnx_mtp_btq" name="mtp_btq">
-                <p id="cnx_mtp_err"></p>
+                <input type="password" id="cnx_mtp_btq">
             </div>
             <a href="#">Mot de passe oublié ?</a> 
-            <button id="connexion_gb_button">Connecter</button></h5>
+            <div class="create-publication-bottom-button">
+                <div id="loader_create_publication_bottom_button" style="margin-top:5px" class="button-center"></div>
+                <button id="connexion_gb_button">Connecter</button>
+            </div>
         </div>
-        <div id="loader_cnx_btq" class="center"></div>
+    </div>
+    <div class="alert-messages">
+        <p></p>
     </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -66,42 +69,53 @@ if (!empty( $_SESSION['btq'])) {
         })
 
         $(document).on('click','#connexion_gb_button',function(e){
-            var fd = new FormData();
             var matriculeBtq = $('#cnx_id_btq').val();
-            fd.append('matricule_adm',matriculeBtq);
             var mtpBtq = $('#cnx_mtp_btq').val();
-            fd.append('mtp_adm',mtpBtq);
-            $.ajax({
-                url: 'connexion-admin-boutique.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    $('.gb-connexion-container').css('opacity','0.4');
-                    $("#loader_cnx_btq").show();
-                },
-                success: function(response){
-                    if(response == 1){
-                        console.log('matricule incoorect');
+            if (matriculeBtq == '') {
+                $('#cnx_id_btq').css('border','2px solid red');
+            }
+            else if (mtpBtq == '') {
+                $('#cnx_id_btq').css('border','');
+                $('#cnx_mtp_btq').css('border','2px solid red');
+            }
+            else{
+                var fd = new FormData();
+                fd.append('matricule_adm',matriculeBtq);
+                fd.append('mtp_adm',mtpBtq);
+                $.ajax({
+                    url: 'connexion-admin-boutique.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $("#loader_create_publication_bottom_button").show();
+                    },
+                    success: function(response){
+                        if(response == 0){
+                            $('.alert-messages p').text('Erreur de connexion.');
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        if (response == 2) {
+                            $('.alert-messages p').text("Identification incorrect.");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        else {
+                            window.location.href = "gerer-boutique/"+response;
+                        }
+                    },
+                    complete: function(){
+                        $("#loader_create_publication_bottom_button").hide();
                     }
-                    else if(response == 2){
-                        console.log('mtp incorrect');
-                    }
-                    else if(response == 0){
-                        console.log('compte existe plus');
-                    }
-                    else{
-                        window.location.href = "./gerer-boutique.php?btq="+response;
-                    }
-                },
-                complete: function(){
-                    $('.gb-connexion-container').css('opacity','');
-                    $("#loader_cnx_btq").hide();
-                }
-            });
+                });
+            }
         })
-
     </script>
 </body>
 </html>

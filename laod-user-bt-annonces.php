@@ -26,12 +26,6 @@ if ($get_user_bt_annc_query->rowCount() > 0) {
     ?>
     <input type="hidden" id="tail_prd_<?php echo $i ?>" value="<?php echo $i ?>">
     <input type="hidden" id="id_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['id_prd'] ?>">
-    <input type="hidden" id="name_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['nom_prd'] ?>">
-    <input type="hidden" id="categorie_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['categorie_prd'] ?>">
-    <input type="hidden" id="description_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['description_prd'] ?>">
-    <input type="hidden" id="quantity_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['quantite_prd'] ?>">
-    <input type="hidden" id="type_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['type_prd'] ?>">
-    <input type="hidden" id="price_prd_<?php echo $i ?>" value="<?php echo $get_user_bt_annc_row['prix_prd'] ?>">
     <div class="user-bt-annonce" id="user_bt_annonce_<?php echo $i ?>">
         <div class="user-bt-annonce-top">
             <h4><?php echo $get_user_bt_annc_row['nom_prd'] ?></h4>

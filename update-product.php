@@ -11,70 +11,46 @@ $avantage_prd = htmlspecialchars($_POST['avantage_prd']);
 $categorie_prd = htmlspecialchars($_POST['categorie_prd']);
 $quantite_prd = htmlspecialchars($_POST['quantite_prd']);
 $prix_prd = htmlspecialchars($_POST['prix_prd']);
-$id = htmlspecialchars($_POST['tail_prd']);
-
 $update_product_query = $conn->prepare("UPDATE produit_boutique SET nom_prd = '$nom_prd', reference_prd = '$reference_prd',
 categorie_prd = '$categorie_prd',description_prd = '$description_prd', caracteristique_prd = '$caracteristique_prd', 
 fonctionnalite_prd = '$fonctionnalite_prd', avantage_prd = '$avantage_prd',quantite_prd = '$quantite_prd',
-prix_prd = '$prix_prd' WHERE id_prd = '$id_prd'");
+prix_prd = '$prix_prd' WHERE id_prd = $id_prd");
 if($update_product_query->execute()){
-    $update_media_query = $conn->prepare("UPDATE produits_media SET etat = 0 WHERE id_prd = '$id_prd'");
-    if ($update_media_query->execute()) {
-        $get_product_query = $conn->prepare("SELECT * FROM produit_boutique WHERE id_prd = '$id_prd'");
-        if ($get_product_query->execute()) {
-            $get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC); 
-            $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = '$id_prd' LIMIT 1");
-            $get_product_media_query->execute();
-            $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);       
-?>
-
-<input type="hidden" id="id_prd_<?php echo $id ?>" value="<?php echo $get_product_row['id_prd'] ?>">
-<input type="hidden" id="product_tail_<?php echo $id ?>" value="<?php echo $i ?>">
-<input type="hidden" id="name_prd_<?php echo $id ?>" value="<?php echo $get_product_row['nom_prd'] ?>">
-<input type="hidden" id="reference_prd_<?php echo $id ?>" value="<?php echo $get_product_row['reference_prd'] ?>">
-<input type="hidden" id="categorie_prd_<?php echo $id ?>" value="<?php echo $get_product_row['categorie_prd'] ?>">
-<input type="hidden" id="description_prd_<?php echo $id ?>" value="<?php echo $get_product_row['description_prd'] ?>">
-<input type="hidden" id="quantity_prd_<?php echo $id ?>" value="<?php echo $get_product_row['quantite_prd'] ?>">
-<input type="hidden" id="price_prd_<?php echo $id ?>" value="<?php echo $get_product_row['prix_prd'] ?>">
-<div class="boutique-product" id="boutique_product_<?php echo $id ?>">
-    <div class="product-option-button" id="display_prd_options_button_<?php echo $id ?>">
-        <i class="fas fa-ellipsis-v"></i>
-    </div>
-    <div class="product-options" id="product_options_<?php echo $id ?>">
-        <div class="product-option" id="update_product_<?php echo $id ?>">
-            <i class="fas fa-pen"></i>
-            <div>
-                <p>Modifer le produit</p>
-            </div>
-        </div>
-        <div class="product-option" id="delete_product_<?php echo $id ?>">
-            <i class="fas fa-trash"></i>
-            <div>
-                <p>Supprimer le produit</p>
-            </div>
-        </div>
-    </div>
-    <div class="boutique-product-img">
-        <img src="<?php echo $get_product_media_row['media_url'] ?>" alt="">
-    </div>
-    <div class="product-description">
-        <div class="product-description-top">
-            <p><?php echo $get_product_row['description_prd'] ?></p>
-        </div>
-        <div class="product-description-bottom">
-            <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
-        </div>
-    </div>
-</div>
-
-<?php
-        }else{
-            echo 0;
+    $get_product_media_query = $conn->prepare("SELECT * FROM produits_media WHERE id_prd = $id_prd");
+    if($get_product_media_query->execute()) {
+        while($get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC)){
+            if (($get_product_media_row['etat'] == 1 && $get_product_media_row['etat_updt'] == 1) || ($get_product_media_row['etat'] == 0 && $get_product_media_row['etat_updt'] == 1)) {
+                $id_prd_m = $get_product_media_row['id_prd_m'];
+                $delete_prd_media_query = $conn->prepare("DELETE FROM produits_media WHERE id_prd = $id_prd AND id_prd_m = $id_prd_m");
+                if ($delete_prd_media_query->execute() && unlink($get_product_media_row['media_url'])) {
+                    echo 1;
+                }
+                else{
+                    echo 0;
+                    break;
+                }
+            }
+            else if ($get_product_media_row['etat'] == 1 && $get_product_media_row['etat_updt'] == 0) {
+                $id_prd_m = $get_product_media_row['id_prd_m'];
+                $update_prd_media_query = $conn->prepare("UPDATE produits_media SET etat = 0,etat_updt = 0 WHERE id_prd = $id_prd AND id_prd_m = $id_prd_m");
+                if ($update_prd_media_query->execute()) {
+                    echo 1;
+                }
+                else{
+                    echo 0;
+                    break;
+                }
+            }
+            else{
+                echo 1;
+            }
         }
-    }else{
+    }
+    else{
         echo 0;
     }
-}else{
+}
+else{
     echo 0;
 }
 ?>

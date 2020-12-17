@@ -21,13 +21,13 @@ $i=0;
 while ($get_msg_row = $get_msg_query->fetch(PDO::FETCH_ASSOC)) {
 $i++;
 if ($get_msg_row['id_recever'] == $id_user) {
-    $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
+    $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} AND type_user IS NOT NULL 
                         UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}");
     $get_sender_info_query->execute();
     $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
 }
 else if ($get_msg_row['id_sender'] == $id_user) {
-    $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_recever']} 
+    $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_recever']} AND type_user IS NOT NULL 
                         UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_recever']}");
     $get_sender_info_query->execute();
     $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);

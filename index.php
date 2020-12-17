@@ -14,7 +14,7 @@ if (isset($_SESSION['user'])) {
         $uid = $id_session;
         $id_user = $row['id_user'];
     }
-    else{
+    else {
         header('Location: inscription-connexion.php');
     }
 }
@@ -35,7 +35,185 @@ if (isset($_SESSION['user'])) {
 <body>
     <?php include './navbar.php'; ?>
     <div class="clear"></div>
-    
+    <div class="acceuil-presentation">
+
+    </div>
+    <div class="acceuil-categories">
+        <div class="acceuil-categorie">
+
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+        <div class="acceuil-categorie">
+            
+        </div>
+    </div>
+    <div class="acceuil-sous-categories">
+        <div class="acceuil-sous-categorie-left">
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+            <div class="acceuil-sous-categorie">
+                
+            </div>
+            <div class="acceuil-sous-categorie">
+                
+            </div>
+            <div class="acceuil-sous-categorie">
+                
+            </div>
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+            <div class="acceuil-sous-categorie">
+            
+            </div>
+        </div>
+        <div class="acceuil-sous-categorie-right">
+            <div>
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+    </div>
+    <div class="acceuil-publicites">
+
+    </div>
+    <div class="acceuil-boutiques">
+        <div class="acceuil-overview-title">
+            <div class="acceuil-overview-title-top">
+                <div>
+                    <i class="fas fa-store-alt"></i>
+                </div>
+                <h3>Boutiques</h3>
+            </div>
+            <a href="">Voir Plus</a>
+        </div>
+        <div class="acceuil-all-boutiques">
+            <div class="acceuil-boutique">
+                <div class="acceuil-boutique-couverture">
+
+                </div>
+                <div class="acceuil-boutique-logo">
+
+                </div>
+                <div class="acceuil-boutique-description">
+                    <h4>Boutique 1</h4>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acceuil-professionnels">
+        <div class="acceuil-overview-title">
+            <div class="acceuil-overview-title-top">
+                <div>
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>Professionnel - entreprises</h3>
+            </div>
+            <a href="">Voir Plus</a>
+        </div>
+        <div class="acceuil-all-professionnels">
+            <div class="acceuil-professionnel">
+                <div class="acceuil-professionnel-couverture">
+
+                </div>
+                <div class="acceuil-professionnel-logo">
+
+                </div>
+                <div class="acceuil-professionnel-description">
+                    <h4>Boutique 1</h4>
+                    <p>Lorem ipsum dolor sit amet.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acceuil-products">
+        <div class="acceuil-overview-title">
+            <div class="acceuil-overview-title-top">
+                <div>
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <h3>Produits boutiques</h3>
+            </div>
+            <a href="">Voir Plus</a>
+        </div>
+        <div class="acceuil-all-products">
+            <div class="acceuil-product">
+                <div class="acceuil-product-image">
+
+                </div>
+                <div class="acceuil-product-descirption">
+                    <p>1200 da</p>
+                </div>
+            </div>
+            <div class="acceuil-product">
+                <div class="acceuil-product-image">
+
+                </div>
+                <div class="acceuil-product-descirption">
+                    <p>1200 da</p>
+                </div>
+            </div>
+            <div class="acceuil-product">
+                <div class="acceuil-product-image">
+
+                </div>
+                <div class="acceuil-product-descirption">
+                    <p>1200 da</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="acceuil-boutdechantiers">
+        <div class="acceuil-overview-title">
+            <div class="acceuil-overview-title-top">
+                <div>
+                    <i class="fas fa-store"></i>
+                </div>
+                <h3>Produits boutdechantier</h3>
+            </div>
+            <a href="">Voir Plus</a>
+        </div>
+        <div class="acceuil-all-boutdechantiers">
+            <div class="acceuil-boutdechantier">
+                <div class="acceuil-boutdechantier-image">
+
+                </div>
+                <div class="acceuil-boutdechantier-descirption">
+                    <p>1200 da</p>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="css-js/main.js"></script>
@@ -49,6 +227,11 @@ if (isset($_SESSION['user'])) {
                 document.querySelector("body").style.visibility = "visible"; 
             } 
         };
+
+        $('.acceuil-categorie').on('click',function(){
+            $('body').addClass('body-after');
+            $('.acceuil-sous-categories').css('display','grid');
+        })
 
         <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $uid; ?>;

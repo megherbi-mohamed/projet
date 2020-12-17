@@ -97,10 +97,18 @@
         <!-- <button><i class="fas fa-map-marker-alt"></i>Modifier la position</button> -->
     </div>
     <div class="user-informations" id="user_informations">
-        <p>Profession : <span><?php echo $row_g['profession_user']; ?></span></p>
-        <p>Téléphone : <span><?php echo $row_g['tlph_user']; ?></span></p>
-        <p>Adresse : <span><?php echo $row_g['adresse_user']; ?></span></p>
-        <p>Ville : <span><?php echo $row_g['ville']; ?></span></p>
+        <div class="user-information">
+            <div><i class="fas fa-user"></i></div>
+            <p><?php echo $row_g['profession_user']; ?></p>
+        </div>
+        <div class="user-information">
+            <div><i class="fas fa-phone"></i></div>
+            <p><?php echo $row_g['tlph_user']; ?></p>
+        </div>
+        <div class="user-information" style="margin-bottom:0">
+            <div><i class="fas fa-map-marker-alt"></i></div>
+            <p><?php echo $row_g['ville_user'].', '.$row_g['adresse_user']; ?></p>
+        </div>
     </div>
 </div>
 <div class="user-profile-middle-content">
@@ -141,9 +149,6 @@
             ?>
             <?php if (isset($_SESSION['user']) && $_SESSION['user'] == $_GET['user']) { ?>
             <input type="hidden" id="publication_tail_<?php echo $i ?>" value="<?php echo $i ?>">
-            <!-- <input type="hidden" id="publication_description_<?php echo $i ?>" value="<?php echo $publication_row['description_pub'] ?>">
-            <input type="hidden" id="publication_lieu_<?php echo $i ?>" value="<?php echo $publication_row['lieu_pub'] ?>">
-            <input type="hidden" id="etat_commentaire_<?php echo $i ?>" value="<?php echo $publication_row['etat_commentaire'] ?>"> -->
             <?php } ?>
             <div class="user-publication" id="user_publication_<?php echo $i ?>">
                 <div id="pub_tail_<?php echo $publication_row['id_pub'] ?>"></div>
@@ -207,7 +212,9 @@
                 </div>
                 <div class="user-publication-middle">
                     <div class="user-publication-middle-description">
+                        <?php  if ($publication_row['description_pub'] !== '') { ?>
                         <p><?php echo $publication_row['description_pub'] ?></p>
+                        <?php } ?>
                     </div>
                     <?php 
                     $publication_media_query = $conn->prepare("SELECT * FROM publications_media WHERE id_pub = '{$publication_row["id_pub"]}'"); 
@@ -302,9 +309,13 @@
                     <?php }else if($publication_comment_user_row['img_user'] == ''){ ?>
                         <img src="./boutique-logo/logo.png" alt="">
                     <?php } ?>
-                    <div>
+                    <div class="publication-comment">
                         <h4><?php echo $publication_comment_user_row['nom_user'] ?></h4>
                         <p><?php echo $publication_comment_row['commentaire_text'] ?></p>
+                        <h5><?php echo $publication_comment_row['commentaire_date'] ?></h5>
+                        <div>
+                            <i class="fas fa-reply"></i>
+                        </div>
                     </div>
                     <?php } ?>
                     </div>
@@ -452,7 +463,7 @@
             <div class="cancel-user-couverture-update" id="cancel_user_couverture_update">
                 <i class="fas fa-times"></i>
             </div>
-            <button class="upload-result-couverture-resp">Valider</button>
+            <button class="upload-result-couverture">Valider</button>
         </div>
         <div class="panel panel-default">
             <div class="row">

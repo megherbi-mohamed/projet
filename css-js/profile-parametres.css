@@ -91,33 +91,37 @@
 .update-profile-informations-top{
     width: 100%;
 }
-.update-profile-informations-top div{
-    margin-bottom: 10px;
+.update-profile-input{
+    width: 100%;
+    margin: 0 auto 10px;
     position: relative;
+    z-index: 1;
 }
-.update-profile-informations-top div input,
-.update-profile-informations-top div select{
+.update-profile-input input,
+.update-profile-input select{
     width: 100%;
     padding: 18px 9px 12px;
     box-sizing: border-box;
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
 }
-.update-profile-informations-top div textarea{
+.update-profile-input textarea{
     width: 100%;
     padding: 18px 9px 12px;
     box-sizing: border-box;
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
     height: 150px;
     resize: none;
     font-family: Arial, Helvetica, sans-serif;
 }
-.update-profile-informations-top div span{
+.update-profile-input span{
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -125,22 +129,49 @@
     font-weight: bold;
     left: 12px;
     opacity: .4;
+    z-index: -1;
 }
-.active-updt-prf-span,
-.dscrp-user{
+.active-updt-prf-span{
     top: 5px !important;
     transform: none !important;
     font-size: .7rem !important;
 }
-.update-profile-informations-bottom{
+.description-user{
+    top: 18px !important;
+    transform: none !important;
+}
+.user-localisation-gps{
     width: 100%;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    align-items: center;
+    margin-bottom: 10px;
 }
-.update-profile-informations-bottom h4{
-    margin: 10px auto;
+.user-localisation-gps p{
+    font-size: .9rem;
+    font-weight: 600;
+    margin: 0;
 }
-#profile_map{
+.user-localisation-gps button{
+    width: 100%;
+    border: none;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+}
+.user-localisation-gps button:hover{
+    background: #e0e0e0;
+}
+#user_map{
     width: 100%;
     height: 200px;
+    margin-bottom: 10px;
 }
 #update_prf_position{
     padding: 8px 10px;
@@ -161,7 +192,6 @@
     border: none;
     background: #000000dc;
     border-radius: 5px;
-    margin-top: 10px;
     cursor: pointer;
     color: #fff;
     font-weight: bold;
@@ -713,7 +743,29 @@
     height: 40px; 
     animation: spin 1s linear infinite; 
 }
-
+@media only screen and (max-width: 1250px) {
+    .parametres-profile-right-after::after {
+        content: "";
+        background: #ecedee;
+        opacity: 0.7;
+        top: 60px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: fixed;
+        z-index: 60;
+    }
+    .parametres-profile-left{
+        width: 360px;
+        transform: translateX(-100%);
+        transition: transform 0.4s ease-in-out;
+        z-index: 70;
+    }
+    .parametres-profile-right{
+        width: 100%;
+        margin-left: 0;
+    }
+}
 @media only screen and (max-width: 768px) {
     .navbar-left{
         display: none;
@@ -759,8 +811,8 @@
     #show_search_bar_rsp{
         justify-self: end;
     }
-
     .parametres-profile-left{
+        display: block;
         width: 80%;
         top: 0;
         height: 100vh;
@@ -790,6 +842,9 @@
     }
     .update-profile-informations h3{
         display: none;
+    }
+    .create-publication-bottom-button{
+        display: block;
     }
     .parametres-profile-right-top{
         display: grid;

@@ -53,14 +53,16 @@ if($query->execute()){
             </div>
             <input type="hidden" id="id_user" value="<?php echo $id_user ?>">
             <input type="hidden" id="type_user" value="professionnel">
-            <button id="valide_final_inscription">Valider l'inscription</button>
+            <div class="create-publication-bottom-button" style="width:400px;margin:auto">
+                <div id="loader_create_publication_bottom_button" style="margin-top:25px" class="button-center"></div>
+                <button style="width:400px;margin:20px auto" id="valide_final_inscription">Valider l'inscription</button>
+            </div>
         </div>  
     </div>
-    <div id="loader_load" class="center"></div>
     <?php
     }
     else{
-        echo 0;
+        echo 2;
     }
 }
 else{

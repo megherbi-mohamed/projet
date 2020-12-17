@@ -1,12 +1,14 @@
 <?php
 session_start();
 include_once './bdd/connexion.php';
-$id_session = htmlspecialchars($_SESSION['user']);
-$get_session_user_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
-                                            OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
-$get_session_user_query->execute();
-$get_session_user_row = $get_session_user_query->fetch(PDO::FETCH_ASSOC);
-$id_user = $get_session_user_row['id_user'];
+if (isset($_SESSION['user'])) {
+    $id_session = htmlspecialchars($_SESSION['user']);
+    $get_session_user_query = $conn->prepare("SELECT id_user FROM gerer_connexion WHERE id_user = '$id_session' OR id_user_1 = '$id_session' OR id_user_2 = '$id_session' 
+                                                OR id_user_3 = '$id_session' OR id_user_4 = '$id_session' OR id_user_5 = '$id_session'");
+    $get_session_user_query->execute();
+    $get_session_user_row = $get_session_user_query->fetch(PDO::FETCH_ASSOC);
+    $id_user = $get_session_user_row['id_user'];
+}
 $get_all_evenements_query = $conn->prepare("SELECT * FROM evenements ORDER BY id_evn DESC");
 if ($get_all_evenements_query->execute()){
     if ($get_all_evenements_query->rowCount()) {
@@ -57,6 +59,7 @@ if ($get_all_evenements_query->execute()){
             </div>
             <input type="hidden" id="id_evenement_<?php echo $i ?>" value="<?php echo $get_all_evenements_row['id_evn'] ?>">
             <?php
+            if (isset($_SESSION['user'])) {
             $get_saved_evenement_query = $conn->prepare("SELECT * FROM evenements_enregistres WHERE id_evn = $id_evn AND id_user = $id_user");
             $get_saved_evenement_query->execute();
             if ($get_saved_evenement_query->rowCount() > 0) {
@@ -67,8 +70,9 @@ if ($get_all_evenements_query->execute()){
                 <button id="save_evenement_<?php echo $i ?>">interesser</button>
                 <?php }} else { ?>
                 <button id="save_evenement_<?php echo $i ?>">interesser</button>
-            <?php } ?>
+            <?php }} ?>
             <?php
+            if (isset($_SESSION['user'])) {
             $get_participant_evenement_query = $conn->prepare("SELECT * FROM evenements_participants WHERE id_evn = $id_evn AND id_user = $id_user");
             $get_participant_evenement_query->execute();
             if ($get_participant_evenement_query->rowCount() > 0) {
@@ -79,7 +83,7 @@ if ($get_all_evenements_query->execute()){
                 <button id="updt_view_<?php echo $i ?>">participer</button>
                 <?php }} else { ?>
                 <button id="updt_view_<?php echo $i ?>">participer</button>
-            <?php } ?>
+            <?php }} ?>
             <button id="evenement_details_button_<?php echo $i ?>">Voir details</button>
         </div>
     </div>

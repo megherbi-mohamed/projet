@@ -42,18 +42,11 @@ if (isset($_SESSION['user'])) {
             </div> 
             <div class="logo-name">
                 <h4>Nhannik</h4>
-            </div> 
-            <div id="back_menu">
-                <i class="fas fa-arrow-left"></i>
-            </div>    
-            <div id="evenements_recherche_responsive">
-                <input type="text" id="recherche_text_resp" placeholder="Chercher une evenement ..." autocomplete="off">
-                <i class="fas fa-search"></i>
             </div>
             <div id="display_categories">
-                <i class="fas fa-sliders-h"></i>
+                <i class="fas fa-filter"></i>
             </div>
-            <div id="display_evn_search_bar">
+            <div id="show_search_bar_rsp">
                 <i class="fas fa-search"></i>
             </div>
         </div>
@@ -103,6 +96,32 @@ if (isset($_SESSION['user'])) {
                 <button id="week_filter_button">Cette semaine</button>
                 <button id="month_filter_button">Ce mois</button>
             </div>
+            <div class="filter-evenement" id="display_evenements_type">
+                <div>
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <p>Type</p>
+            </div>
+            <div class="filter-ptomotion-option" id="evenement_type">
+                <div class="filter-evenement-input">
+                    <p>Type d'évènement</p>
+                    <select id="type_filter_evn">
+                        <option value="">Type d'évènement</option>
+                        <option value="exposition">Exposition</option>
+                        <option value="foire">Foire</option>
+                        <option value="presentation">Presentation</option>
+                        <option value="apprentisage">Apprentisage</option>
+                        <option value="formation">Formation</option>
+                        <option value="enchère">Enchère</option>
+                        <option value="conférence">Conférence</option>
+                        <option value="séminaire">Séminaire</option>
+                        <option value="congré">Congré</option>
+                        <option value="soiré de lancement de produit">Type d'évènement</option>
+                        <option value="anniversaire de l'entreprise ou de produit">Anniversaire de l'entreprise ou de produit</option>
+                        <option value="voyage de la récompense">Voyage de la récompense</option>
+                    </select>
+                </div>
+            </div>
             <div class="filter-evenement" id="display_evenements_date">
                 <div>
                     <i class="far fa-calendar-alt"></i>
@@ -112,11 +131,11 @@ if (isset($_SESSION['user'])) {
             <div class="filter-ptomotion-option" id="evenement_date">
                 <div class="filter-evenement-input">
                     <p>Debut d'évènement</p>
-                    <input type="date" id="date_debut_evn">
+                    <input type="date" id="date_debut_filter_evn">
                 </div>
                 <div class="filter-evenement-input">
                     <p>Fin d'évènement</p>
-                    <input type="date" id="date_fin_evn">
+                    <input type="date" id="date_fin_filter_evn">
                 </div>
             </div>
             <div class="filter-evenement" id="display_evenements_localisation">
@@ -230,18 +249,21 @@ if (isset($_SESSION['user'])) {
             } else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
-                $.ajax({
-                    url: 'load-all-evenements.php',
-                    beforeSend: function(){
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.evenements-right-container').append(response);
-                    },
-                    complete: function(response){
-                        $("#loader_load").hide();
-                    }
-                });
+                var slashes = pathName.split("/").length-1;
+                if (slashes <= 2) {
+                    $.ajax({
+                        url: 'load-all-evenements.php',
+                        beforeSend: function(){
+                            $("#loader_load").show();
+                        },
+                        success: function(response){
+                            $('.evenements-right-container').append(response);
+                        },
+                        complete: function(response){
+                            $("#loader_load").hide();
+                        }
+                    });
+                }
             } 
         };
 
@@ -367,9 +389,8 @@ if (isset($_SESSION['user'])) {
                 },
                 success: function(response){
                     history.pushState('evenements','', '/projet/evenements/vos-evenements');
-                    if (windowWidth < 768) {
-                        $('.evenements-left').css('transform','');
-                        $("body").removeClass('body-after');
+                    if (windowWidth < 1250) {
+                        hideLeftEvenements ();
                         setTimeout(() => {
                             $('.evenements-right-container').append(response);
                         }, 400);
@@ -396,9 +417,8 @@ if (isset($_SESSION['user'])) {
                 },
                 success: function(response){
                     history.pushState('savedevenements','', '/projet/evenements/saved-evenements');
-                    if (windowWidth < 768) {
-                        $('.evenements-left').css('transform','');
-                        $("body").removeClass('body-after');
+                    if (windowWidth < 1250) {
+                        hideLeftEvenements ();
                         setTimeout(() => {
                             $('.evenements-right-container').append(response);
                         }, 400);
@@ -432,55 +452,56 @@ if (isset($_SESSION['user'])) {
 
         // searche for evenements
         $(document).on('keypress',"#recherche_text",function() {
+            var rechercheText = $(this).val();
             if (event.which == 13) {
-                var fd = new FormData();
-                var rechercheText = $('#recherche_text').val();
-                fd.append('text',rechercheText);
-                $.ajax({
-                    url: 'recherche-evenements.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        $(".evenements-right-container").empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.evenements-right-container').append(response);
-                    },
-                    complete: function(response){
-                        $("#loader_load").hide();
-                    }
-                });
+                if (rechercheText != '') {
+                    rechercheEvenementsText (rechercheText);
+                }
             }
         });
 
-        $(document).on('keypress',"#recherche_text_resp",function() {
-            if (event.which == 13) {
-                var fd = new FormData();
-                var rechercheText = $('#recherche_text_resp').val();
-                fd.append('text',rechercheText);
-                $.ajax({
-                    url: 'recherche-evenements.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        $(".evenements-right-container").empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.evenements-right-container').append(response);
-                    },
-                    complete: function(response){
-                        unsetEvenementsSearchBar();
-                        $("#loader_load").hide();
+        function rechercheEvenementsText (rechercheText) {
+            var typeFilter = 'text';
+            var typeEvn = '';
+            var dateDebutEvn = '';
+            var dateFinEvn = '';
+            var villeEvn = '';
+            var communeEvn = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
+            fd.append('date_debut_evn',dateDebutEvn);
+            fd.append('date_fin_evn',dateFinEvn);
+            fd.append('ville_evn',villeEvn);
+            fd.append('commune_evn',communeEvn);
+            $.ajax({
+                url: 'filter-evenement.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".evenements-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'evenements/'+typeFilter+'/'+rechercheText);
+                },
+                success: function(response){
+                    if (768 <= windowWidth <= 1250) {
+                        hideLeftEvenements ();
+                        setTimeout(() => {
+                            $('.evenements-right-container').append(response);
+                        }, 400);
                     }
-                });
-            }
-        });
+                    else{
+                        $('.evenements-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        }
 
         // display evenement position
         $('.evenement-position').click(function(){
@@ -651,9 +672,457 @@ if (isset($_SESSION['user'])) {
             }
         });
 
+        // update evenements
+        $(document).on('click','[id^="update_evn_"]',function(){
+            id = $(this).attr("id").split("_")[2];
+            var idEvn = $('#id_evn_'+id).val();
+            var tailEvn = $('#tail_evn_'+id).val();
+            var fd = new FormData();
+            fd.append('id_evn',idEvn);
+            fd.append('tail_evn',tailEvn);
+            $.ajax({
+                url: 'load-update-evenement.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $("#update_evenement").show();
+                        $('#update_evenement_container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    else{
+                        $("#update_evenement").css('transform','translateX(0)');
+                    }
+                    $("#loader_update_evenement").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        $('#update_evenement_container').prepend(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_update_evenement").hide();
+                }
+            });
+        });
+
+        $('#update_evenement_container').on('click','#cancel_update_evenement',function(e){
+            cancelUpdateEvenement ();
+        })
+
+        $('#update_evenement').on('click',function(){
+            cancelUpdateEvenement ();
+        })
+
+        function cancelUpdateEvenement () {
+            var idEvn = $('#id_evenement').val();
+            var fd = new FormData();
+            fd.append('id_evn',idEvn);
+            $.ajax({
+                url: 'pre-delete-evenement.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#update_evenement_container').empty();
+                    $("#loader_update_evenement").show();
+                },
+                success: function(response){
+                    if(response != 0){
+                    }    
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("body").removeClass('body-after');
+                        $('#update_evenement').hide();
+                    }
+                    else{
+                        $('#update_evenement').css('transform','');
+                    }
+                    $("#loader_update_evenement").hide();
+                }
+            });
+        }
+
+        // upload evenement image 
+        $("#update_evenement_container").on('click','#add_evenement_image',function(){
+            $('#image_evenement').val('');
+            $('#image_evenement').click();
+        });
+
+        $("#update_evenement_container").on('click','#image_evenement',function(e){
+            e.stopPropagation();
+        });
+
+        $("#update_evenement_container").on('change','#image_evenement',function () { 
+            $('#add_evenement_image_button').click();
+        });
+
+        // add image evenement
+        $("#update_evenement_container").on('click','#add_evenement_image_button',function(e){
+            e.stopPropagation();
+            var idEvn = $('#id_evenement').val();
+            var imgEvn = $('#image_evenement')[0].files[0];
+            var form_data = new FormData();
+            form_data.append('id_evn',idEvn);
+            form_data.append('image',imgEvn);
+            $.ajax({
+                url: 'upload-images-evenement.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.create-evenement-options').hide();
+                    $('.evenement-images-preview').show();
+                    $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+                },
+                success: function (response) {
+                    console.log(response);
+                    $('.evenement-images-preview').append("<div class='evenement-image-preview' id='evenement_image_preview'><div id='evenement_delete_image_preview'><i class='fas fa-times'></i></div><img src='"+response+"'></div>");
+                },
+                complete: function(){
+                    $('#loader_evenement_image').remove();
+                }
+            });
+        });
+
+        // remove evenement image preview
+        $('#update_evenement_container').on('click','#evenement_delete_image_preview',function(){
+            var idEvn = $('#id_evenement').val();
+            var mediaUrl = $('#evenement_image_preview img').attr('src');
+            var fd = new FormData();
+            fd.append('id_evn',idEvn);
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-evenement-media.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#evenement_image_preview').remove();
+                    $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('.evenement-images-preview').hide();
+                        $('.create-evenement-options').show();
+                    }
+                },
+                complete: function(){
+                    $('#loader_evenement_image').remove();
+                }
+            });
+        });
+
+        // add video evenement
+        $('#update_evenement_container').on('click','#add_evenement_video',function(){
+            $('#video_evenement').val('');
+            $('#video_evenement').click();
+        });
+
+        $('#update_evenement_container').on('click','#video_evenement',function(e){
+            e.stopPropagation();
+        });
+
+        $('#update_evenement_container').on('change','#video_evenement',function () { 
+            $('#add_evenement_video_button').click();
+        });
+
+        $('#update_evenement_container').on('click','#add_evenement_video_button',function(e){
+            e.stopPropagation();
+            var idEvn = $('#id_evenement').val();
+            var videoEvn = $('#video_evenement')[0].files[0];
+            var fd = new FormData();
+            fd.append('id_evn',idEvn);
+            fd.append('video',videoEvn);
+            console.log('click');
+            $.ajax({
+                url: 'upload-video-evenement.php',
+                type: 'post',
+                data: fd,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.create-evenement-options').hide();
+                    $('.evenement-images-preview').show();
+                    $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+                },
+                success: function(response){
+                    $('.evenement-images-preview').append("<div class='evenement-video-preview' id='evenement_video_preview'><div id='evenement_delete_video_preview'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+                },
+                complete: function(){
+                    $('#loader_evenement_image').remove();
+                }
+            });
+        });
+
+        // remove video evenement
+        $('#update_evenement_container').on('click','#evenement_delete_video_preview',function(){
+            var idEvn = $('#id_evenement').val();
+            var mediaUrl = $('#evenement_video_preview video source').attr('src');
+            var fd = new FormData();
+            fd.append('id_evn',idEvn);
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-evenement-media.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#evenement_video_preview').remove();
+                    $('.evenement-images-preview').append("<div id='loader_evenement_image' class='center'></div>");
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('.evenement-images-preview').hide();
+                        $('.create-evenement-options').show();
+                    }
+                },
+                complete: function(){
+                    $('#loader_evenement_image').remove();
+                }
+            });
+        });
+
+        // select evenement ville and commune
+        $("#update_evenement_container").on('change','#ville_evn',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-evenement').load('commune-evenement.php?v='+ville);
+            }
+        })
+
+        // valide update evenement
+        $('#update_evenement_container').on('click','#final_update_evenement_button',function(){
+            var idEvn = $('#id_evenement').val();
+            var titreEvn = $('#titre_evn').val();
+            var typeEvn = $('#type_evn').val();
+            var descriptionEvn = $('#description_evn').val();
+            var dateDebutEvn = $('#dat_debut_evn').val();
+            var dateFinEvn = $('#dat_debut_evn').val();
+            var nombrePersonneEvn = $('#nombre_personne_evn').val();
+            var convierAmisEvn = $('#convier_amis_evn').val();
+            var langueEvn = $('#langue_evn').val();
+            var confidentialiteEvn = $('#confidentialite_evn').val();
+            var tarifEvn = $('#tarif_evn').val();
+            var villeEvn = $('#ville_evn').val();
+            var communeEvn = $('#commune_evn').val();
+            var adresseEvn = $('#adresse_evn').val();
+            var latitudeEvn = $('#latitud_evn').val();
+            var longitudeEvn = $('#longitud_evn').val();
+            if (titreEvn == '') {
+                $('#titre_evn').css('border','2px solid red');
+            }
+            else if (typeEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','2px solid red');
+            }
+            else if (descriptionEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','2px solid red');
+            }
+            else if (dateDebutEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','2px solid red');
+            }
+            else if (dateFinEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','');
+                $('#date_fin_evn').css('border','2px solid red');
+            }
+            else if (confidentialiteEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','');
+                $('#date_fin_evn').css('border','');
+                $('#confidentialite_evn').css('border','2px solid red');
+            }
+            else if (villeEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','');
+                $('#date_fin_evn').css('border','');
+                $('#confidentialite_evn').css('border','');
+                $('#ville_evn').css('border','2px solid red');
+            }
+            else if (communeEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','');
+                $('#date_fin_evn').css('border','');
+                $('#confidentialite_evn').css('border','');
+                $('#ville_evn').css('border','');
+                $('#commune_evn').css('border','2px solid red');
+            }
+            else if (adresseEvn == '') {
+                $('#titre_evn').css('border','');
+                $('#type_evn').css('border','');
+                $('#description_evn').css('border','');
+                $('#date_debut_evn').css('border','');
+                $('#date_fin_evn').css('border','');
+                $('#confidentialite_evn').css('border','');
+                $('#ville_evn').css('border','');
+                $('#commune_evn').css('border','');
+                $('#adresse_evn').css('border','2px solid red');
+            }
+            else{
+                var fd = new FormData();
+                fd.append('id_evn', idEvn);
+                fd.append('titre_evn', titreEvn);
+                fd.append('type_evn', typeEvn);
+                fd.append('description_evn', descriptionEvn);
+                fd.append('date_debut_evn', dateDebutEvn);
+                fd.append('date_fin_evn', dateFinEvn);
+                fd.append('nombre_personne_evn', nombrePersonneEvn);
+                fd.append('convier_amis_evn', convierAmisEvn);
+                fd.append('langue_evn', langueEvn);
+                fd.append('confidentialite_evn', confidentialiteEvn);
+                fd.append('tarif_evn', tarifEvn);
+                fd.append('ville_evn', villeEvn);
+                fd.append('commune_evn', communeEvn);
+                fd.append('adresse_evn', adresseEvn);
+                fd.append('latitude_evn', latitudeEvn);
+                fd.append('longitude_evn', longitudeEvn);
+                $.ajax({
+                    url: 'update-evenement.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").show();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").show();
+                        }
+                    },
+                    success: function(response){
+                        console.log(response);
+                        if(response != 0){
+                            if (windowWidth > 768) {
+                                $("#update_evenement").hide();
+                                $("body").removeClass('body-after');
+                            }
+                            else{
+                                $("#update_evenement").css('transform','');
+                            }
+                            setTimeout(() => {
+                                $("#update_evenement_container").empty();
+                            }, 400);
+                        }
+                    },
+                    complete: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").hide();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").hide();
+                        }
+                    }
+                });
+            }
+        })
+
+        var typeFilter = '<?php if (isset($_GET['type'])) { echo $_GET['type']; } else { echo ''; } ?>';
+        var rechercheText = '<?php if (isset($_GET['text'])) { echo $_GET['text']; } else { echo ''; } ?>';
+        var typeEvn = '<?php if (isset($_GET['categorie'])) { echo $_GET['categorie']; } else { echo ''; } ?>';
+        var dateDebutEvn = '<?php if (isset($_GET['debut'])) { echo $_GET['debut']; } else { echo ''; } ?>';
+        var dateFinEvn = '<?php if (isset($_GET['fin'])) { echo $_GET['fin']; } else { echo ''; } ?>';
+        var villeEvn = '<?php if (isset($_GET['ville'])) { echo $_GET['ville']; } else { echo ''; } ?>';
+        var communeEvn = '<?php if (isset($_GET['commune'])) { echo $_GET['commune']; } else { echo ''; } ?>';
+        $(window).on('load', function(){ 
+            if (typeFilter !== '') {
+                if (typeFilter == 'today') {
+                    var d = new Date();
+                    dateDebutEvn = d.toLocaleDateString(); 
+                }
+                else if (typeFilter == 'week') {
+                    let week = getFirstLastDayWeek();
+                    let firstDay = week.first_date, lastDay = week.last_date;
+                    dateDebutEvn = firstDay;
+                    dateFinEvn = lastDay;
+                }
+                else if (typeFilter == 'month') {
+                    var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+                    var firstDay = new Date(y, m, 1).toLocaleDateString();
+                    var lastDay = new Date(y, m + 1, 0).toLocaleDateString();
+                    dateDebutEvn = firstDay;
+                    dateFinEvn = lastDay;
+                }
+                $('#recherche_text').val(rechercheText);
+                var fd = new FormData();
+                fd.append('type_filter',typeFilter);
+                fd.append('text',rechercheText);
+                fd.append('type_evn',typeEvn);
+                fd.append('categorie_evn',typeEvn);
+                fd.append('date_debut_evn',dateDebutEvn);
+                fd.append('date_fin_evn',dateFinEvn);
+                fd.append('ville_evn',villeEvn);
+                fd.append('commune_evn',communeEvn);
+                $.ajax({
+                    url: 'filter-evenement.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".evenements-right-container").empty();
+                        $("#loader_load").show();
+                        var filter = '';
+                        if (typeFilter == 'today' || typeFilter == 'week' || typeFilter == 'month') {
+                            history.replaceState(null,'', 'evenements/'+typeFilter);
+                        }
+                        else if (typeFilter == 'text') {
+                            history.replaceState(null,'', 'evenements/'+typeFilter+'/'+rechercheText);
+                        }
+                        else if (typeFilter == 'filter') {
+                            if (typeEvn != '') { filter = '/'+typeEvn; } else { filter = filter+'/0'; }
+                            if (villeEvn != '') { filter = filter+'/'+villeEvn; } else { filter = filter+'/0'; }
+                            if (communeEvn != '') { filter = filter+'/'+communeEvn; } else { filter = filter+'/0'; }
+                            history.replaceState(null,'', 'evenements/'+typeFilter+filter);
+                        }
+                    },
+                    success: function(response){
+                        if (response != 0) {
+                            $('.evenements-right-container').append(response);
+                        }
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+        })
+
         // filter evenements
         $('.evenements-left').click(function(e){
             e.stopPropagation();
+        })
+
+        $('#display_evenements_type').click(function(){
+            if ($('#evenement_type').height() > 0) {
+                $('#evenement_type').css({'max-height':''});
+            }
+            else{
+                $('#evenement_type').css({'max-height':'127px'});
+            }
         })
 
         $('#display_evenements_date').click(function(){
@@ -682,13 +1151,17 @@ if (isset($_SESSION['user'])) {
         })
         
         $('#filter_evenement_button').on('click',function() {
-            var typeFilter = 'all';
-            var dateDebutEvn = $('#date_debut_evn').val();
-            var dateFinEvn = $('#date_fin_evn').val();
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var typeEvn = $('#type_filter_evn').val();
+            var dateDebutEvn = $('#date_debut_filter_evn').val();
+            var dateFinEvn = $('#date_fin_filter_evn').val();
             var villeEvn = $('#ville_evenement_filter').val();
             var communeEvn = $('#commune_evenement_filter').val();
             var fd = new FormData();
             fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
             fd.append('date_debut_evn',dateDebutEvn);
             fd.append('date_fin_evn',dateFinEvn);
             fd.append('ville_evn',villeEvn);
@@ -702,15 +1175,29 @@ if (isset($_SESSION['user'])) {
                 beforeSend: function(){
                     $(".evenements-right-container").empty();
                     $("#loader_load").show();
+                    var filter = '';
+                    if (typeFilter == 'today' || typeFilter == 'week' || typeFilter == 'month') {
+                        history.replaceState(null,'', 'evenements/'+typeFilter);
+                    }
+                    else if (typeFilter == 'text') {
+                        history.replaceState(null,'', 'evenements/'+typeFilter+'/'+rechercheText);
+                    }
+                    else if (typeFilter == 'filter') {
+                        if (typeEvn != '') { filter = '/'+typeEvn; } else { filter = filter+'/0'; }
+                        if (dateDebutEvn != '') { filter = filter+'/'+dateDebutEvn; } else { filter = filter+'/0'; }
+                        if (dateFinEvn != '') { filter = filter+'/'+dateFinEvn; } else { filter = filter+'/0'; }
+                        if (villeEvn != '') { filter = filter+'/'+villeEvn; } else { filter = filter+'/0'; }
+                        if (communeEvn != '') { filter = filter+'/'+communeEvn; } else { filter = filter+'/0'; }
+                        history.replaceState(null,'', 'evenements/'+typeFilter+filter);
+                    }
                 },
                 success: function(response){
                     if (response != 0) {
-                        if (windowWidth > 768) {
+                        if (windowWidth > 1250) {
                             $('.evenements-right-container').append(response);
                         }
                         else{
-                            $('.evenements-left').css('transform','');
-                            $("body").removeClass('body-after');
+                            hideLeftEvenements ();
                             setTimeout(() => {
                                 $('.evenements-right-container').append(response);
                             }, 400);
@@ -727,11 +1214,15 @@ if (isset($_SESSION['user'])) {
             var typeFilter = 'today';
             var d = new Date();
             var dateDebutEvn = d.toLocaleDateString();
+            var rechercheText = '';
+            var typeEvn = '';
             var dateFinEvn = '';
             var villeEvn = '';
             var communeEvn = '';
             var fd = new FormData();
             fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
             fd.append('date_debut_evn',dateDebutEvn);
             fd.append('date_fin_evn',dateFinEvn);
             fd.append('ville_evn',villeEvn);
@@ -745,15 +1236,15 @@ if (isset($_SESSION['user'])) {
                 beforeSend: function(){
                     $(".evenements-right-container").empty();
                     $("#loader_load").show();
+                    history.replaceState(null,'', 'evenements/'+typeFilter);
                 },
                 success: function(response){
                     if (response != 0) {
-                        if (windowWidth > 768) {
+                        if (windowWidth > 1250) {
                             $('.evenements-right-container').append(response);
                         }
                         else{
-                            $('.evenements-left').css('transform','');
-                            $("body").removeClass('body-after');
+                            hideLeftEvenements ();
                             setTimeout(() => {
                                 $('.evenements-right-container').append(response);
                             }, 400);
@@ -807,12 +1298,16 @@ if (isset($_SESSION['user'])) {
             let firstDay = week.first_date, lastDay = week.last_date;
             var typeFilter = 'week';
             var d = new Date();
+            var rechercheText = '';
+            var typeEvn = '';
             var dateDebutEvn = firstDay;
             var dateFinEvn = lastDay;
             var villeEvn = '';
             var communeEvn = '';
             var fd = new FormData();
             fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
             fd.append('date_debut_evn',dateDebutEvn);
             fd.append('date_fin_evn',dateFinEvn);
             fd.append('ville_evn',villeEvn);
@@ -826,15 +1321,15 @@ if (isset($_SESSION['user'])) {
                 beforeSend: function(){
                     $(".evenements-right-container").empty();
                     $("#loader_load").show();
+                    history.replaceState(null,'', 'evenements/'+typeFilter);
                 },
                 success: function(response){
                     if (response != 0) {
-                        if (windowWidth > 768) {
+                        if (windowWidth > 1250) {
                             $('.evenements-right-container').append(response);
                         }
                         else{
-                            $('.evenements-left').css('transform','');
-                            $("body").removeClass('body-after');
+                            hideLeftEvenements ();
                             setTimeout(() => {
                                 $('.evenements-right-container').append(response);
                             }, 400);
@@ -853,12 +1348,16 @@ if (isset($_SESSION['user'])) {
             var lastDay = new Date(y, m + 1, 0).toLocaleDateString();
             var typeFilter = 'month';
             var d = new Date();
+            var rechercheText = '';
+            var typeEvn = '';
             var dateDebutEvn = firstDay;
             var dateFinEvn = lastDay;
             var villeEvn = '';
             var communeEvn = '';
             var fd = new FormData();
             fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
             fd.append('date_debut_evn',dateDebutEvn);
             fd.append('date_fin_evn',dateFinEvn);
             fd.append('ville_evn',villeEvn);
@@ -872,15 +1371,15 @@ if (isset($_SESSION['user'])) {
                 beforeSend: function(){
                     $(".evenements-right-container").empty();
                     $("#loader_load").show();
+                    history.replaceState(null,'', 'evenements/'+typeFilter);
                 },
                 success: function(response){
                     if (response != 0) {
-                        if (windowWidth > 768) {
+                        if (windowWidth > 1250) {
                             $('.evenements-right-container').append(response);
                         }
                         else{
-                            $('.evenements-left').css('transform','');
-                            $("body").removeClass('body-after');
+                            hideLeftEvenements ();
                             setTimeout(() => {
                                 $('.evenements-right-container').append(response);
                             }, 400);
@@ -895,15 +1394,43 @@ if (isset($_SESSION['user'])) {
 
         // reset filter evenements
         $('#reset_evenement_button').on('click',function() {
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var typeEvn = '';
+            var dateDebutEvn = '';
+            var dateFinEvn = '';
+            var villeEvn = '';
+            var communeEvn = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('type_evn',typeEvn);
+            fd.append('date_debut_evn',dateDebutEvn);
+            fd.append('date_fin_evn',dateFinEvn);
+            fd.append('ville_evn',villeEvn);
+            fd.append('commune_evn',communeEvn);
             $.ajax({
-                url: 'load-all-evenements.php',
+                url: 'filter-evenement.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
                 beforeSend: function(){
                     $(".evenements-right-container").empty();
                     $("#loader_load").show();
+                    history.replaceState(null,'', 'evenements/filter/0/0/0/0/0');
                 },
                 success: function(response){
                     if (response != 0) {
-                        $('.evenements-right-container').append(response);
+                        if (windowWidth > 1250) {
+                            $('.evenements-right-container').append(response);
+                        }
+                        else{
+                            hideLeftEvenements ();
+                            setTimeout(() => {
+                                $('.evenements-right-container').append(response);
+                            }, 400);
+                        }
                     }
                 },
                 complete: function(response){
@@ -992,6 +1519,89 @@ if (isset($_SESSION['user'])) {
             });
         })
 
+        // cancel evenement details
+        $('#evenement_details_container').on('click','#cancel_evenement_details_resp',function(){
+            $("#evenement_details").css('transform','');
+            setTimeout(() => {
+                $('#evenement_details_container').empty();
+            }, 400);
+        })
+
+        $('#cancel_evenement_details').click(function(){
+            $("body").removeClass('body-after');
+            $("body").css('overflow','');
+            $("#evenement_details").css('display','');
+            $('#evenement_details_container').empty();
+        })
+
+        // show evenement createur
+        $('#evenement_details_container').on('click','#show_evenement_creator',function(){
+            var typeEvnCrtr = $('#type_evn_crtr').val();
+            var idEvnCrtr = $('#id_evn_crtr').val();
+            if (typeEvnCrtr == 'user') {
+                window.location = 'utilisateur/'+idEvnCrtr;
+            }
+            else if (typeEvnCrtr == 'boutique') {
+                window.location = 'boutique/'+idEvnCrtr;
+            }
+        })
+
+        // show evenement details position
+        $(document).on('click','#show_evenement_position',function(){
+            var latitudeEvn = $('#latitude_evn').val();
+            var longitudeEvn = $('#longitude_evn').val();
+            var fd = new FormData();
+            fd.append('latitude_evn',latitudeEvn);
+            fd.append('longitude_evn',longitudeEvn);
+            $.ajax({
+                url: 'load-evenement-position.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("#evenement_details").css('display','');
+                        $('#evenement_details_container').empty();
+                        $('.evenement-position').show();
+                    }
+                    else{
+                        $("#evenement_details").css('transform','');
+                        setTimeout(() => {
+                            $('#evenement_details_container').empty();
+                        }, 400);
+                        $('.evenement-position').css('transform','translateX(0)');
+                    }
+                    $("#loader_evenement_position").show();
+                },
+                success: function(response){
+                    $('#evenement_position_container').append(response);
+                },
+                complete: function(response){
+                    $("#loader_evenement_position").hide();
+                }
+            });
+        })
+
+        // show evenement details direction
+        $('#evenement_details_container').on('click','#show_evenement_direction',function(){
+            var latitudeEvn = $('#latitude_evn').val();
+            var longitudeEvn = $('#longitude_evn').val();
+            url = "https://maps.google.com/?q="+latitudeEvn+","+longitudeEvn;
+            window.open(url, '_blank');
+        })
+        
+        <?php if (isset($_SESSION['user'])) { ?>
+        var uid = <?php echo $uid; ?>;
+        var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
+        var websocket = false;
+        var js_flood = 0;
+        var status_websocket = 0;
+        $(document).ready(function() {
+            start(websocket_server);
+        });
+        <?php } ?>
     </script>
+    <script src="css-js/websocket.js"></script>
 </body>
 </html>

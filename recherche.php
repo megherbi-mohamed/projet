@@ -18,26 +18,6 @@ if (isset($_SESSION['user'])) {
         header('Location: inscription-connexion.php');
     }
 }
-$text = '';
-if (isset($_GET['r'])) {
-    $text = $_GET['r'];
-    if ($text != '') {
-        $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user,nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' AND nom_entrp_user LIKE '%$text%' OR profession_user LIKE '%$text%' OR dscrp_user LIKE '%$text%' OR ville LIKE '%$text%' 
-        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques WHERE nom_btq LIKE '%$text%' OR sous_categorie LIKE '%$text%' OR dscrp_btq LIKE '%$text%' OR ville_btq LIKE '%$text%'");
-        $rech_user_query->execute();
-    }
-    else{
-        $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
-        UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques");
-        $rech_user_query->execute();
-    }  
-}
-else{
-    $rech_user_query = $conn->prepare("SELECT id_user AS id, type_user, nom_entrp_user AS nom, couverture_user AS img, ville AS ville, latitude_user AS latitude, longitude_user AS longitude, adresse_user AS adresse, profession_user AS profession, dscrp_user AS dscrp FROM utilisateurs WHERE type_user = 'professionnel' 
-    UNION SELECT id_btq AS id, type_user, nom_btq AS nom, couverture_btq AS img, ville_btq AS ville, latitude_btq AS latitude, longitude_btq AS longitude, adresse_btq AS adresse, sous_categorie AS profession, dscrp_btq AS dscrp FROM boutiques");
-    $rech_user_query->execute();
-}
-  
 $get_ville_query = $conn->prepare("SELECT ville FROM villes");
 $get_ville_query->execute();
 ?>
@@ -55,7 +35,7 @@ $get_ville_query->execute();
     <title>Recherche</title>
 </head>
 <body>
-    <?php include './navbar.php'; ?>
+    <?php include './navbar.php';?>
     <div class="clear"></div>
     <div class="recherche-recherche-responsive">
         <div class="recherche-recherche-responsive-container">
@@ -65,17 +45,10 @@ $get_ville_query->execute();
             <div class="logo-name">
                 <h4>Nhannik</h4>
             </div> 
-            <div id="back_menu">
-                <i class="fas fa-arrow-left"></i>
-            </div>    
-            <div id="recherche_recherche_responsive">
-                <input type="text" id="recherche_text_resp" placeholder="Entrez votre recherche ...">
-                <i class="fas fa-search"></i>
-            </div>
             <div id="display_categories">
-                <i class="fas fa-list"></i>
+                <i class="fas fa-filter"></i>
             </div>
-            <div id="display_rech_search_bar">
+            <div id="show_search_bar_rsp">
                 <i class="fas fa-search"></i>
             </div>
         </div>
@@ -87,255 +60,180 @@ $get_ville_query->execute();
             <i class="fas fa-search"></i>
         </div>
         <hr>
-        <div class="recherche-categories">
-            <div class="recherche-categorie-top">
-                <h3>Catégories</h3>
-            </div>
-            <div class="recherche-categorie-bottom">
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/bureau-icon.png" alt="">
-                    </div>
-                    <p>Services</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/service-icon.png" alt="">
-                    </div>
-                    <p>Artisants</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/transport-icon.png" alt="">
-                    </div>
-                    <p>Transports</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/service-icon.png" alt="">
-                    </div>
-                    <p>Locations</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/entreprise-icon.png" alt="">
-                    </div>
-                    <p>Entreprises</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/detaillon-icon.png" alt="">
-                    </div>
-                    <p>Detaillons</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/grossiste-icon.png" alt="">
-                    </div>
-                    <p>Grossistes</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/fabriquant-icon.png" alt="">
-                    </div>
-                    <p>Fabriquants</p>
-                </div>
-                <div class="rc-categorie">
-                    <div>
-                        <img src="./icons/importateur-icon.png" alt="">
-                    </div>
-                    <p>Import - Export</p>
-                </div>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Services</h3>
+        <div class="filter-recherche-options">
+            <div class="filter-recherche" id="display_filter_professionnel">
                 <div>
-                    <img src="./icons/bureau-icon.png" alt="">
+                    <i class="fas fa-user"></i>
+                </div>
+                <p>Professionnel</p>
+            </div>
+            <div class="filter-options" id="filter_professionnel_options">
+                <div class="filter-recherche-buttons">
+                    <h4>Filtrer par</h4>
+                    <button class="reset-recherche-button" id="reset_professionnel_filter">Réintialiser</button>
+                    <button class="filter-recherche-button" id="filter_professionnel">Filtrer</button>
+                </div>
+                <div class="filter-recherche-input">
+                    <p>Categories</p>
+                    <select id="categorie_professionnel">
+                        <option value="">Categories</option>
+                        <option id="services" value="services">Services</option>
+                        <option id="artisants" value="artisants">Artisants</option>
+                        <option id="transports" value="transports">Transports</option>
+                        <option id="locations" value="locations">Locations</option>
+                        <option id="entreprises" value="entreprises">Entreprises</option>
+                        <option id="detaillons" value="detaillons">Detaillons</option>
+                        <option id="grossidtes" value="grossidtes">Grossistes</option>
+                        <option id="fabriquants" value="fabriquants">Fabriquants</option>
+                        <option id="import-export" value="import-export">Import-Export</option>
+                    </select> 
+                </div>
+                <div class="filter-recherche-input profession-professionnel">
+                    <p>Profession</p>
+                    <select id="profession_professionnel">
+                        <option value="">Professions</option>
+                    </select>
+                </div>
+                <div class="filter-recherche-input">
+                    <p>Ville</p>
+                    <select id="ville_professionnel">
+                        <option value="">Ville</option>
+                        <?php 
+                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query->execute(); 
+                        while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                        <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="filter-recherche-input commune-professionnel"> 
+                    <p>Commune</p>
+                    <select id="commune_professionnel">
+                        <option value="">Commune</option>
+                    </select>
                 </div>
             </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query =$conn->prepare( "SELECT * FROM categories WHERE categories = 'services'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Artisantss</h3>
+            <div class="filter-recherche" id="display_filter_boutique">
                 <div>
-                    <img src="./icons/service-icon.png" alt="">
+                    <i class="fas fa-store"></i>
+                </div>
+                <p>boutiques</p>
+            </div>
+            <div class="filter-options" id="filter_boutique_options">
+                <div class="filter-recherche-buttons">
+                    <h4>Filtrer par</h4>
+                    <button class="reset-recherche-button" id="reset_boutique_filter">Réintialiser</button>
+                    <button class="filter-recherche-button" id="filter_boutique">Filtrer</button>
+                </div>
+                <div class="filter-recherche-input">
+                    <p>Categories</p>
+                    <select id="categorie_boutique">
+                        <option value="">Categories</option>
+                        <option id="services" value="services">Services</option>
+                        <option id="artisants" value="artisants">Artisants</option>
+                        <option id="transports" value="transports">Transports</option>
+                        <option id="locations" value="locations">Locations</option>
+                        <option id="entreprises" value="entreprises">Entreprises</option>
+                        <option id="detaillons" value="detaillons">Detaillons</option>
+                        <option id="grossidtes" value="grossidtes">Grossistes</option>
+                        <option id="fabriquants" value="fabriquants">Fabriquants</option>
+                        <option id="import-export" value="import-export">Import-Export</option>
+                    </select> 
+                </div>
+                <div class="filter-recherche-input profession-boutique">
+                    <p>Profession</p>
+                    <select id="profession_boutique">
+                        <option value="">Professions</option>
+                    </select>
+                </div>
+                <div class="filter-recherche-input">
+                    <p>Ville</p>
+                    <select id="ville_boutique">
+                        <option value="">Ville</option>
+                        <?php 
+                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query->execute(); 
+                        while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                        <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="filter-recherche-input commune-boutique"> 
+                    <p>Commune</p>
+                    <select id="commune_boutique">
+                        <option value="">Commune</option>
+                    </select>
                 </div>
             </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'artisants'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Transports</h3>
+            <div class="filter-recherche" id="display_filter_product">
                 <div>
-                    <img src="./icons/transport-icon.png" alt="">
+                    <i class="fas fa-boxes"></i>
                 </div>
+                <p>Produits</p>
             </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'transports'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Locations</h3>
+            <!-- <div class="filter-recherche" id="display_filter_boutdechantier">
                 <div>
-                    <img src="./icons/service-icon.png" alt="">
+                    <i class="fas fa-store"></i>
                 </div>
+                <p>boutdechantier</p>
             </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'locations'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
+            <div class="filter-options" id="filter_boutdechantier_options">
+                <div class="filter-recherche-buttons">
+                    <h4>Filtrer par</h4>
+                    <button class="reset-recherche-button" id="reset_boutdechantier_filter">Réintialiser</button>
+                    <button class="filter-recherche-button" id="filter_boutdechantier">Filtrer</button>
                 </div>
-                <h3>Entreprises</h3>
-                <div>
-                    <img src="./icons/entreprise-icon.png" alt="">
+                <div class="filter-recherche-input">
+                    <p>Categorie</p>
+                    <select id="categorie_boutdechantier">
+                        <option value="">Categories</option>
+                        <option value="Outillages">Outillages</option>
+                        <option value="Quincalleries">Quincalleries</option>
+                        <option value="Peinture et vernis">Peinture et vernis</option>
+                        <option value="Revetement mural">Revetement mural</option>
+                        <option value="Eléctricité">Eléctricité</option>
+                        <option value="Menuiserie et bois">Menuiserie et bois</option>
+                        <option value="Portes et fenetres">Portes et fenetres</option>
+                        <option value="Cloison et séparation">Cloison et séparation</option>
+                        <option value="Isolation">Isolation</option>
+                        <option value="Revetements sol">Revetements sol</option>
+                        <option value="Matériaux et gros oeuvre">Matériaux et gros oeuvre</option>
+                        <option value="Plombrie">Plombrie</option>
+                    </select> 
                 </div>
-            </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'entreprises'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
+                <div class="filter-recherche-input">
+                    <p>Ville</p>
+                    <select id="ville_boutdechantier">
+                        <option value="">Ville</option>
+                        <?php 
+                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query->execute(); 
+                        while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                        <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
-                <h3>Detaillons</h3>
-                <div>
-                    <img src="./icons/detaillon-icon.png" alt="">
+                <div class="filter-recherche-input commune-boutdechantier"> 
+                    <p>Commune</p>
+                    <select id="commune_boutdechantier">
+                        <option value="">Commune</option>
+                    </select>
                 </div>
-            </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'detaillons'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Grossistes</h3>
-                <div>
-                    <img src="./icons/grossiste-icon.png" alt="">
-                </div>
-            </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'grossistes'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Fabriquants</h3>
-                <div>
-                    <img src="./icons/fabriquant-icon.png" alt="">
-                </div>
-            </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'fabriquants'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="rc-sous-gategorie">
-            <div class="rc-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Import - Export</h3>
-                <div>
-                    <img src="./icons/importateur-icon.png" alt="">
-                </div>
-            </div>
-            <div class="rc-sous-gategorie-bottom">
-                <?php 
-                $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = 'import-export'");
-                $categories_query->execute();
-                while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
-                ?>
-                <li class="sous-categorie"><?php echo $categories_row['sous_categories'] ?></li>
-                <?php } ?>
-            </div>
+            </div> -->
         </div>
     </div>
     <div class="recherche-middle">
-        <div class="recherche-middle-content"></div>
-        <div id="loader_load" class="center-load"></div>
+        <div class="recherche-middle-content">
+
+        </div>
+        <div id="loader_load" class="center"></div>
     </div>
     <div class="recherche-right">
         <div id="map"></div>
-        <!-- <div id="loader_load" class="center-load"></div> -->
+        <div id="loader_map" class="center"></div>
     </div>
     <input type="hidden" id="r" value="<?php echo $_GET['r'] ?>">
     <div id="loader" class="center"></div>
@@ -343,6 +241,14 @@ $get_ville_query->execute();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="./css-js/main.js"></script>
     <script>
+        var typeRecherche = '<?php echo $_GET['type_r'] ?>';
+        var typeFilter = '<?php echo $_GET['type_f'] ?>';
+        var rechercheText = '<?php if (isset($_GET['text'])) { echo $_GET['text']; } else { echo ''; } ?>';
+        var categorie = '<?php if (isset($_GET['categorie'])) { echo $_GET['categorie']; } else { echo ''; } ?>';
+        var profession = '<?php if (isset($_GET['profession'])) { echo $_GET['profession']; } else { echo ''; } ?>';
+        var ville = '<?php if (isset($_GET['ville'])) { echo $_GET['ville']; } else { echo ''; } ?>';
+        var commune = '<?php if (isset($_GET['commune'])) { echo $_GET['commune']; } else { echo ''; } ?>';
+        
         document.onreadystatechange = function() { 
             if (document.readyState !== "complete") { 
                 document.querySelector("body").style.visibility = "hidden"; 
@@ -350,93 +256,107 @@ $get_ville_query->execute();
             } else { 
                 document.querySelector("#loader").style.display = "none"; 
                 document.querySelector("body").style.visibility = "visible"; 
+                var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+                if (typeRecherche == 'tout' || typeRecherche == 'professionnel' || typeRecherche == 'boutique') {
+                    initMap.apply(null, rechercheMap); 
+                }
             } 
         }; 
 
-        var windowWidth = window.innerWidth;
-        if (windowWidth <= 768) {
-            $('.footer').css('display','none');
-        }
-        else{}
-
-        function initMap(text) {
+        function initMap(a,b,c,d,e,f,g) {
             var map = new google.maps.Map(document.getElementById('map'), {
                 center: new google.maps.LatLng(36.638478, 2.947326),
                 zoom: 5
             });
             var infoWindow = new google.maps.InfoWindow;
-
-            downloadUrl('markers.php?r='+text, function(notifications) {
-            var xml = notifications.responseXML;
-            var markers = xml.documentElement.getElementsByTagName('marker');
-            Array.prototype.forEach.call(markers, function(markerElem) {
-                var type = markerElem.getAttribute('type');
-                var id = markerElem.getAttribute('id');
-                var name = markerElem.getAttribute('nom');
-                var address = markerElem.getAttribute('address');
-                var point = new google.maps.LatLng(
-                    parseFloat(markerElem.getAttribute('latitude')),
-                    parseFloat(markerElem.getAttribute('longitude')));
-                var image = markerElem.getAttribute('image');
-                
-                var infowincontent = document.createElement('div');
-
-                var logo = document.createElement('img');
-                logo.src = './'+image;
-                logo.width = 40;
-                logo.height = 40;
-                infowincontent.appendChild(logo);
-
-                infowincontent.appendChild(document.createElement('br'));
-
-                var strong = document.createElement('strong');
-                strong.textContent = name
-                infowincontent.appendChild(strong);
-
-                infowincontent.appendChild(document.createElement('br'));
-
-                var text = document.createElement('text');
-                text.textContent = address
-                infowincontent.appendChild(text);
-
-                infowincontent.appendChild(document.createElement('br'));
-                
-                if (type == 'user') {
-                    var link = document.createElement('a');
-                    link.href = 'utilisateur-info.php?id_user='+id;
-                    if (windowWidth <= 768) {
-                        link.target = '';
-                    }else{
-                        link.target = '_blank';
+            console.log(a,b,c,d,e,f,g);
+            downloadUrl('markers.php?type_r='+a+'&type_f='+b+'&text='+c+'&categorie='+d+'&profession='+e+'&ville='+f+'&commune='+g, function(notifications) {
+                var xml = notifications.responseXML;
+                var markers = xml.documentElement.getElementsByTagName('marker');
+                Array.prototype.forEach.call(markers, function(markerElem) {
+                    var type = markerElem.getAttribute('type');
+                    var id = markerElem.getAttribute('id');
+                    var name = markerElem.getAttribute('nom');
+                    var address = markerElem.getAttribute('address');
+                    var point = new google.maps.LatLng(
+                        parseFloat(markerElem.getAttribute('latitude')),
+                        parseFloat(markerElem.getAttribute('longitude'))
+                    );
+                    var image = markerElem.getAttribute('image');
+                    var infowincontent = document.createElement('div');
+                    var logo = document.createElement('img');
+                    logo.src = './'+image;
+                    logo.width = 40;
+                    logo.height = 40;
+                    infowincontent.appendChild(logo);
+                    infowincontent.appendChild(document.createElement('br'));
+                    var strong = document.createElement('strong');
+                    strong.textContent = name
+                    infowincontent.appendChild(strong);
+                    infowincontent.appendChild(document.createElement('br'));
+                    var text = document.createElement('text');
+                    text.textContent = address
+                    infowincontent.appendChild(text);
+                    infowincontent.appendChild(document.createElement('br'));
+                    if (type == 'user') {
+                        var link = document.createElement('a');
+                        link.href = 'utilisateur-info.php?id_user='+id;
+                        if (windowWidth <= 768) {
+                            link.target = '';
+                        }
+                        else{
+                            link.target = '_blank';
+                        }
                     }
-                }
-                else if( type == 'boutique'){
-                    var link = document.createElement('a');
-                    link.href = 'boutique.php?id_btq='+id;
-                    if (windowWidth <= 768) {
-                        link.target = '';
-                    }else{
-                        link.target = '_blank';
+                    else if( type == 'boutique'){
+                        var link = document.createElement('a');
+                        link.href = 'boutique.php?id_btq='+id;
+                        if (windowWidth <= 768) {
+                            link.target = '';
+                        }
+                        else{
+                            link.target = '_blank';
+                        }
                     }
-                }
-                
-                var windowWidth = window.innerWidth;
-                link.textContent = name
-                infowincontent.appendChild(link);
-                
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: point,
-                    icon : {
-                        url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
-                    }
-                });
-                marker.addListener('click', function() {
-                    infoWindow.setContent(infowincontent);
-                    infoWindow.open(map, marker);
+                    var windowWidth = window.innerWidth;
+                    link.textContent = name
+                    infowincontent.appendChild(link);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: point,
+                        icon : {
+                            url: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                        }
+                    });
+                    marker.addListener('click', function() {
+                        infoWindow.setContent(infowincontent);
+                        infoWindow.open(map, marker);
+                    });
                 });
             });
-            });
+
+            function downloadUrl(url, callback) {
+                var request = window.ActiveXObject ?
+                    new ActiveXObject('Microsoft.XMLHTTP') :
+                    new XMLHttpRequest;
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4) {
+                        $('#map').css('visibility','');
+                        $('#loader_map').hide();
+                        request.onreadystatechange = doNothing;
+                        callback(request, request.status);
+                    }
+                    else{
+                        $('#map').css('visibility','hidden');
+                        $('#loader_map').show();
+                    }
+                };
+
+                request.open('GET', url, true);
+                request.send(null);
+            }
+
+            function doNothing() {}
             
             $(document).on('click','[id^="display_position_"]',function() {
                 var id = $(this).attr("id").split("_")[2];
@@ -446,7 +366,6 @@ $get_ville_query->execute();
                 var adrssPos = $('#adrss_pos_'+id).val();
                 var latPos = $('#lat_pos_'+id).val();
                 var lngPos = $('#lng_pos_'+id).val();
-
                 $('#map').css('transform','');
                 $('.search-filter-bar-fixed').css('transform','');
                 $('.all-search').css('transform','');
@@ -492,14 +411,12 @@ $get_ville_query->execute();
                 $('#map').css('transform','');
                 $('.search-filter-bar-fixed').css('transform','');
                 $('.all-search').css('transform','');
-                
                 var idPosBtq = $('#id_pos_btq_'+idBtq).val();
                 var imgPosBtq = $('#img_pos_btq_'+idBtq).val();
                 var nomPosBtq = $('#nom_pos_btq_'+idBtq).val();
                 var adrssPosBtq = $('#adrss_pos_btq_'+idBtq).val();
                 var latPosBtq = $('#lat_pos_btq_'+idBtq).val();
                 var lngPosBtq = $('#lng_pos_btq_'+idBtq).val();
-
                 map.panTo(new google.maps.LatLng(latPosBtq, lngPosBtq))
                 map.setZoom(10)
                 marker = new google.maps.Marker({
@@ -537,48 +454,6 @@ $get_ville_query->execute();
                 infoWindow.open(map, marker);
             });
         }
-        function downloadUrl(url, callback) {
-            var request = window.ActiveXObject ?
-                new ActiveXObject('Microsoft.XMLHTTP') :
-                new XMLHttpRequest;
-
-            request.onreadystatechange = function() {
-                if (request.readyState == 4) {
-                request.onreadystatechange = doNothing;
-                callback(request, request.status);
-                }
-            };
-
-            request.open('GET', url, true);
-            request.send(null);
-        }
-        function doNothing() {}
-
-        var rcCategorie = document.querySelectorAll('.rc-categorie');
-        var rcSousCategorie = document.querySelectorAll('.rc-sous-gategorie');
-
-        for (let i = 0; i < rcCategorie.length; i++) {
-            rcCategorie[i].addEventListener('click',(e)=>{
-                e.stopPropagation();
-                rcSousCategorie[i].style.transform = 'translateX(0)';
-            })
-        }
-
-        var returnCategorie = document.querySelectorAll('#return_categorie');
-        for (let i = 0; i < returnCategorie.length; i++) {
-            returnCategorie[i].addEventListener('click',(e)=>{
-                e.stopPropagation();
-                rcSousCategorie[i].style.transform = '';
-            })
-        }
-
-        $('#back_history').click(function(){
-            window.history.back();
-        })
-
-        $('.bt-sous-gategorie-top').click(function(e){
-            e.stopPropagation();
-        })
 
         $('#display_categories').click(function(e){
             e.stopPropagation();
@@ -588,178 +463,95 @@ $get_ville_query->execute();
             $('.recherche-left').css('transform','translateX(0)');
         })
 
+        function rechercheToutText (rechercheText,typeRecherche) {
+            var typeFilter = 'text';
+            var categorie = '';
+            var profession = '';
+            var ville = '';
+            var commune = '';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+'/'+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (768 <= windowWidth <= 1250) {
+                            hideLeftRecherche ();
+                            setTimeout(() => {
+                                $('.recherche-middle-content').append(response);
+                            }, 400);
+                        }
+                        else{
+                            $('.recherche-middle-content').append(response);
+                        }
+                        initMap.apply(null, rechercheMap);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        }
+
         $(document).on('keypress',"#recherche_text",function() {
-            if (event.which == 13) {
-                var rechercheText = $('#recherche_text').val();
-                var fd = new FormData();
-                fd.append('r',rechercheText);
-                $.ajax({
-                    url: 'recherche-professionnel.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        history.replaceState(null,'', 'recherche/'+rechercheText);
-                        $('.recherche-middle-content').empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.recherche-middle-content').append(response);
-                        if (typeof google === 'object' && typeof google.maps === 'object') {
-                            initMap(rechercheText);
-                        }else{
-                            setTimeout(() => {
-                                initMap(rechercheText);
-                            }, 2000);
-                        }
-                    },
-                    complete: function(response){
-                        $("#loader_load").hide();
-                    }
-                });
-                // if (typeof google === 'object' && typeof google.maps === 'object') {
-                //     initMap(rechercheText);
-                // }else{
-                //     setTimeout(() => {
-                //         initMap(rechercheText);
-                //     }, 2000);
-                // }
+            var rechercheText = $(this).val();
+            if (rechercheText != '') {
+                if (event.which == 13) {
+                    rechercheToutText (rechercheText);
+                }
             }
         });
 
-        $(document).on('keypress',"#recherche_text_resp",function() {
-            if (event.which == 13) {
-                var rechercheTextRsp = $('#recherche_text_resp').val();
-                var fd = new FormData();
-                fd.append('r',rechercheTextRsp);
-                $.ajax({
-                    url: 'recherche-professionnel.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        history.replaceState(null,'', 'recherche/'+rechercheTextRsp);
-                        $('.recherche-middle-content').empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
+        $(window).on('load', function(){ 
+            $('#recherche_text').val(rechercheText);
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (typeFilter == 'text') {
+                        history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+'/'+rechercheText);
+                    }
+                    else if (typeFilter == 'filter') {
+                        var filter = '';
+                        if (categorie != '') { filter = '/'+categorie; } else { filter = filter+'/0'; }
+                        if (profession != '') { filter = filter+'/'+profession; } else { filter = filter+'/0'; }
+                        if (ville != '') { filter = filter+'/'+ville; } else { filter = filter+'/0'; }
+                        if (commune != '') { filter = filter+'/'+commune; } else { filter = filter+'/0'; }
+                        history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+filter);
+                    }
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    if (response != 0) {
                         $('.recherche-middle-content').append(response);
-                        if (typeof google === 'object' && typeof google.maps === 'object') {
-                            initMap(rechercheTextRsp);
-                        }else{
-                            setTimeout(() => {
-                                initMap(rechercheTextRsp);
-                            }, 2000);
-                        }
-                    },
-                    complete: function(response){
-                        unsetRechercheSearchBar();
-                        $("#loader_load").hide();
-                    }
-                });
-            }
-        });
-
-        $('#recherche_recherche_responsive').click(function(e){
-            e.stopPropagation();
-        })
-
-        $('#display_rech_search_bar').click(function(e){
-            e.stopPropagation();
-            setRechercheSearchBar();
-        }) 
-
-        $(document).ready(function(){
-            var rechercheText = $('#r').val();
-            $('#recherche_text').val(rechercheText);
-            $('#recherche_text_resp').val(rechercheText);
-            var fd = new FormData();
-            fd.append('r',rechercheText);
-            $.ajax({
-                url: 'recherche-professionnel.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    history.replaceState(null,'', 'recherche/'+rechercheText);
-                    $('.recherche-middle-content').empty();
-                    $("#loader_load").show();
-                },
-                success: function(response){
-                    $('.recherche-middle-content').append(response);
-                    if (typeof google === 'object' && typeof google.maps === 'object') {
-                        initMap(rechercheText);
-                    }else{
-                        setTimeout(() => {
-                            initMap(rechercheText);
-                        }, 2000);
-                    }
-                },
-                complete: function(response){
-                    $("#loader_load").hide();
-                }
-            });
-        });
-
-        $(window).on('beforeunload', function(){
-            var rechercheText = $('#r').val();
-            $('#recherche_text').val(rechercheText);
-            $('#recherche_text_resp').val(rechercheText);
-            var fd = new FormData();
-            fd.append('r',rechercheText);
-            $.ajax({
-                url: 'recherche-professionnel.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    history.replaceState(null,'', 'recherche/'+rechercheText);
-                    $('.recherche-middle-content').empty();
-                    $("#loader_load").show();
-                },
-                success: function(response){
-                    $('.recherche-middle-content').append(response);
-                    if (typeof google === 'object' && typeof google.maps === 'object') {
-                        initMap(rechercheText);
-                    }else{
-                        setTimeout(() => {
-                            initMap(rechercheText);
-                        }, 2000);
-                    }
-                },
-                complete: function(response){
-                    $("#loader_load").hide();
-                }
-            });
-        });
-
-        $(document).on('click',".sous-categorie",function() {
-            var fd = new FormData();
-            var rechercheText = $(this).text();
-            fd.append('r',rechercheText);
-            $.ajax({
-                url: 'recherche-professionnel.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    history.replaceState(null,'', 'recherche/'+rechercheText);
-                    $('.recherche-middle-content').empty();
-                    $("#loader_load").show();
-                },
-                success: function(response){
-                    $('.recherche-middle-content').append(response);
-                    if (typeof google === 'object' && typeof google.maps === 'object') {
-                        initMap(rechercheText);
-                    }else{
-                        setTimeout(() => {
-                            initMap(rechercheText);
-                        }, 2000);
                     }
                 },
                 complete: function(response){
@@ -784,6 +576,397 @@ $get_ville_query->execute();
                 lastScrollTop = st;
             });
         }
+
+        $('.recherche-left').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#display_filter_professionnel').click(function(){
+            if ($('#filter_professionnel_options').height() > 0) {
+                $('#filter_professionnel_options').css({'max-height':''});
+            }
+            else{
+                $('#filter_professionnel_options').css({'max-height':'250px'});
+            }
+        })
+
+        $('#ville_professionnel').on('change',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-professionnel').load('commune-professionnel-filter.php?v='+ville);
+            }
+        })
+
+        $('#categorie_professionnel').on('change',function() {
+            var categorie  = $(this).val();
+            if (categorie !== '') {
+                $('.profession-professionnel').load('categorie-professionnel-filter.php?c='+categorie);
+            }
+        })
+
+        // filter recherche
+        $('#filter_professionnel').on('click',function() {
+            var typeRecherche = 'professionnel';
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categorie = $('#categorie_professionnel').val();
+            var profession = $('#profession_professionnel').val();
+            var ville = $('#ville_professionnel').val();
+            var commune = $('#commune_professionnel').val();
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".recherche-middle-content").empty();
+                    $("#loader_load").show();
+                    var filter = '';
+                    if (categorie != '') { filter = '/'+categorie; } else { filter = filter+'/0'; }
+                    if (profession != '') { filter = filter+'/'+profession; } else { filter = filter+'/0'; }
+                    if (ville != '') { filter = filter+'/'+ville; } else { filter = filter+'/0'; }
+                    if (commune != '') { filter = filter+'/'+commune; } else { filter = filter+'/0'; }
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+filter);
+                },
+                success: function(response){
+                    console.log(response);
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.recherche-middle-content').append(response);
+                        }
+                        else{
+                            hideLeftRecherche ();
+                            setTimeout(() => {
+                                $('.recherche-middle-content').append(response);
+                            }, 400);
+                        }
+                        initMap.apply(null, rechercheMap);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        // reset filter recherche
+        $('#reset_professionnel_filter').on('click',function() {
+            var typeRecherche = 'professionnel';
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categorie = '';
+            var profession = '';
+            var ville = '';
+            var commune = '';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".recherche-middle-content").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'recherche/professionnel/filter/0/0/0/0');
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.recherche-middle-content').append(response);
+                        }
+                        else{
+                            hideLeftRecherche ();
+                            setTimeout(() => {
+                                $('.recherche-middle-content').append(response);
+                            }, 400);
+                        }
+                        $('#categorie_professionnel option:eq(0)').prop('selected',true);
+                        $('#profession_professionnel option:eq(0)').prop('selected',true);
+                        $('#ville_professionnel option:eq(0)').prop('selected',true);
+                        $('#commune_professionnel option:eq(0)').prop('selected',true);
+                        $("#loader_load").hide();
+                        initMap.apply(null, rechercheMap);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $('#display_filter_boutique').click(function(){
+            if ($('#filter_boutique_options').height() > 0) {
+                $('#filter_boutique_options').css({'max-height':''});
+            }
+            else{
+                $('#filter_boutique_options').css({'max-height':'250px'});
+            }
+        })
+
+        $('#ville_boutique').on('change',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-boutique').load('commune-boutique-filter.php?v='+ville);
+            }
+        })
+
+        $('#categorie_boutique').on('change',function() {
+            var categorie  = $(this).val();
+            if (categorie !== '') {
+                $('.profession-boutique').load('categorie-boutique-filter.php?c='+categorie);
+            }
+        })
+
+        // filter recherche
+        $('#filter_boutique').on('click',function() {
+            var typeRecherche = 'boutique';
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categorie = $('#categorie_boutique').val();
+            var profession = $('#profession_boutique').val();
+            var ville = $('#ville_boutique').val();
+            var commune = $('#commune_boutique').val();
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".recherche-middle-content").empty();
+                    $("#loader_load").show();
+                    var filter = '';
+                    if (categorie != '') { filter = '/'+categorie; } else { filter = filter+'/0'; }
+                    if (profession != '') { filter = filter+'/'+profession; } else { filter = filter+'/0'; }
+                    if (ville != '') { filter = filter+'/'+ville; } else { filter = filter+'/0'; }
+                    if (commune != '') { filter = filter+'/'+commune; } else { filter = filter+'/0'; }
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+filter);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.recherche-middle-content').append(response);
+                        }
+                        else{
+                            hideLeftRecherche ();
+                            setTimeout(() => {
+                                $('.recherche-middle-content').append(response);
+                            }, 400);
+                        }
+                        initMap.apply(null, rechercheMap);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        // reset filter recherche
+        $('#reset_boutique_filter').on('click',function() {
+            var typeRecherche = 'boutique';
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categorie = '';
+            var profession = '';
+            var ville = '';
+            var commune = '';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".recherche-middle-content").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'recherche/boutique/filter/0/0/0/0');
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.recherche-middle-content').append(response);
+                        }
+                        else{
+                            hideLeftRecherche ();
+                            setTimeout(() => {
+                                $('.recherche-middle-content').append(response);
+                            }, 400);
+                        }
+                        $('#categorie_boutique option:eq(0)').prop('selected',true);
+                        $('#profession_boutique option:eq(0)').prop('selected',true);
+                        $('#ville_boutique option:eq(0)').prop('selected',true);
+                        $('#commune_boutique option:eq(0)').prop('selected',true);
+                        $("#loader_load").hide();
+                        initMap.apply(null, rechercheMap);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $(document).on('click','#show_all_professionnel_result',function() {
+            var typeRecherche = 'professionnel';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            $('#recherche_text').val(rechercheText);
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+'/'+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    initMap.apply(null, rechercheMap); 
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $(document).on('click','[id^="professionnel_overview_"]',function() {
+            let id = $(this).attr("id").split('_')[2];
+            let idUser = $('#id_professionnel_overview_'+id).val();
+            window.location = 'utilisateur/'+idUser;
+        })
+
+        $(document).on('click','#show_all_boutique_result',function() {
+            var typeRecherche = 'boutique';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            $('#recherche_text').val(rechercheText);
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+'/'+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    initMap.apply(null, rechercheMap); 
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $(document).on('click','[id^="boutique_overview_"]',function() {
+            let id = $(this).attr("id").split('_')[2];
+            let idBtq = $('#id_boutique_overview_'+id).val();
+            window.location = 'boutique/'+idBtq;
+        })
+
+        $(document).on('click','#show_all_product_result',function() {
+            var typeRecherche = 'produit';
+            var rechercheMap = [typeRecherche,typeFilter,rechercheText,categorie,profession,ville,commune];
+            $('#recherche_text').val(rechercheText);
+            var fd = new FormData();
+            fd.append('type_recherche',typeRecherche);
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_user',categorie);
+            fd.append('profession_user',profession);
+            fd.append('ville_user',ville);
+            fd.append('commune_user',commune);
+            $.ajax({
+                url: 'filter-recherche.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    history.replaceState(null,'', 'recherche/'+typeRecherche+'/'+typeFilter+'/'+rechercheText);
+                    $('.recherche-middle-content').empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    $('.recherche-middle-content').append(response);
+                    // initMap.apply(null, rechercheMap); 
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $(document).on('click','[id^="product_overview_"]',function() {
+            let id = $(this).attr("id").split('_')[2];
+            let idBtq = $('#id_boutique_product_overview_'+id).val();
+            let idPrd = $('#id_product_overview_'+id).val();
+            console.log(idBtq+' '+idPrd);
+            window.location = 'boutique/'+idBtq+'/'+idPrd;
+        })
+
+        $(document).on('click','#show_all_boutdechantier_result',function() {
+            // var typefilter = 'text';
+            window.location = 'boutdechantier/'+typeFilter+'/'+rechercheText;
+        })
     
         <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $uid; ?>;

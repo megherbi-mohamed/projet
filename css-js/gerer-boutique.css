@@ -1,3 +1,21 @@
+#parameters_gererboutique_button{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    align-self: center;
+    position: relative;
+    background: #ecedee;
+    cursor: pointer;
+}
+#parameters_gererboutique_button:hover{
+    background: #e0e0e0;
+}
+#parameters_gererboutique_button i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
 .categorie-search-bar{
     margin-left: 10px;
 }
@@ -10,12 +28,18 @@
     border-radius: 50%;
     background: #ecedee;
     cursor: pointer;
+    position: relative;
+    margin-right: 15px;
 }
 .categorie-search-bar div:hover{
     background: #e0e0e0;
 }
 .categorie-search-bar div i{
     color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 .gerer-boutique-recherche-responsive{
     display: none;
@@ -394,8 +418,9 @@
     text-decoration: none;
     position: absolute;
     left: 10px;
+    bottom: 10px;
     font-size: .9rem;
-    padding: 5px 10px;
+    padding: 10px;
     box-sizing: border-box;
     background: #ecedee;
     border-radius: 5px;
@@ -536,284 +561,6 @@
     font-weight: bold;
     font-size: .75rem;
     margin: 0 0 0 5px;
-}
-
-/* create update product */
-.create-product,
-.update-product,
-.create-categorie,
-.update-categorie{
-    position: fixed;
-    width: 100%;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    display: none;
-    z-index: 150;
-    overflow-y: auto;
-}
-.create-product::-webkit-scrollbar,
-.update-product::-webkit-scrollbar{
-    display: none;
-}
-.create-product-container,
-.update-product-container,
-.create-categorie-container,
-.update-categorie-container{
-    width: 530px;
-    margin: 10px auto;
-    padding: 10px 20px;
-    box-sizing: border-box;
-    background: #ffffff;
-    border-radius: 10px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    -webkit-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
-    -moz-box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
-    box-shadow: 0px 0px 27px -11px rgba(0,0,0,0.75);
-}
-.create-product-container form,
-.update-product-container form{
-    display: none;
-}
-.create-product-top,
-.update-product-top,
-.create-categorie-top,
-.update-categorie-top{
-    width: 100%;
-    display: grid;
-    grid-template-columns: 85% 15%;
-    justify-items: center;
-    align-items: center;
-    border-bottom: 1px solid #ecedee;
-    padding-bottom: 10px;
-    box-sizing: border-box;
-}
-.create-product-top button,
-.update-product-top button,
-.create-categorie-top button,
-.update-categorie-top button{
-    display: none;
-}
-.create-product-top h4,
-.update-product-top h4,
-.create-categorie-top h4,
-.update-categorie-top h4{
-    margin: 10px 0 10px 30px;
-    font-size: 1.1rem;
-}
-.create-product-top div,
-.update-product-top div,
-.create-categorie-top div,
-.update-categorie-top div{
-    width: 40px;
-    height: 40px;
-    background: #ecedee;
-    position: relative;
-    border-radius: 50%;
-    cursor: pointer;
-}
-.create-product-top div:hover,
-.update-product-top div:hover,
-.create-categorie-top div:hover,
-.update-categorie-top div:hover{
-    background: #e0e0e0;
-}
-.create-product-top div i,
-.update-product-top div i,
-.create-categorie-top div i,
-.update-categorie-top div i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-}
-.create-product-top button{
-    display: none;
-}
-.cancel-create-product-mobile,
-.cancel-update-product-mobile,
-.cancel-create-categorie-mobile,
-.cancel-update-categorie-mobile{
-    display: none;
-}
-.create-product-bottom,
-.update-product-bottom,
-.create-categorie-bottom,
-.update-categorie-bottom{
-    width: 100%;
-    margin-top: 10px;
-    text-align: center;
-}
-.product-input{
-    width: 90%;
-    margin: 0 auto 10px;
-    position: relative;
-    z-index: 1;
-}
-.categorie-input{
-    width: 90%;
-    margin: 0 auto 10px;
-    display: grid;
-    grid-template-columns: 85% 10%;
-    grid-gap: 5%;
-    position: relative;
-    z-index: 1;
-}
-.update-categorie-input{
-    width: 90%;
-    margin: 0 auto 10px;
-    position: relative;
-}
-.categorie-input div{
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background: #ecedee;
-    position: relative;
-    cursor: pointer;
-    align-self: center;
-}
-.categorie-input div:hover{
-    background: #e0e0e0;
-}
-.categorie-input div i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-}
-.product-input input,
-.categorie-input input,
-.update-categorie-input input{
-    width: 100%;
-    padding: 18px 9px 12px;
-    box-sizing: border-box;
-    border: 2px solid #e0e0e0;
-    border-radius: 5px;
-    outline: none;
-    z-index: 10;
-    background: rgba(209, 209, 209, 0.3);
-}
-.product-input span,
-.categorie-input span,
-.update-categorie-input span{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: .9rem;
-    font-weight: bold;
-    left: 12px;
-    opacity: .4;
-    z-index: -1;
-}
-.active-product-input-span{
-    top: 5px !important;
-    transform: none !important;
-    font-size: .7rem !important;
-}
-.product-images-preview,
-.product-update-images-preview{
-    width: 90%;
-    display: flex;
-    overflow: auto;
-    margin: 0 auto 10px;
-}
-.product-image-preview{
-    height: 130px;
-    margin-right: 5px;
-    position: relative;
-}
-.product-image-preview div{
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: #fff;
-    border: 1px solid #000;
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    cursor: pointer;
-    z-index: 10;
-}
-.product-image-preview div:hover{
-    background: #e0e0e0;
-}
-.product-image-preview div i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    color: #000;
-    font-size: .8rem;
-    margin-top: 1px;
-}
-.product-image-preview img{
-    height: 100%;
-}
-.create-product-options,
-.update-product-options{
-    width: 90%;
-    margin: 0 auto 10px;
-    padding: 5px;
-    box-sizing: border-box;
-    border: 2px solid #ecedee;
-    border-radius: 10px;
-    display: grid;
-    grid-template-columns: 80% 20% ;
-    justify-items: center;
-    align-items: center;
-}
-.create-product-options p,
-.update-product-options p{
-    margin: 10px;
-    font-weight: bold;
-}
-.create-product-options div,
-.update-product-options div{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #ecedee;
-    position: relative;
-    cursor: pointer;
-    margin: 0;
-}
-.create-product-options div:hover,
-.update-product-options div:hover{
-    background: #e0e0e0;
-}
-.create-product-options i,
-.update-product-options i{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 1.1rem;
-}
-.create-product-bottom button,
-.update-product-bottom button,
-.create-categorie-bottom button,
-.update-categorie-bottom button{
-    border: none;
-    padding: 10px;
-    box-sizing: border-box;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    outline: none;
-    width: 90%;
-    background: #000000dc;
-    cursor: pointer;
-    color: #fff;
-    font-weight: bold;
-}
-.create-product-bottom button:hover,
-.update-product-bottom button:hover,
-.create-categorie-bottom button:hover,
-.update-categorie-bottom button:hover{
-    background: #000000;
 }
 
 /* if message or notification are empty */
@@ -1669,7 +1416,7 @@
 /* create admin boutique */
 .create-admin-boutique{
     width: 600px;
-    margin: 20px auto;
+    margin: 10px auto;
     padding: 20px;
     box-sizing: border-box;
     background: #ffffff;
@@ -1800,9 +1547,9 @@
     position: absolute;
     top: 0;
     left: 90%;
-    border: 3px solid #f3f3f3; 
+    border: 3px solid #ffffff; 
     border-radius: 50%; 
-    border-top: 3px solid rgb(137, 218, 238); 
+    border-top: 3px solid rgb(0, 0, 0); 
     width: 20px; 
     height: 20px; 
     animation: spinLoadMsg 1s linear infinite; 
@@ -1824,7 +1571,7 @@
 /* create admin boutique */
 .boutique-admin-info{
     width: 600px;
-    margin: 20px auto;
+    margin: 10px auto;
     padding: 20px;
     box-sizing: border-box;
     background: #ffffff;
@@ -1883,7 +1630,7 @@
 /* update boutique inforamtions */
 .update-boutique-informations{
     width: 600px;
-    margin: 20px auto;
+    margin: 10px auto;
     padding: 20px;
     box-sizing: border-box;
     background: #ffffff;
@@ -2025,7 +1772,29 @@
     margin: 10px;
     font-size: .95rem;
 }
-
+@media only screen and (max-width: 1250px) {
+    .gerer-boutique-right-after::after {
+        content: "";
+        background: #ecedee;
+        opacity: 0.7;
+        top: 60px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: fixed;
+        z-index: 60;
+    }
+    .gerer-boutique-left{
+        width: 360px;
+        transform: translateX(-100%);
+        transition: transform 0.4s ease-in-out;
+        z-index: 70;
+    }
+    .gerer-boutique-right{
+        width: 100%;
+        margin-left: 0;
+    }
+}
 @media only screen and (max-width: 768px) {
     .navbar{
         -webkit-box-shadow: none;
@@ -2303,119 +2072,6 @@
         grid-gap: 2%;
         margin-bottom: 0 !important;
     }
-    .create-product,
-    .update-product,
-    .create-categorie,
-    .update-categorie{
-        transform: translateX(100%);
-        display: block;
-        overflow: hidden;
-        transition: transform 0.4s ease-in-out;
-    }
-    .create-product button,
-    .update-product button,
-    .create-categorie button,
-    .update-categorie button{
-        display: none;
-    }
-    .create-product-container,
-    .update-product-container,
-    .create-categorie-container,
-    .update-categorie-container{
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        overflow-y: auto;
-        border-radius: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 10px;
-        transform: none;
-        box-shadow: none; 
-    }
-    .create-product-top,
-    .update-product-top,
-    .create-categorie-top,
-    .update-categorie-top{
-        grid-template-columns: 10% 60% 30%;
-    }
-    .create-product-top button,
-    .update-product-top button,
-    .create-categorie-top button,
-    .update-categorie-top button{
-        display: block;
-        border: none;
-        padding: 10px;
-        box-sizing: border-box;
-        border-radius: 5px;
-        outline: none;
-        width: 90%;
-        background: #000000dc;
-        cursor: pointer;
-        color: #fff;
-        font-weight: bold;
-    }
-    .create-product-top h4,
-    .update-product-top h4,
-    .create-categorie-top h4,
-    .update-categorie-top h4{
-        margin: auto;
-        font-size: 1rem;
-    }
-    .create-product-top div,
-    .update-product-top div,
-    .create-categorie-top div,
-    .update-categorie-top div{
-        width: 30px;
-        height: 30px;
-    }
-    .cancel-create-product-mobile,
-    .cancel-update-product-mobile,
-    .cancel-create-categorie-mobile,
-    .cancel-update-categorie-mobile{
-        display: block;
-    }
-    .cancel-create-product,
-    .cancel-update-product,
-    .cancel-create-categorie,
-    .cancel-update-categorie{
-        display: none;
-    }
-    .create-product-bottom,
-    .update-product-bottom,
-    .create-categorie-bottom,
-    .update-categorie-bottom{
-        width: 100%;
-        margin-top: 0;
-        text-align: center;
-        height: calc(100% - 42px);
-        overflow: auto;
-    }
-    .product-input:first-of-type,
-    .categorie-input:first-of-type,
-    .update-categorie-input:first-of-type{
-        margin-top: 10px;
-    }
-    .create-product-options,
-    .update-product-options{
-        margin-bottom: 60px;
-        padding: 5px;
-        bottom: 100px;
-        width: 89%;
-    }
-    .create-product-options p,
-    .update-product-options p{
-        margin: 10px 0;
-        font-weight: bold;
-        font-size: .9rem;
-    }
-    /* .create-publication-bottom button,
-    .update-publication-bottom button{
-        font-size: 1rem;
-        width: 89%;
-        margin-bottom: 60px;
-    } */
     .delete-product,
     .delete-boutique,
     .delete-categorie{

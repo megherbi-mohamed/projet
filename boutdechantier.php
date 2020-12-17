@@ -43,20 +43,10 @@ if (isset($_SESSION['user'])) {
             <div class="logo-name">
                 <h4>Nhannik</h4>
             </div> 
-            <div id="back_menu">
-                <i class="fas fa-arrow-left"></i>
-            </div>    
-            <div id="boutdechantier_recherche_responsive">
-                <input type="text" id="recherche_text_resp" placeholder="Chercher un produit ...">
-                <i class="fas fa-search"></i>
-            </div>
             <div id="display_categories">
-                <i class="fas fa-list"></i>
-            </div>
-            <!-- <div id="display_filter">
                 <i class="fas fa-filter"></i>
-            </div> -->
-            <div id="display_bt_search_bar">
+            </div>
+            <div id="show_search_bar_rsp">
                 <i class="fas fa-search"></i>
             </div>
         </div>
@@ -84,274 +74,72 @@ if (isset($_SESSION['user'])) {
         </div>
         <?php } ?>
         <hr>
-        <div class="boutdechantier-categories">
-            <div class="boutdechantier-categorie-top">
-                <h3>Catégories</h3>
+        <div class="filter-boutdechantier-options">
+            <div class="filter-boutdechantier-button">
+                <h4>Filtrer par</h4>
+                <button id="reset_boutdechantier_button">Réintialiser</button>
+                <button id="filter_boutdechantier_button">Filtrer</button>
             </div>
-            <div class="boutdechantier-categorie-bottom">
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/outillage-icon.png" alt="">
-                    </div>
-                    <p>Outillages</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/quincallerie-icon.png" alt="">
-                    </div>
-                    <p>Quincalleries</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/outillage-icon.png" alt="">
-                    </div>
-                    <p>Matériel et équipement</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/peinture-vernis-icon.png" alt="">
-                    </div>
-                    <p>Peinture et vernis</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/revetement-mural-icon.png" alt="">
-                    </div>
-                    <p>Revetement mural</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/electricite-icon.png" alt="">
-                    </div>
-                    <p>Eléctricité</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/menuiserie-bois-icon.png" alt="">
-                    </div>
-                    <p>Menuiserie et bois</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/porte-fenetre-icon.png" alt="">
-                    </div>
-                    <p>Portes et fenetres</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/outillage-icon.png" alt="">
-                    </div>
-                    <p>Cloison et séparation</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/isolation-icon.png" alt="">
-                    </div>
-                    <p>Isolation</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/revetemet-sol-icon.png" alt="">
-                    </div>
-                    <p>Revetements sol</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/outillage-icon.png" alt="">
-                    </div>
-                    <p>Matériaux et gros oeuvre</p>
-                </div>
-                <div class="bt-categorie">
-                    <div>
-                        <img src="./icons/plombrie-icon.png" alt="">
-                    </div>
-                    <p>Plombrie</p>
-                </div>
+            <div class="quick-filter-button">
+                <button id="today_filter_button">Aujourd'hui</button>
+                <button id="week_filter_button">Cette semaine</button>
+                <button id="month_filter_button">Ce mois</button>
             </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Outillages</h3>
+            <div class="filter-boutdechantier" id="display_boutdechantier_categories">
                 <div>
-                    <img src="./icons/outillage-icon.png" alt="">
+                    <i class="fas fa-list-ul"></i>
+                </div>
+                <p>Categories</p>
+            </div>
+            <div class="filter-ptomotion-option" id="boutdechantier_categories">
+                <div class="filter-boutdechantier-input">
+                    <p>Categories</p>
+                    <select id="categorie_boutdechantier">
+                        <option value="">Categories</option>
+                        <option value="Outillages">Outillages</option>
+                        <option value="Quincalleries">Quincalleries</option>
+                        <option value="Peinture et vernis">Peinture et vernis</option>
+                        <option value="Revetement mural">Revetement mural</option>
+                        <option value="Eléctricité">Eléctricité</option>
+                        <option value="Menuiserie et bois">Menuiserie et bois</option>
+                        <option value="Portes et fenetres">Portes et fenetres</option>
+                        <option value="Cloison et séparation">Cloison et séparation</option>
+                        <option value="Isolation">Isolation</option>
+                        <option value="Revetements sol">Revetements sol</option>
+                        <option value="Matériaux et gros oeuvre">Matériaux et gros oeuvre</option>
+                        <option value="Plombrie">Plombrie</option>
+                    </select> 
                 </div>
             </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Quincalleries</h3>
+            <div class="filter-boutdechantier" id="display_boutdechantier_localisation">
                 <div>
-                    <img src="./icons/quincallerie-icon.png" alt="">
+                    <i class="fas fa-map-marker-alt"></i>
                 </div>
+                <p>Lieu</p>
             </div>
-            <div class="bt-sous-gategorie-bottom">
-
+            <div class="filter-ptomotion-option" id="boutdechantier_localisation">
+                <div class="filter-boutdechantier-input">
+                    <p>Ville</p>
+                    <select id="ville_boutdechantier_filter">
+                        <option value="">Ville</option>
+                        <?php 
+                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query->execute(); 
+                        while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
+                        ?>
+                        <option value="<?php echo $ville_row['ville'] ?>"><?php echo $ville_row['ville'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="filter-boutdechantier-input commune-boutdechantier-filter"> 
+                    <p>Commune</p>
+                    <select id="commune_boutdechantier_filter">
+                        <option value="">Commune</option>
+                    </select>
+                </div>
             </div>
         </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Matériel et équipement</h3>
-                <div>
-                    <img src="./icons/outillage-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Peinture et vernis</h3>
-                <div>
-                    <img src="./icons/peinture-vernis-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Revetement mural</h3>
-                <div>
-                    <img src="./icons/revetement-mural-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Eléctricité</h3>
-                <div>
-                    <img src="./icons/electricite-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Menuiserie et bois</h3>
-                <div>
-                    <img src="./icons/menuiserie-bois-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Portes et fenetres</h3>
-                <div>
-                    <img src="./icons/porte-fenetre-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Cloison et séparation</h3>
-                <div>
-                    <img src="./icons/outillage-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Isolation</h3>
-                <div>
-                    <img src="./icons/isolation-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Revetements sol</h3>
-                <div>
-                    <img src="./icons/revetemet-sol-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Matériaux et gros oeuvre</h3>
-                <div>
-                    <img src="./icons/outillage-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-                
-            </div>
-        </div>
-        <div class="bt-sous-gategorie">
-            <div class="bt-sous-gategorie-top">
-                <div id="return_categorie"> 
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h3>Plombrie</h3>
-                <div>
-                    <img src="./icons/plombrie-icon.png" alt="">
-                </div>
-            </div>
-            <div class="bt-sous-gategorie-bottom">
-                
-            </div>
-        </div>
-    </div>
+    </div> 
     <div class="boutdechantier-right">
         <div class="boutdechantier-right-container">
             <div class="boutdechantier-right-top">
@@ -373,26 +161,26 @@ if (isset($_SESSION['user'])) {
             </div>
             <div class="boutdechantier-right-middle"></div>
             <div class="boutdechantier-right-bottom">
-            <?php 
-            $get_product_query = $conn->prepare("SELECT * FROM produit_boutdechantier ORDER BY date DESC");
-            $get_product_query->execute();
-            $i = 0;
-            while ($get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC)){
-            $i++;
-            $get_product_media_query = $conn->prepare("SELECT * FROM bt_produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1");
-            $get_product_media_query->execute();
-            $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
-            ?>
+                <?php 
+                $get_product_query = $conn->prepare("SELECT * FROM produit_boutdechantier ORDER BY date DESC");
+                $get_product_query->execute();
+                $i = 0;
+                while ($get_product_row = $get_product_query->fetch(PDO::FETCH_ASSOC)){
+                $i++;
+                $get_product_media_query = $conn->prepare("SELECT * FROM bt_produits_media WHERE id_prd = '{$get_product_row['id_prd']}' LIMIT 1");
+                $get_product_media_query->execute();
+                $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
+                ?>
                 <div class="bt-product">
                     <div class="bt-product-img">
                         <img src="<?php echo $get_product_media_row['media_url'] ?>" alt="">
                     </div>
                     <div class="bt-product-description">
-                        <p><?php echo $get_product_row['lieu_prd'] ?></p>
+                        <p><?php echo $get_product_row['commune_prd'] ?></p>
                         <h4><?Php echo $get_product_row['prix_prd'].' DA' ?></h4>
                     </div>
                 </div>
-            <?php } ?>
+                <?php } ?>
             </div>
         </div>
         <div id="loader_load" class="center"></div>
@@ -437,63 +225,10 @@ if (isset($_SESSION['user'])) {
         </div>
         <div id="loader_bt_prd" class="center"></div>
     </div>
-    <div class="update-product" id="update_product">
-        <div class="update-product-container">
-            <div class="update-product-top">
-                <div class="cancel-update-product-mobile" id="cancel_update_product_resp">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h4>Modifier l'annonce</h4>
-                <div class="cancel-update-product" id="cancel_update_product">
-                    <i class="fas fa-times"></i>
-                </div>
-                <button id="update_product_button_resp">Modifier</button>
-            </div>
-            <div class="update-product-bottom">
-                <input type="hidden" id="id_product_updt">
-                <input type="hidden" id="product_tail_updt">
-                <div class="product-input">
-                    <input type="text" id="updt_name_bt_prd">
-                    <span class="name-bt-prd active-updt-bt-prd-span">Titre *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_categorie_bt_prd">
-                    <span class="categorie-bt-prd active-updt-bt-prd-span">Categorie</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_description_bt_prd">
-                    <span class="description-bt-prd active-updt-bt-prd-span">Description</span>
-                </div>
-                <div class="product-input">
-                    <input type="number" id="updt_quantity_bt_prd">
-                    <span class="quanntite-bt-prd">Quantite *</span>
-                </div>
-                <div class="product-input">
-                    <select id="updt_type_bt_prd">
-                        <option value="payant">Payant</option>
-                        <option value="gratuit">Gratuit</option>
-                    </select>
-                    <span class="type-bt-prd">Type *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" step="000000.00" id="updt_price_bt_prd" value="0">
-                    <span class="price-bt-prd">Prix *</span>
-                </div>
-                <div class="product-update-images-preview"></div>
-                <div class="update-product-options">
-                    <P>Ajouter des photos</P>
-                    <div id="update_product_image">
-                        <i class="far fa-images"></i>
-                    </div>
-                </div>
-                <form enctype="multipart/form-data">
-                    <input type="file" id="image_prd_updt" name="images_prd_updt[]" accept="image/*" multiple>
-                    <input type="button" id="update_product_image_button">
-                </form>
-                <button id="update_product_button">Enregistrer la modification</button>
-            </div>
-            <div id="loader_load_updt" class="center"></div>
-        </div>
+    <!-- update bt product -->
+    <div class="create-publication" id="update_bt_product">
+        <div class="create-publication-container" id="update_bt_product_container"></div>
+        <div id="loader_update_bt_product" class="center"></div>
     </div>
     <div class="delete-product" id="delete_product">
         <div class="delete-product-container" id="delete_product_container">
@@ -673,14 +408,6 @@ if (isset($_SESSION['user'])) {
             })
         }
 
-        $('#back_history').click(function(){
-            window.history.back();
-        })
-
-        $('.bt-sous-gategorie-top').click(function(e){
-            e.stopPropagation();
-        })
-
         $('#display_categories').click(function(e){
             e.stopPropagation();
             setTimeout(() => {
@@ -689,68 +416,63 @@ if (isset($_SESSION['user'])) {
             $('.boutdechantier-left').css('transform','translateX(0)');
         })
 
-        $('#boutdechantier_recherche_responsive').click(function(e){
-            e.stopPropagation();
-        })
-
-        $('#display_bt_search_bar').click(function(e){
-            e.stopPropagation();
-            setBoutdechantierSearchBar();
-        })
-
         $(document).on('keypress',"#recherche_text",function() {
+            var rechercheText = $(this).val();
             if (event.which == 13) {
-                var fd = new FormData();
-                var rechercheText = $('#recherche_text').val();
-                fd.append('text',rechercheText);
-                $.ajax({
-                    url: 'recherche-boutdechantier-product.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        $(".boutdechantier-right-container").empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.boutdechantier-right-container').append(response);
-                    },
-                    complete: function(response){
-                        $("#loader_load").hide();
-                    }
-                });
+                if (rechercheText != '') {
+                    rechercheBoutdechantierText (rechercheText);
+                }
             }
         });
 
-        $(document).on('keypress',"#recherche_text_resp",function() {
-            if (event.which == 13) {
-                var fd = new FormData();
-                var rechercheText = $('#recherche_text_resp').val();
-                fd.append('text',rechercheText);
-                $.ajax({
-                    url: 'recherche-boutdechantier-product.php',
-                    type: 'post',
-                    data: fd,
-                    contentType: false,
-                    processData: false,
-                    beforeSend: function(){
-                        $(".boutdechantier-right-container").empty();
-                        $("#loader_load").show();
-                    },
-                    success: function(response){
-                        $('.boutdechantier-right-container').append(response);
-                    },
-                    complete: function(response){
-                        unsetBoutdechantierSearchBar();
-                        $("#loader_load").hide();
+        function rechercheBoutdechantierText (rechercheText) {
+            var typeFilter = 'text';
+            var categoriePrd = '';
+            var dateDebutPrd = '';
+            var dateFinPrd = '';
+            var villePrd = '';
+            var communePrd = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd);
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'boutdechantier/'+typeFilter+'/'+rechercheText);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (768 <= windowWidth <= 1250) {
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                        else{
+                            $('.boutdechantier-right-container').append(response);
+                        }
                     }
-                });
-            }
-        });
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        }
 
         // display user annonces
-        $(document).on('click',"#display_bt_product_user",function() {
+        $("#display_bt_product_user").on('click',function() {
+            console.log('click');
             $(this).css('background','#ecedee');
             $.ajax({
                 url: 'laod-user-bt-annonces.php',
@@ -760,104 +482,147 @@ if (isset($_SESSION['user'])) {
                 },
                 success: function(response){
                     history.pushState('annonces','', '/projet/boutdechantier/annonces');
-                    $('.boutdechantier-right-container').append(response);
+                    if (windowWidth > 1250) {
+                        $('.boutdechantier-right-container').append(response);
+                    }
+                    else{
+                        hideLeftBoutdechantier ();
+                        setTimeout(() => {
+                            $('.boutdechantier-right-container').append(response);
+                        }, 400);
+                    }
                 },
                 complete: function(response){
                     $("#loader_load").hide();
                 }
             });
         });
-
-        // update boutdechantier annonce
-        $(document).on('focus','.update-product-bottom input',function(){
-            var id = $(this).attr('id');
-            if (id == 'updt_lieu_bt_prd') {
-                $('.lieu-bt-prd').addClass('active-updt-bt-prd-span');
-            }
-            if (id == 'updt_name_bt_prd') {
-                $('.name-bt-prd').addClass('active-updt-bt-prd-span');
-            }
-            if (id == 'updt_categorie_bt_prd') {
-                $('.categorie-bt-prd').addClass('active-updt-bt-prd-span');
-            }
-            if (id == 'updt_description_bt_prd') {
-                $('.description-bt-prd').addClass('active-updt-bt-prd-span');
-            }
-        })
         
         $(document).on('click','[id^="update_bt_annc_"]',function(){
-            id = $(this).attr("id").split("_")[3];
-            var idPrd = $('#id_prd_'+id).val(); 
-            var prdTail = $('#tail_prd_'+id).val();
-            var prdName = $('#name_prd_'+id).val();
-            var prdCategorie = $('#categorie_prd_'+id).val();
-            var prdDescription = $('#description_prd_'+id).val();
-            var prdQuantite = $('#quantity_prd_'+id).val();
-            var prdType = $('#type_prd_'+id).val();
-            var prdPrix = $('#price_prd_'+id).val();
-            
-            $('#id_product_updt').val(idPrd);
-            $('#product_tail_updt').val(prdTail);
-            $('#updt_name_bt_prd').val(prdName);
-            $('#updt_categorie_bt_prd').val(prdCategorie);
-            $('#updt_description_bt_prd').val(prdDescription);
-            $('#updt_quantity_bt_prd').val(prdQuantite);
-            $('#updt_type_bt_prd').val(prdType);
-            $('#updt_price_bt_prd').val(prdPrix);
+            var id = $(this).attr("id").split("_")[3];
+            var idPrd = $('#id_prd_'+id).val();
+            var tailPrd = $('#tail_prd_'+id).val();
+            var fd = new FormData();
+            fd.append('id_prd',idPrd); 
+            fd.append('tail_prd',tailPrd);
+            $.ajax({
+                url: 'load-update-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $("body").css('overflow','hidden');
+                        $('#update_bt_product').show();
+                    }
+                    else{
+                        $('#update_bt_product').css('transform','translateX(0)'); 
+                    }
+                    $("#loader_update_bt_product").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        $('#update_bt_product_container').append(response);
+                    }   
+                },
+                complete: function(){
+                    $("#loader_update_bt_product").hide();
+                }
+            });
+        });
 
-            $('.product-update-images-preview').load('bt-product-images-preview.php?id_prd='+idPrd);
+        // cancel update bt product
+        $('#update_bt_product_container').on('click','#cancel_update_bt_product',function(){
+            cancelUpdateBtProduct ();
+        })
 
-            if (windowWidth <= 768) {
-                $('.update-product').css('transform','translateX(0)');
+        $('#update_bt_product').click(function(){
+            cancelUpdateBtProduct ();
+        })
+
+        function cancelUpdateBtProduct () {
+            var idPrd = $('#id_bt_product').val();
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            $.ajax({
+                url: 'pre-delete-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#update_bt_product_container').empty();
+                    $("#loader_update_bt_product").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                    }    
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("body").removeClass('body-after');
+                        $('#update_bt_product').hide();
+                    }
+                    else{
+                        $('#update_bt_product').css('transform','');
+                    }
+                    $("#loader_update_bt_product").hide();
+                }
+            });
+        }
+
+        // ville bt product
+        $('#update_bt_product_container').on('change','#ville_bt_product',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-bt-product').load('commune-bt-product.php?v='+ville);
+            }
+        })
+
+        // type bt product
+        $('#update_bt_product_container').on('change','#type_bt_prd',function() {
+            var type  = $(this).val();
+            if (type == 'payant') {
+                $('.bt-product-price').show();
             }
             else{
-                $("body").addClass('body-after');
-                $('.update-product').show();
-                $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                $('.bt-product-price').hide();
             }
-        });
-
-        $('#cancel_update_product_resp').click(function(){
-            $('.update-product').css('transform','');
         })
 
-        $('#cancel_update_product').click(function(e){
+        // set bt product image 
+        $('#update_bt_product_container').on('click','#add_bt_product_image',function(){
+            $('#image_bt_product').val('');
+            $('#image_bt_product').click();
+        });
+
+        $('#update_bt_product_container').on('click','#image_bt_product',function(e){
             e.stopPropagation();
-            $("body").removeClass('body-after');
-            $('.update-product').hide();
-            $('.update-product-container').css({'top':'','transform':''});
-            $('.product-update-images-preview div').remove();
-        })
+        });
 
-        $('#update_product').click(function(){
-            $("body").removeClass('body-after');
-            $('.update-product').hide();
-            $('.update-product-container').css({'top':'','transform':''});
-            $('.product-update-images-preview div').remove();
-        })
+        $('#update_bt_product_container').on('change','#image_bt_product',function () { 
+            $('#add_bt_product_image_button').click();
+        });
 
-        //update product image
-        $('.update-product-container').click(function(e){
+        $('#update_bt_product_container').on('click','#add_bt_product_image_button',function(e){
             e.stopPropagation();
-        })
-
-        $('#update_product_image').click(function(){
-            $('#image_prd_updt').click();
-        });
-
-        $('#image_prd_updt').on('change',function(){ 
-            $('#update_product_image_button').click();
-        });
-
-        $('#update_product_image_button').click(function(){
+            var numImg = $('.bt-product-image-preview').length;
+            if (numImg > 0) {
+                var lastImg = $('.bt-product-image-preview').last().attr('id').split("_")[2];
+            }
+            else{
+                var lastImg = 0;
+            }
+            var numUpldImg = document.getElementById('image_bt_product').files.length;
+            var idPrd = $('#id_bt_product').val();
             var form_data = new FormData();
-            var idBtq = $('#id_boutique_product').val();
-            form_data.append('id_btq',idBtq);
-            var idPrd = $('#id_product_updt').val();
             form_data.append('id_prd',idPrd);
-            var totalfiles = document.getElementById('image_prd_updt').files.length;
-            for (let i = 0; i < totalfiles; i++) {
-                form_data.append("images[]", document.getElementById('image_prd_updt').files[i]);
+            for (let i = 0; i < 4 - numImg; i++) {
+                form_data.append("images[]", document.getElementById('image_bt_product').files[i]);
             }
             $.ajax({
                 url: 'upload-images-bt-product.php', 
@@ -866,130 +631,271 @@ if (isset($_SESSION['user'])) {
                 dataType: 'json',
                 contentType: false,
                 processData: false,
-                success: function (response) {
-                    // console.log(response);
-                    if (windowWidth > 768) {
-                        $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                beforeSend: function(){
+                    if ((numImg + numUpldImg) <= 4) {
+                        for(let i = 0; i < numUpldImg; i++) {
+                            let id = lastImg + i;
+                            $('.bt-product-images-preview').append("<div class='bt-product-image-preview' id='bt_product_image_preview_"+id+"'><div id='loader_bt_prd_img_"+id+"' class='center'></div></div>");
+                        }
                     }
+                    else if ((numImg + numUpldImg) >= 5) {
+                        for(let i = 0; i < (4 - numImg); i++) {
+                            let id = lastImg + i;
+                            $('.bt-product-images-preview').append("<div class='bt-product-image-preview' id='bt_product_image_preview_"+id+"'><div id='loader_bt_prd_img_"+id+"' class='center'></div></div>");
+                        }
+                    }
+                },
+                success: function (response) {
                     for(let i = 0; i < response.length; i++) {
                         var src = response[i];
-                        $('.product-update-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+i+"'><div id='product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                        let id = lastImg + i;
+                        $('#bt_product_image_preview_'+id).replaceWith("<div class='bt-product-image-preview' id='bt_product_image_preview_"+id+"'><div class='delete-preview' id='bt_product_delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                    }
+                },
+                complete: function(){
+                    numImg = $('.bt-product-image-preview').length;
+                    if (numImg >= 4) {
+                        $('.create-bt-product-options').hide();
                     }
                 }
             });
         });
 
-        // remove update product images preview
-        $('.product-update-images-preview').on('click','[id^="product_delete_preview_"]',function(){
-            var id = $(this).attr("id").split("_")[3];
+        // remove bt product image preview
+        $('#update_bt_product_container').on('click','[id^="bt_product_delete_preview_"]',function(){
+            var id = $(this).attr("id").split("_")[4];
+            var idPrd = $('#id_bt_product').val();
+            var mediaUrl = $('#bt_product_image_preview_'+id+' img').attr('src');
             var fd = new FormData();
-            var idBtq = $('#id_boutique_product').val();
-            fd.append('id_btq',idBtq);
-            var idPrd = $('#id_product_updt').val();
             fd.append('id_prd',idPrd);
-            var mediaUrl = $('.product-update-images-preview #product_image_preview_'+id+' img').attr('src');
             fd.append('media_url',mediaUrl);
             $.ajax({
-                url: 'update-images-bt-product.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $('.product-update-images-preview #product_image_preview_'+id).remove();
-                    }
-                }
-            });
-        });
-
-        $('#update_product_button').click(function(){
-            console.log('click');
-            var fd = new FormData();
-            var idPrd = $('#id_product_updt').val();
-            fd.append('id_prd',idPrd);
-            var namePrd = $('#updt_name_bt_prd').val();
-            fd.append('nom_prd',namePrd);
-            var categoriePrd = $('#updt_categorie_bt_prd').val();
-            fd.append('categorie_prd',categoriePrd);
-            var descriptionPrd = $('#updt_description_bt_prd').val();
-            fd.append('description_prd',descriptionPrd);
-            var quantityPrd = $('#updt_quantity_bt_prd').val();
-            fd.append('quantite_prd',quantityPrd);
-            var typePrd = $('#updt_type_bt_prd').val();
-            fd.append('type_prd',typePrd);
-            var pricePrd = $('#updt_price_bt_prd').val();
-            fd.append('prix_prd',pricePrd);
-            var id = $('#product_tail_updt').val();
-            fd.append('tail_prd',id);
-            $.ajax({
-                url: 'update-bt-product.php',
+                url: 'delete-bt-product-media.php',
                 type: 'post',
                 data: fd,
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $('.update-product').css('opacity','0.5');
-                    $("#loader_load_updt").show();
+                    $('#bt_product_image_preview_'+id).replaceWith("<div class='bt-product-image-preview' id='bt_product_image_preview_"+id+"'><div id='loader_bt_prd_img_"+id+"' class='center'></div></div>");
                 },
                 success: function(response){
                     if(response != 0){
-                        $('#user_bt_annonce_'+id).replaceWith(response);
+                        $('#bt_product_image_preview_'+id).remove();
                     }
                 },
                 complete: function(){
-                    $("#loader_load_updt").hide();
-                    $(".update-product").hide();
-                    $("body").removeClass('body-after');
-                    $('.update-product-container').css({'top':'','transform':''});
-                    $('.update-product').css('opacity','');
+                    var numImg = $('.bt-product-image-preview').length;
+                    if (numImg < 4) {
+                        $('.create-bt-product-options').show();
+                    }
                 }
             });
         });
 
-        $('#update_product_button_resp').click(function(){
-            console.log('click');
-            var fd = new FormData();
-            var idPrd = $('#id_product_updt').val();
-            fd.append('id_prd',idPrd);
-            var namePrd = $('#updt_name_bt_prd').val();
-            fd.append('nom_prd',namePrd);
-            var categoriePrd = $('#updt_categorie_bt_prd').val();
-            fd.append('categorie_prd',categoriePrd);
-            var descriptionPrd = $('#updt_description_bt_prd').val();
-            fd.append('description_prd',descriptionPrd);
-            var quantityPrd = $('#updt_quantity_bt_prd').val();
-            fd.append('quantite_prd',quantityPrd);
-            var typePrd = $('#updt_type_bt_prd').val();
-            fd.append('type_prd',typePrd);
-            var pricePrd = $('#updt_price_bt_prd').val();
-            fd.append('prix_prd',pricePrd);
-            var id = $('#product_tail_updt').val();
-            fd.append('tail_prd',id);
+        // set publication video 
+        $('#update_bt_product_container').on('click','#add_bt_product_video',function(){
+            $('#video_bt_product').val('');
+            $('#video_bt_product').click();
+        })
+
+        $('#update_bt_product_container').on('click','#video_bt_product',function(e){
+            e.stopPropagation();
+        });
+
+        $('#update_bt_product_container').on('change','#video_bt_product',function () { 
+            $('#add_bt_product_video_button').click();
+        });
+
+        $('#update_bt_product_container').on('click','#add_bt_product_video_button',function(e){
+            e.stopPropagation();
+            var idPrd = $('#id_bt_product').val();
+            var form_data = new FormData();
+            form_data.append('id_prd',idPrd);
+            form_data.append("video", $('#video_bt_product')[0].files[0]);
             $.ajax({
-                url: 'update-bt-product.php',
+                url: 'upload-video-bt-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.bt-product-video-preview').append("<div class='bt-prd-video-preview' id='bt_product_video_preview'><div id='loader_bt_prd_video' class='center'></div></div>");
+                },
+                success: function (response) {
+                    if (windowWidth > 768) {
+                        $('.create-bt-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    $('#bt_product_video_preview').replaceWith("<div class='bt-prd-video-preview' id='bt_product_video_preview'><div class='delete-preview' id='bt_product_delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+                },
+                complete: function(){
+                    var numVideo = $('.bt-prd-video-preview').length;
+                    if (numVideo >= 1) {
+                        $('.create-bt-product-options').hide();
+                    }
+                }
+            });
+        });
+
+        // remove publication video preview
+        $('#update_bt_product_container').on('click','#bt_product_delete_video',function(){
+            var fd = new FormData();
+            var idPrd = $('#id_bt_product').val();
+            fd.append('id_prd',idPrd);
+            var mediaUrl = $('.bt-prd-video-preview video source').attr('src');
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-bt-product-media.php',
                 type: 'post',
                 data: fd,
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $('.update-product').css('opacity','0.5');
-                    $("#loader_load_updt").show();
+                    $('#bt_product_video_preview').replaceWith("<div class='bt-prd-video-preview' id='bt_product_video_preview'><div id='loader_bt_prd_video' class='center'></div></div>");
                 },
                 success: function(response){
                     if(response != 0){
-                        $('#user_bt_annonce_'+id).replaceWith(response);
+                        $('#bt_product_video_preview').remove();
                     }
                 },
                 complete: function(){
-                    $("#loader_load_updt").hide();
-                    $(".update-product").hide();
-                    $("body").removeClass('body-after');
-                    $('.update-product-container').css({'top':'','transform':''});
-                    $('.update-product').css('opacity','');
+                    var numVideo = $('.bt-prd-video-preview').length;
+                    if (numVideo == 0) {
+                        $('.create-bt-product-options').show();
+                    }
                 }
             });
         });
+
+        // valide create product boutdechantier
+        $('#update_bt_product_container').on('click','#update_bt_product_button',function(){
+            var idPrd = $('#id_bt_product').val();
+            var tailPrd = $('#tail_product').val();
+            var namePrd = $('#name_bt_prd').val();
+            var categoriePrd = $('#categorie_bt_product').val();
+            var descriptionPrd = $('#description_bt_prd').val(); 
+            var quantityPrd = $('#quantity_bt_prd').val();
+            var typePrd = $('#type_bt_prd').val();
+            var pricePrd = $('#price_bt_prd').val();
+            var villePrd = $('#ville_bt_product').val();
+            var communePrd = $('#commune_bt_product').val();
+            var numMedia = $('.bt-product-image-preview').length + $('.bt-prd-video-preview').length;
+            if (namePrd == ''){
+                $('#name_bt_prd').css('border','2px solid red');
+            }
+            else if (categoriePrd == ''){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_prd').css('border','2px solid red');
+            }
+            else if(typePrd == ''){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_product').css('border','');
+                $('#type_bt_prd').css('border','2px solid red');
+            }
+            else if(typePrd == 'payant' && pricePrd == ''){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_product').css('border','');
+                $('#type_bt_prd').css('border','');
+                $('#price_bt_prd').css('border','2px solid red');
+            }
+            else if(villePrd == ''){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_product').css('border','');
+                $('#type_bt_prd').css('border','');
+                $('#price_bt_prd').css('border','');
+                $('#ville_bt_product').css('border','2px solid red');
+            }
+            else if(communePrd == ''){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_product').css('border','');
+                $('#type_bt_prd').css('border','');
+                $('#price_bt_prd').css('border','');
+                $('#ville_bt_product').css('border','');
+                $('#commune_bt_product').css('border','2px solid red');
+            }
+            else if(numMedia == 0){
+                $('#name_bt_prd').css('border','');
+                $('#categorie_bt_product').css('border','');
+                $('#type_bt_prd').css('border','');
+                $('#price_bt_prd').css('border','');
+                $('#ville_bt_product').css('border','');
+                $('#commune_bt_product').css('border','');
+                $('.create-bt-product-options').css('border','2px solid red');
+            }
+            else {
+                var fd = new FormData();
+                fd.append('id_prd',idPrd);
+                fd.append('nom_prd',namePrd);
+                fd.append('categorie_prd',categoriePrd);
+                fd.append('description_prd',descriptionPrd);
+                fd.append('quantite_prd',quantityPrd);
+                fd.append('type_prd',typePrd);
+                fd.append('prix_prd',pricePrd);
+                fd.append('ville_prd',villePrd);
+                fd.append('commune_prd',communePrd);
+                $.ajax({
+                    url: 'update-bt-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").show();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").show();
+                        }
+                    },
+                    success: function(response){
+                        console.log(response);
+                        if(response != 0){
+                            loadBtProduct (idPrd,tailPrd);
+                        }
+                    }
+                });
+            }
+        });
+
+        function loadBtProduct (idPrd,tailPrd) {
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('tail_prd',tailPrd);
+            $.ajax({
+                url: 'load-bt-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        if (windowWidth > 768) {
+                            $("body").removeClass('body-after');
+                            $('#update_bt_product_container').css({'top':'','transform':''});
+                            $('#update_bt_product').hide();
+                            $('#user_bt_annonce_'+tailPrd).replaceWith(response);
+                            $('#update_bt_product_container').empty();
+                        }
+                        else{
+                            $('#update_bt_product').css('transform','');
+                            setTimeout(() => {
+                                $('#user_bt_annonce_'+tailPrd).replaceWith(response);
+                                $('#update_bt_product_container').empty();
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("#loader_create_publication_bottom_button").hide();
+                    }
+                    else{
+                        $("#loader_create_publication_top_button").hide();
+                    }
+                }
+            });
+        }
 
         $(document).on('click','[id^="renew_bt_annc_"]',function(){
             var id = $(this).attr("id").split("_")[3];
@@ -1093,6 +999,371 @@ if (isset($_SESSION['user'])) {
                 $('#delete_product').css('transform','');
             }
         });
+
+        var typeFilter = '<?php if (isset($_GET['type'])) { echo $_GET['type']; } else { echo ''; } ?>';
+        var rechercheText = '<?php if (isset($_GET['text'])) { echo $_GET['text']; } else { echo ''; } ?>';
+        var categoriePrd = '<?php if (isset($_GET['categorie'])) { echo $_GET['categorie']; } else { echo ''; } ?>';
+        var dateDebutPrd = '<?php if (isset($_GET['debut'])) { echo $_GET['debut']; } else { echo ''; } ?>';
+        var dateFinPrd = '<?php if (isset($_GET['fin'])) { echo $_GET['fin']; } else { echo ''; } ?>';
+        var villePrd = '<?php if (isset($_GET['ville'])) { echo $_GET['ville']; } else { echo ''; } ?>';
+        var communePrd = '<?php if (isset($_GET['commune'])) { echo $_GET['commune']; } else { echo ''; } ?>';
+        $(window).on('load', function(){ 
+            if (typeFilter !== '') {
+                $('#recherche_text').val(rechercheText);
+                var fd = new FormData();
+                fd.append('type_filter',typeFilter);
+                fd.append('text',rechercheText);
+                fd.append('categorie_prd',categoriePrd);
+                fd.append('date_debut_prd',dateDebutPrd);
+                fd.append('date_fin_prd',dateFinPrd);
+                fd.append('ville_prd',villePrd);
+                fd.append('commune_prd',communePrd);
+                $.ajax({
+                    url: 'filter-boutdechantier.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        $(".boutdechantier-right-container").empty();
+                        $("#loader_load").show();
+                        var filter = '';
+                        if (typeFilter == 'today' || typeFilter == 'week' || typeFilter == 'month') {
+                            history.replaceState(null,'', 'boutdechantier/'+typeFilter);
+                        }
+                        else if (typeFilter == 'text') {
+                            history.replaceState(null,'', 'boutdechantier/'+typeFilter+'/'+rechercheText);
+                        }
+                        else if (typeFilter == 'filter') {
+                            if (categoriePrd != '') { filter = '/'+categoriePrd; } else { filter = filter+'/0'; }
+                            if (villePrd != '') { filter = filter+'/'+villePrd; } else { filter = filter+'/0'; }
+                            if (communePrd != '') { filter = filter+'/'+communePrd; } else { filter = filter+'/0'; }
+                            history.replaceState(null,'', 'boutdechantier/'+typeFilter+filter);
+                        }
+                    },
+                    success: function(response){
+                        if (response != 0) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+        })
+
+        $('.boutdechantier-left').click(function(e){
+            e.stopPropagation();
+        })
+
+        $('#display_boutdechantier_categories').click(function(){
+            if ($('#boutdechantier_categories').height() > 0) {
+                $('#boutdechantier_categories').css({'max-height':''});
+            }
+            else{
+                $('#boutdechantier_categories').css({'max-height':'127px'});
+            }
+        })
+
+        $('#display_boutdechantier_localisation').click(function(){
+            if ($('#boutdechantier_localisation').height() > 0) {
+                $('#boutdechantier_localisation').css({'max-height':''});
+            }
+            else{ 
+                $('#boutdechantier_localisation').css({'max-height':'127px'});
+            }
+        })
+
+        $('#ville_boutdechantier_filter').on('change',function() {
+            var ville  = $(this).val();
+            if (ville !== '') {
+                $('.commune-boutdechantier-filter').load('commune-filter-boutdechantier.php?v='+ville);
+            }
+        })
+
+        // filter boutdechantier
+        $('#filter_boutdechantier_button').on('click',function() {
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categoriePrd = $('#categorie_boutdechantier').val();
+            var dateDebutPrd = '';
+            var dateFinPrd = '';
+            var villePrd = $('#ville_boutdechantier_filter').val();
+            var communePrd = $('#commune_boutdechantier_filter').val();
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd);
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    var filter = '';
+                    if (categoriePrd != '') { filter = '/'+categoriePrd; } else { filter = filter+'/0'; }
+                    if (villePrd != '') { filter = filter+'/'+villePrd; } else { filter = filter+'/0'; }
+                    if (communePrd != '') { filter = filter+'/'+communePrd; } else { filter = filter+'/0'; }
+                    history.replaceState(null,'', 'boutdechantier/'+typeFilter+filter);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                        else{
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $('#today_filter_button').on('click',function() {
+            var typeFilter = 'today';
+            var rechercheText = '';
+            var d = new Date();
+            var categoriePrd = '';
+            var dateDebutPrd = d.toLocaleDateString();
+            var dateFinPrd = '';
+            var villePrd = '';
+            var communePrd = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd); 
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'boutdechantier/'+typeFilter);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                        else{
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        function getFirstLastDayWeek () {
+            var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+            var date = new Date;
+            var day = weekday[date.getDay()];
+
+            if (day == "Sunday") {
+                var first_date = new Date(date.setDate(date.getDate())).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Monday") {
+                var first_date = new Date(date.setDate(date.getDate() - 1)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Tuesday") {
+                var first_date = new Date(date.setDate(date.getDate() - 2)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Wednesday") {
+                var first_date = new Date(date.setDate(date.getDate() - 3)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Thursday") {
+                var first_date = new Date(date.setDate(date.getDate() - 4)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate() + 6)).toLocaleDateString();
+            }
+            else if (day == "Friday") {
+                var first_date = new Date(date.setDate(date.getDate() - 5)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate()) + 6).toLocaleDateString();
+            }
+            else if (day == "Saturday") {
+                var first_date = new Date(date.setDate(date.getDate() - 6)).toLocaleDateString();
+                var last_date = new Date(date.setDate(date.getDate()) + 6).toLocaleDateString();
+            }
+            return {first_date, last_date};
+        }
+
+        $('#week_filter_button').on('click',function() {
+            let week = getFirstLastDayWeek();
+            let firstDay = week.first_date, lastDay = week.last_date;
+            var typeFilter = 'week';
+            var rechercheText = '';
+            var d = new Date();
+            var categoriePrd = '';
+            var dateDebutPrd = firstDay;
+            var dateFinPrd = lastDay;
+            var villePrd = '';
+            var communePrd = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd); 
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'boutdechantier/'+typeFilter);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                        else{
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        $('#month_filter_button').on('click',function() {
+            var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+            var firstDay = new Date(y, m, 1).toLocaleDateString();
+            var lastDay = new Date(y, m + 1, 0).toLocaleDateString();
+            var typeFilter = 'month';
+            var rechercheText = '';
+            var d = new Date();
+            var categoriePrd = '';
+            var dateDebutPrd = firstDay;
+            var dateFinPrd = lastDay;
+            var villePrd = '';
+            var communePrd = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd); 
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'boutdechantier/'+typeFilter);
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth > 1250) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                        else{
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        })
+
+        // reset filter boutdechantier
+        $('#reset_boutdechantier_button').on('click',function() {
+            var typeFilter = 'filter';
+            var rechercheText = '';
+            var categoriePrd = '';
+            var dateDebutPrd = '';
+            var dateFinPrd = '';
+            var villePrd = '';
+            var communePrd = '';
+            var fd = new FormData();
+            fd.append('type_filter',typeFilter);
+            fd.append('text',rechercheText);
+            fd.append('categorie_prd',categoriePrd);
+            fd.append('date_debut_prd',dateDebutPrd);
+            fd.append('date_fin_prd',dateFinPrd);
+            fd.append('ville_prd',villePrd);
+            fd.append('commune_prd',communePrd); 
+            $.ajax({
+                url: 'filter-boutdechantier.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $(".boutdechantier-right-container").empty();
+                    $("#loader_load").show();
+                    history.replaceState(null,'', 'boutdechantier/filter/0/0/0');
+                },
+                success: function(response){
+                    if (response != 0) {
+                        if (windowWidth >= 1250) {
+                            $('.boutdechantier-right-container').append(response);
+                        }
+                        else{
+                            hideLeftBoutdechantier ();
+                            setTimeout(() => {
+                                $('.boutdechantier-right-container').append(response);
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(response){
+                    $('#boutdechantier_categories option:eq(0)').prop('selected',true);
+                    $('#boutdechantier_localisation option:eq(0)').prop('selected',true);
+                    $('.commune-boutdechantier-filter option:eq(0)').prop('selected',true);
+                    $("#loader_load").hide();
+                }
+            });
+        })
         
         <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $uid; ?>;

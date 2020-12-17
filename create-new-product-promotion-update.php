@@ -28,15 +28,22 @@ if ($get_crtd_prd_query->rowCount()+$get_crtd_btq_prd_query->rowCount() > 0) {
 $i = 0;
 while ($get_crtd_prd_row = $get_crtd_prd_query->fetch(PDO::FETCH_ASSOC)) {
     $i++;
-    $get_crtd_prd_media_query = $conn->prepare("SELECT media_url FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = {$get_crtd_prd_row['id_prd']}");
+    $get_crtd_prd_media_query = $conn->prepare("SELECT media_url,media_type FROM prm_produits_media WHERE id_prm = $id_prm AND id_prd = {$get_crtd_prd_row['id_prd']}");
     $get_crtd_prd_media_query->execute();
     $get_crtd_prd_media_row = $get_crtd_prd_media_query->fetch(PDO::FETCH_ASSOC);
 ?>
 <input type="hidden" id="id_prd_ovrw_<?php echo $i ?>" value="<?php echo $get_crtd_prd_row['id_prd'] ?>">
 <div class="product-promotion-overview" id="product_promotion_overview_<?php echo $i ?>">
+    <?php if ($get_crtd_prd_media_row['media_type'] == 'i') { ?>
     <div class="product-promotion-overview-image">
         <img src="<?php echo $get_crtd_prd_media_row['media_url'] ?>" alt="">
     </div>
+    <?php } else { ?>
+    <div class="product-promotion-overview-video">
+        <video><source src="<?php echo $get_crtd_prd_media_row['media_url']?>"></video>
+        <i class="fas fa-play"></i>
+    </div>
+    <?php } ?>
     <h5><?php echo $get_crtd_prd_row['nom_prd'] ?></h5>
 </div>
 <?php } ?>
@@ -96,20 +103,32 @@ while ($get_crtd_btq_prd_row = $get_crtd_btq_prd_query->fetch(PDO::FETCH_ASSOC))
     <textarea id="description_prm_prd"></textarea>
     <span class="description-prm-prd">Description</span>
 </div>
-<div class="promotion-product-images-preview"></div>
+<div class="promotion-product-images-preview-container">
+    <div class="promotion-product-images-preview"></div>
+</div>
+<div class="promotion-product-video-preview-container">
+    <div class="promotion-product-video-preview"></div>
+</div>
 <div class="create-promotion-product-options">
     <P>Ajouter des photos</P>
     <div id="add_promotion_product_image">
         <i class="far fa-images"></i>
     </div>
+    <div id="add_promotion_product_video">
+        <i class="fas fa-video"></i>
+    </div>
 </div>
 <div class="create-new-promotion-product">
-    <p>Ajouter un nouveau produit</p>
-    <button id="add_new_product_promotion">Ajouter</button>
+    <p>Enregistrer les modifications</p>
+    <button id="add_new_product_promotion">Enregistrer</button>
 </div>
 <form enctype="multipart/form-data">
     <input type="file" id="image_promotion_product" name="images[]" accept="image/*" multiple>
     <input type="button" id="add_promotion_product_image_button">
+</form>
+<form enctype="multipart/form-data">
+    <input type="file" id="video_promotion_product" name="video" accept="video/*">
+    <input type="button" id="add_promotion_product_video_button">
 </form>
 <input type="hidden" id="id_promotion_product" value="<?php echo $get_prm_prd_row['id_prd'] ?>">
 <?php

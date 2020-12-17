@@ -425,7 +425,8 @@ if (isset($_GET['user'])) {
                         $('.user-couverture-update-container').css('opacity','0.5');
                         $("#loader_updt_cvrt").show();
                     },
-                    success: function (data) {
+                    success: function (response) {
+                        console.log(response);
                         if (response != 0) {
                             if (windowWidth > 768) {
                                 $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
@@ -440,34 +441,6 @@ if (isset($_GET['user'])) {
                                 }, 400);
                             }
                         }
-                    },
-                    complete: function(){
-                        $('.user-couverture-update-container').css('opacity','');
-                        $("#loader_updt_cvrt").hide();
-                    }
-                });
-            });
-        });
-
-        $('.upload-result-couverture-resp').on('click', function (ev) {
-            $uploadCropCouverture.croppie('result', {
-                type: 'canvas',
-                size: 'viewport'
-            }).then(function (resp) {
-                $.ajax({
-                    url: "update-user-couverture.php",
-                    type: "POST",
-                    data: {"image":resp},
-                    beforeSend: function(){
-                        $('.user-couverture-update-container').css('opacity','0.5');
-                        $("#loader_updt_cvrt").show();
-                    },
-                    success: function (data) {
-                        $(".user-couverture-update").css('transform','');
-                        setTimeout(() => {
-                            $('#user_couverture').replaceWith("<img id='user_couverture' src='"+resp+"' alt='couverture'>");
-                            $('body').removeClass('body-after');
-                        }, 400);
                     },
                     complete: function(){
                         $('.user-couverture-update-container').css('opacity','');

@@ -20,10 +20,10 @@ if (!empty($_SESSION['user'])) {
     if (!empty($_GET['user'])) {
         $id_sender = $_GET['user'];
         $get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE 
-        id_recever = '$id_user' AND id_sender = '$id_sender' OR id_recever = '$id_sender' AND id_sender = '$id_user'");
+        id_recever = $id_user AND id_sender = $id_sender OR id_recever = $id_sender AND id_sender = $id_user");
         $get_sender_msg_query->execute();
         
-        $get_last_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = $id_sender");
+        $get_last_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender AND type_user IS NOT NULL UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = $id_sender");
         $get_last_sender_info_query->execute();
         $get_last_sender_info_row = $get_last_sender_info_query->fetch(PDO::FETCH_ASSOC);
     }
@@ -65,13 +65,13 @@ else{header('location : insecription-connexion.php');}
             while($get_msg_row = $get_msg_query->fetch(PDO::FETCH_ASSOC)){
             $i++;
             if ($get_msg_row['id_recever'] == $id_user) {
-                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} 
+                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_sender']} AND type_user IS NOT NULL 
                                     UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_sender']}");
                 $get_sender_info_query->execute();
                 $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
             }
             else if ($get_msg_row['id_sender'] == $id_user) {
-                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_recever']} 
+                $get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = {$get_msg_row['id_recever']} AND type_user IS NOT NULL 
                                     UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_msg_row['id_recever']}");
                 $get_sender_info_query->execute();
                 $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);
@@ -129,7 +129,7 @@ else{header('location : insecription-connexion.php');}
                                 <p><?php echo $get_sender_msg_row['message'] ?></p>
                             </div>
                         </div>
-                    <?php }else{ ?>
+                    <?php } else { ?>
                         <div class="message-left">
                             <div>    
                                 <p><?php echo $get_sender_msg_row['message'] ?></p>

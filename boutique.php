@@ -418,7 +418,6 @@ $btq_crtr_row = $btq_crtr_query->fetch(PDO::FETCH_ASSOC);
         })
 
         $(window).on("scroll", function () {
-            console.log($(this).scrollTop());
             if (windowWidth > 768) {
                 if ($(this).scrollTop() > 380) {
                     $('.boutique-options').css({'position':'fixed','margin':'0','top':'70px','left':'50%','transform':'translateX(-50%)','z-index':'150'});
@@ -718,8 +717,8 @@ $btq_crtr_row = $btq_crtr_query->fetch(PDO::FETCH_ASSOC);
                     $("#loader_msg_btq").show();
                 },
                 success: function(response){
+                    console.log(response);
                     if(response != 0){
-                        console.log(response);
                         $('#send_message_button').click();
                         if (response == 2) {
                             window.location = 'messagerie.php?user='+idBtq;
@@ -741,24 +740,6 @@ $btq_crtr_row = $btq_crtr_query->fetch(PDO::FETCH_ASSOC);
                 }
             });
         });
-
-        function updateReceverMessage(userId,senderId){
-            var fd = new FormData();
-            fd.append('id_user',userId);
-            fd.append('id_sender',senderId);
-            $.ajax({
-                url: 'update-messagerie-recever.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-
-                    }
-                }
-            });
-        }
 
         <?php 
         if (isset($_GET['prd'])) {

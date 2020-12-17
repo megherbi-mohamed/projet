@@ -1,0 +1,234 @@
+.acceuil-presentation{
+    width: 100%;
+    height: calc(100vh - 100px);
+    background: #000000;
+}
+.acceuil-categories{
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.acceuil-categorie{
+    width: 400px;
+    height: 200px;
+    border-radius: 10px;
+    background: #000000;
+    margin: 10px;
+    display: inline-block;
+}
+.acceuil-sous-categories{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: calc(100vh - 10px);
+    width: 100%;
+    display: none;
+    z-index: 150;
+    grid-template-columns: calc(100% - 60px) 60px;
+}
+.acceuil-sous-categorie-left{
+    width: calc(100% - 10px);
+    text-align: center;
+    margin-left: 10px;
+    margin-top: 10px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+}
+.acceuil-sous-categorie{
+    width: 200px;
+    height: 150px;
+    border-radius: 10px;
+    background: #000000;
+    margin: 0 10px 10px 0;
+    display: inline-block;
+}
+.acceuil-sous-categorie-right{
+    position: relative;
+    width: 100%;
+}
+.acceuil-sous-categorie-right div{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffffff;
+    -webkit-box-shadow: 0px 0px 5px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 5px -3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 5px -3px rgba(0,0,0,0.75);
+}
+.acceuil-sous-categorie-right div i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.acceuil-publicites{
+    width: 100%;
+    height: 400px;
+    background: #000000;
+}
+.acceuil-boutiques,
+.acceuil-professionnels,
+.acceuil-products,
+.acceuil-boutdechantiers{
+    width: 98%;
+    margin: 20px auto;
+    border-radius: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ffffff;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 20px -10px rgba(0,0,0,0.75);
+}
+.acceuil-all-professionnels,
+.acceuil-all-boutiques{
+    width: 100%;
+    height: 300px;
+    display: flex;
+}
+.acceuil-overview-title{
+    width: 100%;
+    padding: 0 0 10px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+}
+.acceuil-overview-title-top{
+    justify-self: start;
+    display: flex;
+    align-items: center;
+}
+.acceuil-overview-title-top div{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ecedee;
+    position: relative;
+}
+.acceuil-overview-title-top div i{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.acceuil-overview-title-top h3{
+    margin: 0 10px;
+}
+.acceuil-overview-title a{
+    justify-self: end;
+    text-decoration: none;
+    color: #000;
+    margin: 0;
+}
+.acceuil-overview-title a:hover{
+    font-weight: bold;
+}
+.acceuil-boutique,
+.acceuil-professionnel{
+    width: 350px;
+    height: 100%;
+    margin-right: 10px;
+    position: relative;
+    border-radius: 10px;
+    background: #ffffff;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 0px 8px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 8px -3px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 8px -3px rgba(0,0,0,0.75);
+}
+.acceuil-professionnel{
+    width: 300px;
+}
+.acceuil-boutique-couverture,
+.acceuil-professionnel-couverture{
+    width: 100%;
+    height: 150px;
+    background: #000000;
+}
+.acceuil-boutique-logo,
+.acceuil-professionnel-logo{
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #000000;
+    -webkit-box-shadow: 0px 0px 0px 2px #ffffff;
+    -moz-box-shadow: 0px 0px 0px 2px #ffffff;
+    box-shadow: 0px 0px 0px 2px #ffffff;
+}
+.acceuil-professionnel-logo{
+    top: 110px;
+    width: 70px;
+    height: 70px;
+}
+.acceuil-boutique-description,
+.acceuil-professionnel-description{
+    padding: 10px;
+    box-sizing: border-box;
+    text-align: center;
+}
+.acceuil-boutique-description h4,
+.acceuil-professionnel-description h4{
+    margin: 40px 0 10px;
+}
+.acceuil-boutique-description p,
+.acceuil-professionnel-description p{
+    margin: 10px 0;
+    font-size: .85rem;
+}
+.acceuil-all-products,
+.acceuil-all-boutdechantiers{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+    text-align: center;
+}
+.acceuil-product,
+.acceuil-boutdechantier{
+    width: 120px;
+    height: 180px;
+    position: relative;
+    border-radius: 10px;
+    margin-right: 10px;
+    overflow: hidden;
+}
+.acceuil-product-image,
+.acceuil-boutdechantier-image{
+    width: 100%;
+    height: 100%;
+    background: brown;
+}
+.acceuil-product-descirption,
+.acceuil-boutdechantier-description{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.acceuil-product-descirption p,
+.acceuil-boutdechantier-description p{
+    margin: 0;
+}
+@media only screen and (max-width: 1250px) {
+    
+}
+@media only screen and (max-width: 768px) {
+
+}

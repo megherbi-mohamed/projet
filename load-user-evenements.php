@@ -35,7 +35,6 @@ if ($get_all_evenements_query->execute()){
         </div>
         <div class="evenement-user-overview-right-bottom">
             <input type="hidden" id="id_evn_<?php echo $i ?>" value="<?php echo $get_all_evenements_row['id_evn'] ?>">
-            <input type="hidden" id="id_evn_prd_<?php echo $i ?>" value="<?php echo $get_evenement_product_row['id_prd'] ?>">
             <input type="hidden" id="tail_evn_<?php echo $i ?>" value="<?php echo $i ?>">
             <button id="update_evn_<?php echo $i ?>">Modifier</button>
             <button id="delete_evn_<?php echo $i ?>">Supprimer</button>

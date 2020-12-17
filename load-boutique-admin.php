@@ -16,7 +16,11 @@ if ($get_btq_admin_query->rowCount() > 0) {
         <div class="admin-info-left">
             <p>Admin</p>
             <h4><?php echo $get_btq_admin_row['nom_adm'] ?></h4>
-            <div></div>
+            <?php if ($get_btq_admin_row['etat'] == 1) { ?>
+                <div style="background:green"></div>
+            <?php } else { ?>
+                <div></div>
+            <?php } ?>
         </div>
         <div class="admin-info-right">
             <p>Dernière connexion à <span><?php echo $get_btq_admin_row['last_cnx'] ?></span></p>  
@@ -152,7 +156,10 @@ if ($get_btq_admin_query->rowCount() > 0) {
             </div>
         </div>
     </div>
-    <button id="update_boutique_admin">Enregistrer la modification</button>
+    <div class="create-publication-bottom-button">
+        <div id="loader_create_publication_bottom_button" style="top:20px" class="button-center"></div>
+        <button id="update_boutique_admin">Enregistrer les modifications</button>
+    </div>
 </div>
 <?php }else{ ?>
 <div class="create-admin-boutique">
@@ -255,8 +262,10 @@ if ($get_btq_admin_query->rowCount() > 0) {
             </div>
         </div>
     </div>
-    <button id="create_boutique_admin">Créer</button>
-    <!-- <div id="loader_create_admin" class="center-create-admin"></div> -->
+    <div class="create-publication-bottom-button">
+        <div id="loader_create_publication_bottom_button" style="top:20px" class="button-center"></div>
+        <button id="create_boutique_admin">Créer</button>
+    </div>
 </div>
 <?php } ?>
 

@@ -12,19 +12,4 @@ $categorie = htmlspecialchars($_GET['c']);
     ?>
     <option value="<?php echo $categories_row['sous_categories'] ?>"><?php echo $categories_row['sous_categories'] ?></option>
     <?php } ?>
-    <option value="autre">Autres</option>
 </select>
-<script>
-    var sousPreCategories = document.querySelector('#pre_profession');
-    sousPreCategories.addEventListener('change', function (e) {
-        console.log('change');
-        if (e.target.value == 'autre') {
-            $('.pre-profession').hide();
-            $('.pre-profession-autre').show();
-        }
-        else{
-            $('.pre-profession-autre').hide(); 
-            $('.pre-profession').show();
-        }
-    })
-</script>

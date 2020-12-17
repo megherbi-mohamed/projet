@@ -62,8 +62,9 @@
 }
 .messagerie-middle-top{
     width: 100%;
-    height: 40px;
+    height: 50px;
     border-bottom: 1px solid #ecedee;
+    box-sizing: border-box;
 }
 #display_list_chat_resp,
 #display_corresponder_info{
@@ -94,7 +95,7 @@
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
-    height: calc(100vh - 152px);
+    height: calc(100vh - 160px);
     overflow: auto;
 }
 .messagerie-middle-bottom::-webkit-scrollbar{
@@ -117,7 +118,7 @@
     border-radius: 10px;
 }
 .message-left div{
-    background: rgb(137, 218, 238);
+    background: #bdbdbd;
     float: left;
     clear: both;
 }
@@ -137,6 +138,7 @@
     height: 50px;
     border-top: 1px solid #ecedee;
     text-align: center;
+    box-sizing: border-box;
 }
 .send-message-messagerie div{
     display: none;
@@ -158,9 +160,9 @@
     position: absolute;
     top: 0;
     left: 0;
-    border: 3px solid #f3f3f3; 
+    border: 3px solid #ffffff; 
     border-radius: 50%; 
-    border-top: 3px solid rgb(137, 218, 238); 
+    border-top: 3px solid rgb(0, 0, 0); 
     width: 40px; 
     height: 40px; 
     animation: spinLoadMsg 1s linear infinite; 
@@ -186,6 +188,14 @@
 }
 .messageire-right-top{
     display: none;
+}
+@media only screen and (max-width: 1250px) {
+    .messagerie-container{
+        grid-template-columns: 300px calc(100% - 302px);
+    }
+    .messagerie-right{
+        display: none;
+    }
 }
 @media only screen and (max-width: 768px) {
     .messagerie-container{

@@ -69,7 +69,12 @@ else if (isset($_SESSION['btq'])) {
                                                     OR id_user_3 = '$id_session_btq' OR id_user_4 = '$id_session_btq' OR id_user_5 = '$id_session_btq'");
             $get_btq_id_query->execute();
             $get_btq_id_row = $get_btq_id_query->fetch(PDO::FETCH_ASSOC);
-            $btq_session_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$get_session_id_row['id_user']}");
+
+            $get_btq_auth_query = $conn->prepare("SELECT * FROM admin_boutique WHERE id_btq = {$get_btq_id_row['id_user']}");    
+            $get_btq_auth_query->execute();
+            $get_btq_auth_row = $get_btq_auth_query->fetch(PDO::FETCH_ASSOC);
+
+            $btq_session_query = $conn->prepare("SELECT * FROM boutiques WHERE id_btq = {$get_btq_id_row['id_user']}");
             $btq_session_query->execute();
             if ($btq_session_query->rowCount() > 0) {
                 $btq_inf_row = $btq_session_query->fetch(PDO::FETCH_ASSOC);
@@ -77,7 +82,7 @@ else if (isset($_SESSION['btq'])) {
                 $id_btq = $btq_inf_row['id_btq'];
             }
             else{
-                header('Location: http://localhost/projet/gestion-boutique-connexion');
+                // header('Location: http://localhost/projet/gestion-boutique-connexion');
                 exit;
             }
         }
@@ -281,14 +286,14 @@ else if (isset($_SESSION['btq'])) {
         ?>
         <div class="gerer-boutique-list-boutique">
            <h3>boutique</h3>
-           <input type="hidden" id="id_gb_btq_<?php echo $i ?>" value="<?php echo $get_btq_row['id_btq'] ?>">
+           <input type="hidden" id="id_gb_btq_<?php echo $i ?>" value="<?php echo $btq_inf_row['id_btq'] ?>">
            <div class="gerer-boutique-boutique" id="gerer_boutique_boutique_<?php echo $i ?>">
-               <?php if ($get_btq_row['logo_btq'] != '') { ?>
-                   <img src="./<?php echo $get_btq_row['logo_btq'] ?>" alt="">
-               <?php }else if($get_btq_row['logo_btq'] == ''){ ?>
+               <?php if ($btq_inf_row['logo_btq'] != '') { ?>
+                   <img src="./<?php echo $btq_inf_row['logo_btq'] ?>" alt="">
+               <?php }else if($btq_inf_row['logo_btq'] == ''){ ?>
                    <img src="./boutique-logo/logo.png" alt="">
                <?php } ?>
-               <h4><?php echo $get_btq_row['nom_btq'] ?></h4>
+               <h4><?php echo $btq_inf_row['nom_btq'] ?></h4>
            </div>
         </div>
         <?php } ?>
@@ -442,13 +447,7 @@ else if (isset($_SESSION['btq'])) {
             $get_product_media_row = $get_product_media_query->fetch(PDO::FETCH_ASSOC);
             ?>
             <input type="hidden" id="id_prd_<?php echo $i ?>" value="<?php echo $get_product_row['id_prd'] ?>">
-            <input type="hidden" id="product_tail_<?php echo $i ?>" value="<?php echo $i ?>">
-            <input type="hidden" id="name_prd_<?php echo $i ?>" value="<?php echo $get_product_row['nom_prd'] ?>">
-            <input type="hidden" id="reference_prd_<?php echo $i ?>" value="<?php echo $get_product_row['reference_prd'] ?>">
-            <input type="hidden" id="categorie_prd_<?php echo $i ?>" value="<?php echo $get_product_row['categorie_prd'] ?>">
-            <input type="hidden" id="description_prd_<?php echo $i ?>" value="<?php echo $get_product_row['description_prd'] ?>">
-            <input type="hidden" id="quantity_prd_<?php echo $i ?>" value="<?php echo $get_product_row['quantite_prd'] ?>">
-            <input type="hidden" id="price_prd_<?php echo $i ?>" value="<?php echo $get_product_row['prix_prd'] ?>">
+            <input type="hidden" id="tail_prd_<?php echo $i ?>" value="<?php echo $i ?>">
             <div class="boutique-product" id="boutique_product_<?php echo $i ?>">
                 <div class="product-option-button" id="display_prd_options_button_<?php echo $i ?>">
                     <i class="fas fa-ellipsis-v"></i>
@@ -486,142 +485,17 @@ else if (isset($_SESSION['btq'])) {
         <div id="loader_gb_right" class="center-gb-right"></div>
     </div>
     <!-- create product boutique -->
-    <div class="create-product" id="create_product">
-        <div class="create-product-container">
-            <input type="hidden" id="id_product">
-            <div class="create-product-top">
-                <div class="cancel-create-product-mobile" id="cancel_create_product_resp">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h4>Créer un produit a vendre!</h4>
-                <div class="cancel-create-product" id="cancel_create_product">
-                    <i class="fas fa-times"></i>
-                </div>
-                <button id="crt_prd_btn_resp">Créer</button>
-            </div>
-            <div class="create-product-bottom">
-                <div class="product-input">
-                    <input type="text" id="name_product" autocomplete = "off">
-                    <span class="name-product">Nom *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="reference_product" autocomplete = "off">
-                    <span class="reference-product">Reference *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="categorie_product" autocomplete = "off">
-                    <span class="categorie-product">Categorie *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="description_product" autocomplete = "off">
-                    <span class="description-product">Description *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="caracteristique_product" autocomplete = "off">
-                    <span class="caracteristique-product">Caractéristiques</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="fonctionnalite_product" autocomplete = "off">
-                    <span class="fonctionnalite-product">Fonctionnalités</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="avantage_product" autocomplete = "off">
-                    <span class="avantage-product">Avantages</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="quantity_product" autocomplete = "off">
-                    <span class="quantity-product">Quantite *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="price_product" autocomplete = "off">
-                    <span class="price-product">Prix *</span>
-                </div>
-                <div class="product-images-preview"></div>
-                <div class="create-product-options">
-                    <P>Ajouter des photos du produit</P>
-                    <div id="add_product_image">
-                        <i class="far fa-images"></i>
-                    </div>
-                </div>
-                <form enctype="multipart/form-data">
-                    <input type="file" id="image_prd" name="images_prd[]" accept="image/*" multiple>
-                    <input type="button" id="add_product_image_button">
-                </form>
-                <button id="create_product_button">Créer</button>
-            </div>
-            <div id="loader_load" class="center-load"></div>
-        </div>
+    <div class="create-publication" id="create_product">
+        <div class="create-publication-container" id="create_product_container"></div>
+        <div id="loader_create_product" class="center"></div>
     </div>
     <!-- update product boutique -->
-    <div class="update-product" id="update_product">
-        <div class="update-product-container">
-            <div class="update-product-top">
-                <div class="cancel-update-product-mobile" id="cancel_update_product_resp">
-                    <i class="fas fa-arrow-left"></i>
-                </div>
-                <h4>Modifier le produit</h4>
-                <div class="cancel-update-product" id="cancel_update_product">
-                    <i class="fas fa-times"></i>
-                </div>
-                <button id="update_product_button_resp">Modifier</button>
-            </div>
-            <div class="update-product-bottom">
-                <input type="hidden" id="id_product_updt">
-                <input type="hidden" id="product_tail_updt">
-                <div class="product-input">
-                    <input type="text" id="updt_name_product" placeholder="Titre">
-                    <span>Nom *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_refernce_product" placeholder="Categorie">
-                    <span>Reference *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_categorie_product" placeholder="Categorie">
-                    <span>Categorie *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_description_product" placeholder="Description">
-                    <span>Description *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_caracteristique_product" placeholder="Description">
-                    <span>Caractéristiques</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_fonctionnalite_product" placeholder="Description">
-                    <span>Fonctionnalités</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_avantage_product" placeholder="Description">
-                    <span>Avantages</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_quantity_product" placeholder="Quantité">
-                    <span>Quantite *</span>
-                </div>
-                <div class="product-input">
-                    <input type="text" id="updt_price_product" placeholder="Prix">
-                    <span>prix *</span>
-                </div>
-                <div class="product-update-images-preview"></div>
-                <div class="update-product-options">
-                    <P>Ajouter des photos du produit</P>
-                    <div id="update_product_image">
-                        <i class="far fa-images"></i>
-                    </div>
-                </div>
-                <form enctype="multipart/form-data">
-                    <input type="file" id="image_prd_updt" name="images_prd_updt[]" accept="image/*" multiple>
-                    <input type="button" id="update_product_image_button">
-                </form>
-                <button id="update_product_button">Modifier</button>
-            </div>
-            <div id="loader_load_updt" class="center-load-updt"></div>
-        </div>
+    <div class="create-publication" id="update_product">
+        <div class="create-publication-container" id="update_product_container"></div>
+        <div id="loader_update_product" class="center"></div>
     </div>
     <!-- create categorie boutique -->
-    <div class="create-categorie" id="create_categorie">
+    <!-- <div class="create-categorie" id="create_categorie">
         <div class="create-categorie-container">
             <div class="create-categorie-top">
                 <div class="cancel-create-categorie-mobile" id="cancel_create_categorie_resp">
@@ -643,9 +517,9 @@ else if (isset($_SESSION['btq'])) {
             </div>
             <div id="loader_load" class="center-load"></div>
         </div>
-    </div>
+    </div> -->
     <!-- update categorie boutique -->
-    <div class="update-categorie" id="update_categorie">
+    <!-- <div class="update-categorie" id="update_categorie">
         <div class="update-categorie-container" id="update_categorie_container">
             <div class="update-categorie-top">
                 <div class="cancel-update-categorie-mobile" id="cancel_update_categorie_resp">
@@ -667,7 +541,7 @@ else if (isset($_SESSION['btq'])) {
             </div>
             <div id="loader_load" class="center-load"></div>
         </div>
-    </div>
+    </div> -->
     <!-- update logo boutique -->
     <div class="boutique-logo-update">
         <div class="boutique-logo-update-container">
@@ -1363,8 +1237,8 @@ else if (isset($_SESSION['btq'])) {
 
         // create product
         $('#create_prd_button').click(function(){
-            var fd = new FormData();
             var idBtq = $('#id_boutique_product').val();
+            var fd = new FormData();
             fd.append('id_btq',idBtq);
             $.ajax({
                 url: 'pre-create-product.php',
@@ -1372,123 +1246,441 @@ else if (isset($_SESSION['btq'])) {
                 data: fd,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $('#create_product').show();
+                    }
+                    else{
+                        $('#create_product').css('transform','translateX(0)');
+                    }
+                    $("#loader_create_product").show();
+                },
                 success: function(response){
+                    console.log(response);
                     if(response != 0){
-                        $('#id_product').val(response);
-                        hideCreatePublication();
+                        $('#create_product_container').prepend(response);
+                    }   
+                },
+                complete: function(){
+                    $("#loader_create_product").hide();
+                }
+            });
+        });
+
+        $('#create_product_container').on('click','#cancel_create_product',function(){
+            cancelCreateProduct ();
+        })
+
+        $('#create_product').click(function(){
+            cancelCreateProduct ();
+        })
+
+        function cancelCreateProduct () {
+            var idPrd = $('#id_product').val();
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            $.ajax({
+                url: 'pre-delete-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#create_product_container').empty();
+                    $("#loader_create_product").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
                         if (windowWidth > 768) {
-                            $("body").addClass('body-after');
-                            $('.create-product').show();
-                            $('.create-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                            $("body").removeClass('body-after');
+                            $('#create_product').hide();
                         }
                         else{
-                            $('.create-product').css('transform','translateX(0)');
+                            $('#create_product').css('transform','');
                         }
+                    }    
+                },
+                complete: function(){
+                    $("#loader_create_product").hide();
+                }
+            });
+        }
+
+        $(document).on('focus','.create-publication-bottom input',function(){
+            var id = $(this).attr('id');
+            if (id == 'name_prd') {
+                $('.name-prd').addClass('active-product-span');
+            }
+            if (id == 'reference_prd') {
+                $('.reference-prd').addClass('active-product-span');
+            }
+            if (id == 'categorie_prd') {
+                $('.categorie-prd').addClass('active-product-span');
+            }
+            if (id == 'caracteristique_prd') {
+                $('.caracteristique-prd').addClass('active-product-span');
+            }
+            if (id == 'fonctionnalite_prd') {
+                $('.fonctionnalite-prd').addClass('active-product-span');
+            }
+            if (id == 'avantage_prd') {
+                $('.avantage-prd').addClass('active-product-span');
+            }
+            if (id == 'quantity_prd') {
+                $('.quantity-prd').addClass('active-product-span');
+            }
+            if (id == 'price_prd') {
+                $('.price-prd').addClass('active-product-span');
+            }
+        })
+
+        $(document).on('focus','.create-publication-bottom textarea',function(){
+            var id = $(this).attr('id');
+            if (id == 'description_prd') {
+                $('.description-prd').addClass('active-product-span');
+            }
+        })
+
+        // set product image 
+        $('#create_product_container').on('click','#add_product_image',function(){
+            $('#image_product').val('');
+            $('#image_product').click();
+        });
+
+        $('#create_product_container').on('click','#image_product',function(e){
+            e.stopPropagation();
+        });
+
+        $('#create_product_container').on('change','#image_product',function () { 
+            $('#add_product_image_button').click();
+        });
+
+        $('#create_product_container').on('click','#add_product_image_button',function(e){
+            e.stopPropagation();
+            var numImg = $('.product-image-preview').length;
+            if (numImg > 0) {
+                var lastImg = $('.product-image-preview').last().attr('id').split("_")[2];
+            }
+            else{
+                var lastImg = 0;
+            }
+            var numUpldImg = document.getElementById('image_product').files.length;
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var form_data = new FormData();
+            form_data.append('id_btq',idBtq);
+            form_data.append('id_prd',idPrd);
+            for (let i = 0; i < 4 - numImg; i++) {
+                form_data.append("images[]", document.getElementById('image_product').files[i]);
+            }
+            $.ajax({
+                url: 'upload-images-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if ((numImg + numUpldImg) <= 4) {
+                        for(let i = 0; i < numUpldImg; i++) {
+                            let id = lastImg + i;
+                            $('.product-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                        }
+                    }
+                    else if ((numImg + numUpldImg) >= 5) {
+                        for(let i = 0; i < (4 - numImg); i++) {
+                            let id = lastImg + i;
+                            $('.product-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                        }
+                    }
+                },
+                success: function (response) {
+                    for(let i = 0; i < response.length; i++) {
+                        var src = response[i];
+                        let id = lastImg + i;
+                        $('#product_image_preview_'+id).replaceWith("<div class='product-image-preview' id='product_image_preview_"+id+"'><div class='delete-preview' id='product_delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                    }
+                },
+                complete: function(){
+                    numImg = $('.product-image-preview').length;
+                    if (numImg >= 4) {
+                        $('.create-product-options').hide();
                     }
                 }
             });
         });
 
-        $('.create-product-bottom input').on('focus',function(){
-            var id = $(this).attr('id');
-            if (id == 'name_product') {
-                $('.name-product').addClass('active-product-input-span');
-            }
-            if (id == 'reference_product') {
-                $('.reference-product').addClass('active-product-input-span');
-            }
-            if (id == 'categorie_product') {
-                $('.categorie-product').addClass('active-product-input-span');
-            }
-            if (id == 'description_product') {
-                $('.description-product').addClass('active-product-input-span');
-            }
-            if (id == 'caracteristique_product') {
-                $('.caracteristique-product').addClass('active-product-input-span');
-            }
-            if (id == 'fonctionnalite_product') {
-                $('.fonctionnalite-product').addClass('active-product-input-span');
-            }
-            if (id == 'avantage_product') {
-                $('.avantage-product').addClass('active-product-input-span');
-            }
-            if (id == 'quantity_product') {
-                $('.quantity-product').addClass('active-product-input-span');
-            }
-            if (id == 'price_product') {
-                $('.price-product').addClass('active-product-input-span');
-            }
-        })
-
-        $('#cancel_create_product_resp').click(function(){
-            var fd= new FormData();
+        // remove product image preview
+        $('#create_product_container').on('click','[id^="product_delete_preview_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
             var idPrd = $('#id_product').val();
-            fd.append('id_prd',idPrd);
-            $.ajax({
-                url: 'pre-delete-product.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $("body").removeClass('body-after');
-                        $('.create-product').css('transform','');
-                    }    
-                }
-            });
-        })
-
-        $('#cancel_create_product').click(function(){
+            var mediaUrl = $('#product_image_preview_'+id+' img').attr('src');
             var fd = new FormData();
-            var idPrd = $('#id_product').val();
             fd.append('id_prd',idPrd);
+            fd.append('media_url',mediaUrl);
             $.ajax({
-                url: 'pre-delete-product.php',
+                url: 'delete-product-media.php',
                 type: 'post',
                 data: fd,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    $('#product_image_preview_'+id).replaceWith("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                },
                 success: function(response){
                     if(response != 0){
-                        // console.log(response);
-                        $("body").removeClass('body-after');
-                        $('.create-product').hide();
-                        $('.product-images-preview div').remove();
-                        $('.product-images-preview div').remove();
-                        $('.create-product-container').css({'top':'','transform':''});
+                        $('#product_image_preview_'+id).remove();
                     }
-                    else{
-                        // console.log(response);
+                },
+                complete: function(){
+                    var numImg = $('.product-image-preview').length;
+                    if (numImg < 4) {
+                        $('.create-product-options').show();
                     }
                 }
             });
+        });
+
+        // set product video 
+        $('#create_product_container').on('click','#add_product_video',function(){
+            $('#video_product').val('');
+            $('#video_product').click();
         })
-        
-        $(window).on('beforeunload', function(){
-            if ($('#create_product').is(':visible')) {
-                var fd= new FormData();
-                var idPrd = $('#id_product').val();
+
+        $('#create_product_container').on('click','#video_product',function(e){
+            e.stopPropagation();
+        });
+
+        $('#create_product_container').on('change','#video_product',function () { 
+            $('#add_product_video_button').click();
+        });
+
+        $('#create_product_container').on('click','#add_product_video_button',function(e){
+            e.stopPropagation();
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var form_data = new FormData();
+            form_data.append('id_prd',idPrd);
+            form_data.append('id_btq',idBtq);
+            form_data.append("video", $('#video_product')[0].files[0]);
+            $.ajax({
+                url: 'upload-video-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.product-video-preview').append("<div class='prd-video-preview' id='product_video_preview'><div id='loader_product_video' class='center'></div></div>");
+                },
+                success: function (response) {
+                    if (windowWidth > 768) {
+                        $('.create-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    $('#product_video_preview').replaceWith("<div class='prd-video-preview' id='product_video_preview'><div class='delete-preview' id='product_delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+                },
+                complete: function(){
+                    var numVideo = $('.prd-video-preview').length;
+                    if (numVideo >= 1) {
+                        $('.create-product-options').hide();
+                    }
+                }
+            });
+        });
+
+        // remove product video preview
+        $('#create_product_container').on('click','#product_delete_video',function(){
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var mediaUrl = $('.prd-video-preview video source').attr('src');
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-product-media.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#product_video_preview').replaceWith("<div class='prd-video-preview' id='product_video_preview'><div id='loader_product_video' class='center'></div></div>");
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#product_video_preview').remove();
+                    }
+                },
+                complete: function(){
+                    var numVideo = $('.product-video-preview').length;
+                    if (numVideo == 0) {
+                        $('.create-product-options').show();
+                    }
+                }
+            });
+        });
+
+        // valide create product boutique
+        $('#create_product_container').on('click','#create_product_button',function(){
+            var idBtq = $('#id_boutique_product').val();
+            var idPrd = $('#id_product').val();
+            var namePrd = $('#name_prd').val();
+            var categoriePrd = $('#categorie_prd').val();
+            var referencePrd = $('#reference_prd').val(); 
+            var quantityPrd = $('#quantity_prd').val();
+            var pricePrd = $('#price_prd').val();
+            var caracteristicPrd = $('#caracteristique_prd').val();
+            var fonctionnalityPrd = $('#fonctionnalite_prd').val();
+            var avantagePrd = $('#avantage_prd').val();
+            var descriptionPrd = $('#description_prd').val();
+            var numMedia = $('.product-image-preview').length + $('.prd-video-preview').length;
+            if (namePrd == ''){
+                $('#name_prd').css('border','2px solid red');
+            }
+            else if (categoriePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','2px solid red');
+            }
+            else if(referencePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','2px solid red');
+            }
+            else if(quantityPrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','2px solid red');
+            }
+            else if(pricePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','2px solid red');
+            }
+            else if(descriptionPrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','');
+                $('#description_prd').css('border','2px solid red');
+            }
+            else if(numMedia == 0){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','');
+                $('#description_prd').css('border','');
+                $('.create-product-options').css('border','2px solid red');
+            }
+            else {
+                var fd = new FormData();
+                fd.append('id_btq',idBtq);
                 fd.append('id_prd',idPrd);
+                fd.append('nom_prd',namePrd);
+                fd.append('categorie_prd',categoriePrd);
+                fd.append('description_prd',descriptionPrd);
+                fd.append('quantite_prd',quantityPrd);
+                fd.append('reference_prd',referencePrd);
+                fd.append('prix_prd',pricePrd);
+                fd.append('caracteristique_prd',caracteristicPrd);
+                fd.append('fonctionnalite_prd',fonctionnalityPrd);
+                fd.append('avantage_prd',avantagePrd);
                 $.ajax({
-                    url: 'pre-delete-product.php',
+                    url: 'create-product.php',
                     type: 'post',
                     data: fd,
-                    dataType: 'json',
                     contentType: false,
                     processData: false,
+                    beforeSend: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").show();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").show();
+                        }
+                    },
                     success: function(response){
+                        console.log(response);
                         if(response != 0){
-                            
-                        }    
+                            if (windowWidth > 768) {
+                                window.location = 'gerer-boutique/'+idBtq;
+                            }
+                            else{
+                                setTimeout(() => {
+                                    window.location = 'gerer-boutique/'+idBtq;
+                                }, 400);
+                            }
+                        }
+                    },
+                    complete: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").hide();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").hide();
+                        }
                     }
                 });
             }
+        });
+
+        // update product
+        $(document).on('click','[id^="update_product_"]',function(){
+            id = $(this).attr("id").split("_")[2];
+            var idBtq = $('#id_boutique_product').val();
+            var idPrd = $('#id_prd_'+id).val(); 
+            var tailPrd = $('#tail_prd_'+id).val();
+            var fd = new FormData();
+            fd.append('id_btq',idBtq); 
+            fd.append('id_prd',idPrd); 
+            fd.append('tail_prd',tailPrd);
+            $.ajax({
+                url: 'load-update-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if (windowWidth > 768) {
+                        $("body").addClass('body-after');
+                        $("body").css('overflow','hidden');
+                        $('#update_product').show();
+                    }
+                    else{
+                        $('#update_product').css('transform','translateX(0)'); 
+                    }
+                    $("#loader_update_product").show();
+                },
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        $('#update_product_container').append(response);
+                    }   
+                },
+                complete: function(){
+                    $("#loader_update_product").hide();
+                }
+            });
+        });
+
+        // cancel update product
+        $('#update_product_container').on('click','#cancel_update_product',function(){
+            cancelUpdateProduct ();
         })
 
-        $('#create_product').click(function(e){
-            var fd = new FormData();
+        $('#update_product').click(function(){
+            cancelUpdateProduct ();
+        })
+
+        function cancelUpdateProduct () {
             var idPrd = $('#id_product').val();
+            var fd = new FormData();
             fd.append('id_prd',idPrd);
             $.ajax({
                 url: 'pre-delete-product.php',
@@ -1496,21 +1688,338 @@ else if (isset($_SESSION['btq'])) {
                 data: fd,
                 contentType: false,
                 processData: false,
+                beforeSend: function(){
+                    $('#update_product_container').empty();
+                    $("#loader_update_product").show();
+                },
                 success: function(response){
+                    console.log(response);
                     if(response != 0){
-                        $("body").removeClass('body-after');
-                        $('.create-product').hide();
-                        $('.product-images-preview div').remove();
-                        $('.product-images-preview div').remove();
-                        $('.create-product-container').css({'top':'','transform':''});
                     }    
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("body").removeClass('body-after');
+                        $('#update_product').hide();
+                    }
+                    else{
+                        $('#update_product').css('transform','');
+                    }
+                    $("#loader_update_product").hide();
                 }
             });
+        }
+        
+        // set product image 
+        $('#update_product_container').on('click','#add_product_image',function(){
+            $('#image_product').val('');
+            $('#image_product').click();
+        });
+
+        $('#update_product_container').on('click','#image_product',function(e){
+            e.stopPropagation();
+        });
+
+        $('#update_product_container').on('change','#image_product',function () { 
+            $('#add_product_image_button').click();
+        });
+
+        $('#update_product_container').on('click','#add_product_image_button',function(e){
+            e.stopPropagation();
+            var numImg = $('.product-image-preview').length;
+            if (numImg > 0) {
+                var lastImg = $('.product-image-preview').last().attr('id').split("_")[2];
+            }
+            else{
+                var lastImg = 0;
+            }
+            var numUpldImg = document.getElementById('image_product').files.length;
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var form_data = new FormData();
+            form_data.append('id_btq',idBtq);
+            form_data.append('id_prd',idPrd);
+            for (let i = 0; i < 4 - numImg; i++) {
+                form_data.append("images[]", document.getElementById('image_product').files[i]);
+            }
+            $.ajax({
+                url: 'upload-images-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    if ((numImg + numUpldImg) <= 4) {
+                        for(let i = 0; i < numUpldImg; i++) {
+                            let id = lastImg + i;
+                            $('.product-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                        }
+                    }
+                    else if ((numImg + numUpldImg) >= 5) {
+                        for(let i = 0; i < (4 - numImg); i++) {
+                            let id = lastImg + i;
+                            $('.product-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                        }
+                    }
+                },
+                success: function (response) {
+                    for(let i = 0; i < response.length; i++) {
+                        var src = response[i];
+                        let id = lastImg + i;
+                        $('#product_image_preview_'+id).replaceWith("<div class='product-image-preview' id='product_image_preview_"+id+"'><div class='delete-preview' id='product_delete_preview_"+id+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
+                    }
+                },
+                complete: function(){
+                    numImg = $('.product-image-preview').length;
+                    if (numImg >= 4) {
+                        $('.create-product-options').hide();
+                    }
+                }
+            });
+        });
+
+        // remove product image preview
+        $('#update_product_container').on('click','[id^="product_delete_preview_"]',function(){
+            var id = $(this).attr("id").split("_")[3];
+            var idPrd = $('#id_product').val();
+            var mediaUrl = $('#product_image_preview_'+id+' img').attr('src');
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-product-media.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#product_image_preview_'+id).replaceWith("<div class='product-image-preview' id='product_image_preview_"+id+"'><div id='loader_prd_img_"+id+"' class='center'></div></div>");
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#product_image_preview_'+id).remove();
+                    }
+                },
+                complete: function(){
+                    var numImg = $('.product-image-preview').length;
+                    if (numImg < 4) {
+                        $('.create-product-options').show();
+                    }
+                }
+            });
+        });
+
+        // set publication video 
+        $('#update_product_container').on('click','#add_product_video',function(){
+            $('#video_product').val('');
+            $('#video_product').click();
         })
 
-        $('.create-product-container').click(function(e){
+        $('#update_product_container').on('click','#video_product',function(e){
             e.stopPropagation();
-        })
+        });
+
+        $('#update_product_container').on('change','#video_product',function () { 
+            $('#add_product_video_button').click();
+        });
+
+        $('#update_product_container').on('click','#add_product_video_button',function(e){
+            e.stopPropagation();
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var form_data = new FormData();
+            form_data.append('id_prd',idPrd);
+            form_data.append('id_btq',idBtq);
+            form_data.append("video", $('#video_product')[0].files[0]);
+            $.ajax({
+                url: 'upload-video-product.php', 
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('.product-video-preview').append("<div class='prd-video-preview' id='product_video_preview'><div id='loader_product_video' class='center'></div></div>");
+                },
+                success: function (response) {
+                    if (windowWidth > 768) {
+                        $('.create-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
+                    }
+                    $('#product_video_preview').replaceWith("<div class='prd-video-preview' id='product_video_preview'><div class='delete-preview' id='product_delete_video'><i class='fas fa-times'></i></div><video controls><source src='"+response+"'></video></div>");
+                },
+                complete: function(){
+                    var numVideo = $('.prd-video-preview').length;
+                    if (numVideo >= 1) {
+                        $('.create-product-options').hide();
+                    }
+                }
+            });
+        });
+
+        // remove product video preview
+        $('#update_product_container').on('click','#product_delete_video',function(){
+            var idPrd = $('#id_product').val();
+            var idBtq = $('#id_boutique_product').val();
+            var mediaUrl = $('.prd-video-preview video source').attr('src');
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('id_btq',idBtq);
+            fd.append('media_url',mediaUrl);
+            $.ajax({
+                url: 'delete-product-media.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                beforeSend: function(){
+                    $('#product_video_preview').replaceWith("<div class='prd-video-preview' id='product_video_preview'><div id='loader_product_video' class='center'></div></div>");
+                },
+                success: function(response){
+                    if(response != 0){
+                        $('#product_video_preview').remove();
+                    }
+                },
+                complete: function(){
+                    var numVideo = $('.product-video-preview').length;
+                    if (numVideo == 0) {
+                        $('.create-product-options').show();
+                    }
+                }
+            });
+        });
+
+        // valide update product boutique
+        $('#update_product_container').on('click','#update_product_button',function(){
+            var tailPrd = $('#tail_product').val();
+            var idPrd = $('#id_product').val();
+            var namePrd = $('#name_prd').val();
+            var categoriePrd = $('#categorie_prd').val();
+            var referencePrd = $('#reference_prd').val(); 
+            var quantityPrd = $('#quantity_prd').val();
+            var pricePrd = $('#price_prd').val();
+            var caracteristicPrd = $('#caracteristique_prd').val();
+            var fonctionnalityPrd = $('#fonctionnalite_prd').val();
+            var avantagePrd = $('#avantage_prd').val();
+            var descriptionPrd = $('#description_prd').val();
+            var numMedia = $('.product-image-preview').length + $('.prd-video-preview').length;
+            if (namePrd == ''){
+                $('#name_prd').css('border','2px solid red');
+            }
+            else if (categoriePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','2px solid red');
+            }
+            else if(referencePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','2px solid red');
+            }
+            else if(quantityPrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','2px solid red');
+            }
+            else if(pricePrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','2px solid red');
+            }
+            else if(descriptionPrd == ''){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','');
+                $('#description_prd').css('border','2px solid red');
+            }
+            else if(numMedia == 0){
+                $('#name_prd').css('border','');
+                $('#categorie_prd').css('border','');
+                $('#reference_prd').css('border','');
+                $('#quantity_prd').css('border','');
+                $('#price_prd').css('border','');
+                $('#description_prd').css('border','');
+                $('.create-product-options').css('border','2px solid red');
+            }
+            else {
+                var fd = new FormData();
+                fd.append('id_prd',idPrd);
+                fd.append('nom_prd',namePrd);
+                fd.append('categorie_prd',categoriePrd);
+                fd.append('description_prd',descriptionPrd);
+                fd.append('quantite_prd',quantityPrd);
+                fd.append('reference_prd',referencePrd);
+                fd.append('prix_prd',pricePrd);
+                fd.append('caracteristique_prd',caracteristicPrd);
+                fd.append('fonctionnalite_prd',fonctionnalityPrd);
+                fd.append('avantage_prd',avantagePrd);
+                $.ajax({
+                    url: 'update-product.php',
+                    type: 'post',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    beforeSend: function(){
+                        if (windowWidth > 768) {
+                            $("#loader_create_publication_bottom_button").show();
+                        }
+                        else{
+                            $("#loader_create_publication_top_button").show();
+                        }
+                    },
+                    success: function(response){
+                        console.log(response);
+                        if(response != 0){
+                            loadProduct (idPrd,tailPrd);
+                        }
+                    }
+                });
+            }
+        });
+
+        function loadProduct (idPrd,tailPrd) {
+            var fd = new FormData();
+            fd.append('id_prd',idPrd);
+            fd.append('tail_prd',tailPrd);
+            $.ajax({
+                url: 'load-product.php',
+                type: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    console.log(response);
+                    if(response != 0){
+                        if (windowWidth > 768) {
+                            $("body").removeClass('body-after');
+                            $('#update_product_container').css({'top':'','transform':''});
+                            $('#update_product').hide();
+                            $('#boutique_product_'+tailPrd).replaceWith(response);
+                            $('#update_product_container').empty();
+                        }
+                        else{
+                            $('#update_product').css('transform','');
+                            setTimeout(() => {
+                                $('#boutique_product_'+tailPrd).replaceWith(response);
+                                $('#update_product_container').empty();
+                            }, 400);
+                        }
+                    }
+                },
+                complete: function(){
+                    if (windowWidth > 768) {
+                        $("#loader_create_publication_bottom_button").hide();
+                    }
+                    else{
+                        $("#loader_create_publication_top_button").hide();
+                    }
+                }
+            });
+        }
 
         // create categorie
         $('#create_ctgr_button').click(function(){
@@ -1767,262 +2276,6 @@ else if (isset($_SESSION['btq'])) {
             }
         })
 
-        // upload product image 
-        $('#add_product_image').click(function(){
-            $('#image_prd').click();
-        });
-
-        $('#image_prd').click(function(e){
-            e.stopPropagation();
-        });
-
-        $('#image_prd').on('change', function () { 
-            $('#add_product_image_button').click();
-        });
-
-        $('#add_product_image_button').click(function(){
-            var form_data = new FormData();
-            var idPrd = $('#id_product').val();
-            form_data.append('id_prd',idPrd);
-            var idBtq = $('#id_boutique_product').val();
-            form_data.append('id_btq',idBtq);
-            var totalfiles = document.getElementById('image_prd').files.length;
-            for (let i = 0; i < totalfiles; i++) {
-                form_data.append("images[]", document.getElementById('image_prd').files[i]);
-            }
-            $.ajax({
-                url: 'upload-images-product.php', 
-                type: 'post',
-                data: form_data,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    if (windowWidth > 768) {
-                        $('.create-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
-                    }
-                    for(let i = 0; i < response.length; i++) {
-                        var src = response[i];
-                        $('.product-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+i+"'><div id='product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
-                    }
-                }
-            });
-        });
-
-        // remove product image preview
-        $('.product-images-preview').on('click','[id^="product_delete_preview_"]',function(){
-            var id = $(this).attr("id").split("_")[3];
-            var fd = new FormData();
-            var idPrd = $('#id_product').val();
-            fd.append('id_prd',idPrd);
-            var mediaUrl = $('#product_image_preview_'+id+' img').attr('src');
-            fd.append('media_url',mediaUrl);
-            $.ajax({
-                url: 'delete-image-product-preview.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $('#product_image_preview_'+id).remove();
-                    }
-                }
-            });
-        });
-
-        // $('#create_product_button').click(function(){
-        //     var idBtq = $('#id_boutique_product').val();
-        //     var idPrd = $('#id_product').val();
-        //     var namePrd = $('#name_product').val();
-        //     var referencePrd = $('#reference_product').val();
-        //     var categoriePrd = $('#categorie_product').val();
-        //     var descriptionPrd = $('#description_product').val();
-        //     var caracteristiquePrd = $('#caracteristique_product').val();
-        //     var fonctionnalitePrd = $('#fonctionnalite_product').val();
-        //     var avantagePrd = $('#avantage_product').val();
-        //     var quantityPrd = $('#quantity_product').val();
-        //     var pricePrd = $('#price_product').val();
-
-        //     if (namePrd == ''){
-        //         $('#name_product').css('border','2px solid red');
-        //     }
-        //     // else if(referencePrd == ''){
-        //     //     $('#name_product').css('border','');
-        //     //     $('#reference_product').css('border','2px solid red');
-        //     // }
-        //     else if(categoriePrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','2px solid red');
-        //     }
-        //     else if(descriptionPrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','2px solid red');
-        //     }
-        //     else if(quantityPrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','');
-        //         $('#quantity_product').css('border','2px solid red');
-        //     }
-        //     else if(pricePrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','');
-        //         $('#quantity_product').css('border','');
-        //         $('#price_product').css('border','2px solid red');
-        //     }
-        //     else if(namePrd != '' && categoriePrd != '' && descriptionPrd != '' &&
-        //             quantityPrd != '' && pricePrd != ''){
-        //         var fd = new FormData();
-        //         fd.append('id_prd',idPrd);
-        //         fd.append('id_btq',idBtq);
-        //         fd.append('name_prd',namePrd);
-        //         fd.append('reference_prd',referencePrd);
-        //         fd.append('categorie_prd',categoriePrd);
-        //         fd.append('description_prd',descriptionPrd);
-        //         fd.append('caracteristique_prd',caracteristiquePrd);
-        //         fd.append('fonctionnalite_prd',fonctionnalitePrd);
-        //         fd.append('avantage_prd',avantagePrd);
-        //         fd.append('quantity_prd',quantityPrd);
-        //         fd.append('price_prd',pricePrd);
-        //         $.ajax({
-        //             url: 'create-product.php',
-        //             type: 'post',
-        //             data: fd,
-        //             contentType: false,
-        //             processData: false,
-        //             beforeSend: function(){
-        //                 $('.create-product-top').hide();
-        //                 $('.create-product-bottom').hide();
-        //                 $("#loader_load").show();
-        //             },
-        //             success: function(response){
-        //                 if(response != 0){
-        //                     // console.log(response);
-        //                     $('.boutique-bottom').prepend(response);
-        //                 }
-        //             },
-        //             complete: function(){
-        //                 $("#loader_load").hide();
-        //                 $(".create-product").hide();
-        //                 $("body").removeClass('body-after');
-        //                 $('.create-product-container').css({'top':'','transform':''});
-        //                 $('.create-product-top').show();
-        //                 $('.create-product-bottom').show();
-        //                 $('#name_product').val('');
-        //                 $('#reference_product').val('');
-        //                 $('#categorie_product').val('');
-        //                 $('#description_product').val('');
-        //                 $('#quantity_product').val('');
-        //                 $('#price_product').val('');
-        //                 $('.product-images-preview').empty();
-        //             }
-        //         });
-        //     }
-        // });
-
-        // $('#crt_prd_btn_resp').click(function(){
-        //     var idBtq = $('#id_boutique_product').val();
-        //     var idPrd = $('#id_product').val();
-        //     var namePrd = $('#name_product').val();
-        //     var referencePrd = $('#reference_product').val();
-        //     var categoriePrd = $('#categorie_product').val();
-        //     var descriptionPrd = $('#description_product').val();
-        //     var caracteristiquePrd = $('#caracteristique_product').val();
-        //     var fonctionnalitePrd = $('#fonctionnalite_product').val();
-        //     var avantagePrd = $('#avantage_product').val();
-        //     var quantityPrd = $('#quantity_product').val();
-        //     var pricePrd = $('#price_product').val();
-
-        //     if (namePrd == ''){
-        //         $('#name_product').css('border','2px solid red');
-        //     }
-        //     // else if(referencePrd == ''){
-        //     //     $('#name_product').css('border','');
-        //     //     $('#reference_product').css('border','2px solid red');
-        //     // }
-        //     else if(categoriePrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','2px solid red');
-        //     }
-        //     else if(descriptionPrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','2px solid red');
-        //     }
-        //     else if(quantityPrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','');
-        //         $('#quantity_product').css('border','2px solid red');
-        //     }
-        //     else if(pricePrd == ''){
-        //         $('#name_product').css('border','');
-        //         // $('#reference_product').css('border','');
-        //         $('#categorie_product').css('border','');
-        //         $('#description_product').css('border','');
-        //         $('#quantity_product').css('border','');
-        //         $('#price_product').css('border','2px solid red');
-        //     }
-        //     else if(namePrd != '' && categoriePrd != '' && descriptionPrd != '' &&
-        //             quantityPrd != '' && pricePrd != ''){
-        //         var fd = new FormData();
-        //         fd.append('id_prd',idPrd);
-        //         fd.append('id_btq',idBtq);
-        //         fd.append('name_prd',namePrd);
-        //         fd.append('reference_prd',referencePrd);
-        //         fd.append('categorie_prd',categoriePrd);
-        //         fd.append('description_prd',descriptionPrd);
-        //         fd.append('caracteristique_prd',caracteristiquePrd);
-        //         fd.append('fonctionnalite_prd',fonctionnalitePrd);
-        //         fd.append('avantage_prd',avantagePrd);
-        //         fd.append('quantity_prd',quantityPrd);
-        //         fd.append('price_prd',pricePrd);
-        //         $.ajax({
-        //             url: 'create-product.php',
-        //             type: 'post',
-        //             data: fd,
-        //             contentType: false,
-        //             processData: false,
-        //             beforeSend: function(){
-        //                 $('.create-product-top').hide();
-        //                 $('.create-product-bottom').hide();
-        //                 $("#loader_load").show();
-        //             },
-        //             success: function(response){
-        //                 if(response != 0){
-        //                     // console.log(response);
-        //                     $('.boutique-bottom').prepend(response);
-        //                 }
-        //             },
-        //             complete: function(){
-        //                 $("#loader_load").hide();
-        //                 $(".create-product").hide();
-        //                 $("body").removeClass('body-after');
-        //                 $('.create-product-container').css({'top':'','transform':''});
-        //                 $('.create-product-top').show();
-        //                 $('.create-product-bottom').show();
-        //                 $('#name_product').val('');
-        //                 $('#reference_product').val('');
-        //                 $('#categorie_product').val('');
-        //                 $('#description_product').val('');
-        //                 $('#quantity_product').val('');
-        //                 $('#price_product').val('');
-        //                 $('.product-images-preview').empty();
-        //             }
-        //         });
-        //     }
-        // });
-
         // product options
         $(document).on('click','[id^="display_prd_options_button_"]',function(e){
             e.stopPropagation();
@@ -2112,224 +2365,6 @@ else if (isset($_SESSION['btq'])) {
             }else{
                 $('#delete_product').css('transform','');
             }
-        });
-
-
-        // update products 
-        $(document).on('click','[id^="update_product_"]',function(){
-            id = $(this).attr("id").split("_")[2];
-            var idPrd = $('#id_prd_'+id).val(); 
-            var prdTail = $('#product_tail_'+id).val();
-            var prdName = $('#name_prd_'+id).val();
-            var prdReference = $('#reference_prd_'+id).val();
-            var prdCategorie = $('#categorie_prd_'+id).val();
-            var prdDescription = $('#description_prd_'+id).val();
-            var prdQuantite = $('#quantity_prd_'+id).val();
-            var prdPrix = $('#price_prd_'+id).val();
-            
-            $('#id_product_updt').val(idPrd);
-            $('#product_tail_updt').val(prdTail);
-            $('#updt_name_product').val(prdName);
-            $('#updt_refernce_product').val(prdReference);
-            $('#updt_categorie_product').val(prdCategorie);
-            $('#updt_description_product').val(prdDescription);
-            $('#updt_quantity_product').val(prdQuantite);
-            $('#updt_price_product').val(prdPrix);
-
-            $('.product-update-images-preview').load('product-images-preview.php?id_prd='+idPrd);
-
-            if (windowWidth <= 768) {
-                $('.update-product').css('transform','translateX(0)');
-            }
-            else{
-                $("body").addClass('body-after');
-                $('.update-product').show();
-                $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
-            }
-        });
-
-        $('#cancel_update_product_resp').click(function(){
-            $('.update-product').css('transform','');
-        })
-
-        $('#cancel_update_product').click(function(e){
-            e.stopPropagation();
-            $("body").removeClass('body-after');
-            $('.update-product').hide();
-            $('.update-product-container').css({'top':'','transform':''});
-            $('.product-update-images-preview div').remove();
-        })
-
-        $('#update_product').click(function(){
-            $("body").removeClass('body-after');
-            $('.update-product').hide();
-            $('.update-product-container').css({'top':'','transform':''});
-            $('.product-update-images-preview div').remove();
-        })
-
-        //update product image
-        $('.update-product-container').click(function(e){
-            e.stopPropagation();
-        })
-
-        $('#update_product_image').click(function(){
-            $('#image_prd_updt').click();
-        });
-
-        $('#image_prd_updt').on('change',function(){ 
-            $('#update_product_image_button').click();
-        });
-
-        $('#update_product_image_button').click(function(){
-            var form_data = new FormData();
-            var idBtq = $('#id_boutique_product').val();
-            form_data.append('id_btq',idBtq);
-            var idPrd = $('#id_product_updt').val();
-            form_data.append('id_prd',idPrd);
-            var totalfiles = document.getElementById('image_prd_updt').files.length;
-            for (let i = 0; i < totalfiles; i++) {
-                form_data.append("images[]", document.getElementById('image_prd_updt').files[i]);
-            }
-            $.ajax({
-                url: 'upload-images-product.php', 
-                type: 'post',
-                data: form_data,
-                dataType: 'json',
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    // console.log(response);
-                    if (windowWidth > 768) {
-                        $('.update-product-container').css({'top':'0','transform':'translate(-50%,0%)'});
-                    }
-                    for(let i = 0; i < response.length; i++) {
-                        var src = response[i];
-                        $('.product-update-images-preview').append("<div class='product-image-preview' id='product_image_preview_"+i+"'><div id='product_delete_preview_"+i+"'><i class='fas fa-times'></i></div><img src='"+src+"'></div>");
-                    }
-                }
-            });
-        });
-
-        // remove update product images preview
-        $('.product-update-images-preview').on('click','[id^="product_delete_preview_"]',function(){
-            var id = $(this).attr("id").split("_")[3];
-            var fd = new FormData();
-            var idBtq = $('#id_boutique_product').val();
-            fd.append('id_btq',idBtq);
-            var idPrd = $('#id_product_updt').val();
-            fd.append('id_prd',idPrd);
-            var mediaUrl = $('.product-update-images-preview #product_image_preview_'+id+' img').attr('src');
-            fd.append('media_url',mediaUrl);
-            $.ajax({
-                url: 'update-images-product.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                    if(response != 0){
-                        $('.product-update-images-preview #product_image_preview_'+id).remove();
-                    }
-                }
-            });
-        });
-
-        $('#update_product_button').click(function(){
-            var fd = new FormData();
-            var idPrd = $('#id_product_updt').val();
-            fd.append('id_prd',idPrd);
-            var namePrd = $('#updt_name_product').val();
-            fd.append('nom_prd',namePrd);
-            var referencePrd = $('#updt_refernce_product').val();
-            fd.append('reference_prd',referencePrd);
-            var categoriePrd = $('#updt_categorie_product').val();
-            fd.append('categorie_prd',categoriePrd);
-            var descriptionPrd = $('#updt_description_product').val();
-            fd.append('description_prd',descriptionPrd);
-            var caracteristiquePrd = $('#updt_caracteristique_product').val();
-            fd.append('caracteristique_prd',caracteristiquePrd);
-            var fonctionnalitePrd = $('#updt_fonctionnalite_product').val();
-            fd.append('fonctionnalite_prd',fonctionnalitePrd);
-            var descriptionPrd = $('#updt_avantage_product').val();
-            fd.append('avantage_prd',descriptionPrd);
-            var quantityPrd = $('#updt_quantity_product').val();
-            fd.append('quantite_prd',quantityPrd);
-            var pricePrd = $('#updt_price_product').val();
-            fd.append('prix_prd',pricePrd);
-            var id = $('#product_tail_updt').val();
-            fd.append('tail_prd',id);
-            $.ajax({
-                url: 'update-product.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    $('.update-product').css('opacity','0.5');
-                    $("#loader_load_updt").show();
-                },
-                success: function(response){
-                    if(response != 0){
-                        $('#boutique_product_'+id).replaceWith(response);
-                    }
-                },
-                complete: function(){
-                    $("#loader_load_updt").hide();
-                    $(".update-product").hide();
-                    $("body").removeClass('body-after');
-                    $('.update-product-container').css({'top':'','transform':''});
-                    $('.update-product').css('opacity','');
-                }
-            });
-        });
-
-        $('#update_product_button_resp').click(function(){
-            var fd = new FormData();
-            var idPrd = $('#id_product_updt').val();
-            fd.append('id_prd',idPrd);
-            var namePrd = $('#updt_name_product').val();
-            fd.append('nom_prd',namePrd);
-            var referencePrd = $('#updt_refernce_product').val();
-            fd.append('reference_prd',referencePrd);
-            var categoriePrd = $('#updt_categorie_product').val();
-            fd.append('categorie_prd',categoriePrd);
-            var descriptionPrd = $('#updt_description_product').val();
-            fd.append('description_prd',descriptionPrd);
-            var caracteristiquePrd = $('#updt_caracteristique_product').val();
-            fd.append('caracteristique_prd',caracteristiquePrd);
-            var fonctionnalitePrd = $('#updt_fonctionnalite_product').val();
-            fd.append('fonctionnalite_prd',fonctionnalitePrd);
-            var descriptionPrd = $('#updt_avantage_product').val();
-            fd.append('avantage_prd',descriptionPrd);
-            var quantityPrd = $('#updt_quantity_product').val();
-            fd.append('quantite_prd',quantityPrd);
-            var pricePrd = $('#updt_price_product').val();
-            fd.append('prix_prd',pricePrd);
-            var id = $('#product_tail_updt').val();
-            fd.append('tail_prd',id);
-            $.ajax({
-                url: 'update-product.php',
-                type: 'post',
-                data: fd,
-                contentType: false,
-                processData: false,
-                beforeSend: function(){
-                    $('.update-product').css('opacity','0.5');
-                    $("#loader_load_updt").show();
-                },
-                success: function(response){
-                    if(response != 0){
-                        $('#boutique_product_'+id).replaceWith(response);
-                    }
-                },
-                complete: function(){
-                    $("#loader_load_updt").hide();
-                    $(".update-product").hide();
-                    $("body").removeClass('body-after');
-                    $('.update-product-container').css({'top':'','transform':''});
-                    $('.update-product').css('opacity','');
-                }
-            });
         });
 
         $(document).on('click','[id^="boutique_product_"]',function(){
@@ -2770,7 +2805,6 @@ else if (isset($_SESSION['btq'])) {
                             setTimeout(() => {
                                 $('.boutique-container').append(response);
                             }, 400);
-                            console.log(1);
                         }
                         else{
                             $('.boutique-container').append(response);
@@ -2830,7 +2864,6 @@ else if (isset($_SESSION['btq'])) {
             var nomAdm = $('#nom_adm').val();
             var mtpAdm = $('#mtp_adm').val();
             var cnfrmMtpAdm = $('#cnfrm_mtp_adm').val();
-
             if (matriculeAdm == '') {
                 $('#matricule_adm').css('border','2px solid red');
             }
@@ -2849,18 +2882,11 @@ else if (isset($_SESSION['btq'])) {
                 $('#mtp_adm').css('border','');
                 $('#cnfrm_mtp_adm').css('border','2px solid red');
             }
-            else if (mtpAdm != '' &&cnfrmMtpAdm != '' && mtpAdm != cnfrmMtpAdm) {
-                $('#matricule_adm').css('border','');
-                $('#nom_adm').css('border','');
-                $('#mtp_adm').css('border','');
-                $('#cnfrm_mtp_adm').css('border','2px solid red');
-            }
             else{
                 $('#matricule_adm').css('border','');
                 $('#nom_adm').css('border','');
                 $('#mtp_adm').css('border','');
                 $('#cnfrm_mtp_adm').css('border','');
-                
                 var fd = new FormData();
                 var idBtq = $('#id_boutique_product').val();
                 fd.append('id_btq',idBtq);
@@ -2892,17 +2918,18 @@ else if (isset($_SESSION['btq'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $('.create-admin-boutique').css('opacity','0.4');
-                        $("#loader_gb_right").show();
+                        $("#loader_create_publication_bottom_button").show();
                     },
                     success: function(response){
                         if(response != 0){
                             $(".boutique-container").empty();
-                            $('.boutique-container').append(response);
+                            setTimeout(() => {
+                                $('.boutique-container').append(response);
+                            }, 400);
                         }
                     },
                     complete: function(){
-                        $("#loader_gb_right").hide();
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 });
             }
@@ -2937,18 +2964,18 @@ else if (isset($_SESSION['btq'])) {
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $('.boutique-admin-info').css('opacity','0.4');
-                    $("#loader_gb_right").show();
+                    $("#loader_create_publication_bottom_button").show();
                 },
                 success: function(response){
                     if(response != 0){
                         $(".boutique-container").empty();
-                        $('.boutique-container').append(response);
+                        setTimeout(() => {
+                            $('.boutique-container').append(response);
+                        }, 400);
                     }
                 },
                 complete: function(){
-                    $('.boutique-admin-info').css('opacity','');
-                    $("#loader_gb_right").hide();
+                    $("#loader_create_publication_bottom_button").hide();
                 }
             });
         })

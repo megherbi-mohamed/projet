@@ -8,7 +8,7 @@ if ($get_ntf_query->rowCount() > 0) {
 $i=0;
 while ($get_ntf_row = $get_ntf_query->fetch(PDO::FETCH_ASSOC)) {
 $i++;
-$get_sender_info_query = $conn->prepare("SELECT nom_user AS nom,img_user AS img FROM utilisateurs WHERE id_user = {$get_ntf_row['id_sender_ntf']}
+$get_sender_info_query = $conn->prepare("SELECT nom_user AS nom,img_user AS img FROM utilisateurs WHERE id_user = {$get_ntf_row['id_sender_ntf']} AND type_user IS NOT NULL 
                                         UNION SELECT nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = {$get_ntf_row['id_sender_ntf']}");
 $get_sender_info_query->execute();
 $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);

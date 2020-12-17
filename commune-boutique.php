@@ -3,6 +3,7 @@ include_once './bdd/connexion.php';
 $ville = htmlspecialchars($_GET['v']);
 ?>
 <select id="commune_boutique">
+    <option value="">Commune</option>
     <?php 
     $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville'");
     $commune_query->execute();
@@ -11,4 +12,4 @@ $ville = htmlspecialchars($_GET['v']);
     <option value="<?php echo $commune_row['commune'] ?>"><?php echo $commune_row['commune'] ?></option>
     <?php } ?>
 </select>
-<span class="ville-btq">Ville *</span>
+<span class="ville-btq">Commune *</span>

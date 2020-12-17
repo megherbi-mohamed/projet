@@ -4,11 +4,11 @@ include_once './bdd/connexion.php';
 $id_sender = htmlspecialchars($_POST['id_sender']);
 $id_user = htmlspecialchars($_POST['id_user']);
 
-$get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE id_recever = '$id_user' AND id_sender = '$id_sender'
-OR id_recever = '$id_sender' AND id_sender = '$id_user'");
+$get_sender_msg_query = $conn->prepare("SELECT id_recever,id_sender,message,date_format(temp_msg,'%H:%i') as temp_msg FROM messages WHERE id_recever = $id_user AND id_sender = $id_sender
+OR id_recever = $id_sender AND id_sender = $id_user");
 $get_sender_msg_query->execute();
 
-$get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender 
+$get_sender_info_query = $conn->prepare("SELECT id_user AS id, nom_user AS nom, img_user AS img FROM utilisateurs WHERE id_user = $id_sender AND type_user IS NOT NULL  
 UNION SELECT id_btq AS id, nom_btq AS nom, logo_btq AS img FROM boutiques WHERE id_btq = $id_sender");
 $get_sender_info_query->execute();
 $get_sender_info_row = $get_sender_info_query->fetch(PDO::FETCH_ASSOC);

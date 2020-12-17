@@ -19,64 +19,85 @@ if (!empty($_SESSION['user'])) {
     <title>Inscription | Connexion</title>
 </head>
 <body>
-<?php include './navbar.php';?>
+<?php include 'navbar.php';?>
     <div class="clear"></div>
     <div class="inscription-connexion-container">
-        <div class="alert-inscription-connexion">
-            <div>
-                <i class="fas fa-times"></i>
-            </div>
-            <p></p>
-        </div>
         <div class="inscription-container">
             <div class="inscription">
                 <h4>inscrivez-vous</h4>
-                <div>
+                <div class="inscription-input">
                     <span class="nom-user">Nom et prenom</span>
                     <input type="text" id="nom_user" autocomplete="off">
+                    <div id="nom_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="nom_err"></p>
-                <div>
+                <div class="inscription-input">
                     <span class="email-tlph-user">Adresse email ou téléphone</span>
                     <input type="text" id="email_tlph_user">
+                    <div id="email_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="email_tlph_err"></p>
-                <div>
+                <div class="inscription-input">
                     <span class="mtp-user">Mot de passe</span>
                     <input type="password" id="mtp_user">
+                    <div id="mtp_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="mtp_err"></p>
-                <div>
+                <div class="inscription-input">
                     <span class="cnfrm-mtp-user">Mot de passe confirmation</span>
                     <input type="password" id="cnfrm_mtp_user">
+                    <div id="cnfrm_mtp_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="cnfrm_mtp_err"></p>
-                <button id="inscrire">Inscrire</button>
-                <h5>Vous avez déjà inscris ?
-                <button id="connexion_button">Connexion</button></h5>
+                <div class="create-publication-bottom-button" style="width:400px;margin:auto">
+                    <div id="loader_create_publication_bottom_button" style="margin-top:15px" class="button-center"></div>
+                    <button style="width:400px;margin:10px auto" id="inscrire">Inscrire</button>
+                </div>
+                <hr>
+                <h5>Vous avez déjà inscris ?</h5>
+                <button id="connexion_button">Connexion</button>
             </div>
-            <div id="loader_load" class="center"></div>
         </div>
         <div class="connexion-container">
             <div class="connexion">
                 <h4>connectez-vous</h4>
-                <div>
+                <div class="connexion-input">
                     <span class="cnx-email-user">Adresse email ou téléphone</span>
                     <input type="text" id="cnx_email_user">
+                    <div id="cnx_email_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="cnx_email_err"></p>
-                <div>
+                <div class="connexion-input">
                     <span class="cnx-mtp-user">Mot de passe</span>
                     <input type="password" id="cnx_mtp_user">
+                    <div id="cnx_mtp_user_err">
+                        <p></p>
+                        <i class="fas fa-caret-left"></i>
+                    </div>
                 </div>
-                <p id="cnx_mtp_err"></p>
                 <a href="#">Mot de passe oublié ?</a>
-                <button id="connecter">Connecter</button>
-                <h5>Vous avez pas encore inscrire ?
+                <div class="create-publication-bottom-button" style="width:400px;margin:auto">
+                    <div id="loader_create_publication_bottom_button" style="margin-top:15px" class="button-center"></div>
+                    <button style="width:400px;margin:10px auto" id="connecter">Connecter</button>
+                </div>
+                <hr>
+                <h5>Vous avez pas encore inscrire ?</h5>
                 <button id="inscription_button">Inscrire</button>
             </div>
         </div>
-        <div id="loader_load" class="center"></div>
+    </div>
+    <div class="alert-messages">
+        <p></p>
     </div>
     <div id="loader" class="center"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -93,25 +114,58 @@ if (!empty($_SESSION['user'])) {
             } 
         };
 
+        function emailCnxUserErr (type) {
+            if (type == 1) {
+                $('#cnx_email_user').css("border","2px solid #bd2121");
+                $('#cnx_email_user_err p').text("Entrez un Email ou numéro de téléphone");
+                $('#cnx_email_user_err').show();
+            }
+            else{
+                $('#cnx_email_user').css("border","");
+                $('#cnx_email_user_err p').text("");
+                $('#cnx_email_user_err').hide();
+            }
+        }
+
+        function mtpCnxUserErr (type) {
+            if (type == 1) {
+                $('#cnx_mtp_user').css("border","2px solid #bd2121");
+                $('#cnx_mtp_user_err p').text("Entrez un mot de passe");
+                $('#cnx_mtp_user_err').show();
+            }
+            else{
+                $('#cnx_mtp_user').css("border","");
+                $('#cnx_mtp_user_err p').text("");
+                $('#cnx_mtp_user_err').hide();
+            }
+        }
+
+        $('#cnx_email_user').on('keypress',function(event){
+            emailCnxUserErr (0);
+            mtpCnxUserErr (0);
+        })
+
+        $('#cnx_mtp_use').on('keypress',function(event){
+            emailCnxUserErr (0);
+            mtpCnxUserErr (0);
+        })
+
         $('#connecter').click(function(event){
             var emailUserCnx = $('#cnx_email_user').val();
             var mtpUserCnx = $('#cnx_mtp_user').val();
             if (emailUserCnx == '') {
-                $('#cnx_email_err').text("Entrez votre email ou téléphone.");
-                $('#cnx_email_user').css('border','2px solid red');
+                emailCnxUserErr (1);
             }
             else if (!validateEmail(emailUserCnx) && !validatePhone(emailUserCnx)) {
-                $('#cnx_email_err').text("Format incorrect.");
-                $('#cnx_email_user').css('border','2px solid red');
+                emailCnxUserErr (1);
+                $('#cnx_email_user_err p').text("Adresse email ou numéro de téléphone invalide");
             }
             else if (mtpUserCnx == '') {
-                $('#cnx_email_err').text("");
-                $('#cnx_mtp_err').text("Entrez votre mot de passe.");
-                $('#cnx_email_user').css('border','');
-                $('#cnx_mtp_user').css('border','2px solid red');
+                mtpCnxUserErr (1);
             }
             else{
-                $('#cnx_mtp_user').css('border','');
+                emailCnxUserErr (0);
+                mtpCnxUserErr (0);
                 var fd = new FormData();
                 fd.append('email_user',emailUserCnx);
                 fd.append('mtp_user',mtpUserCnx);
@@ -122,22 +176,26 @@ if (!empty($_SESSION['user'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $("#loader_load").show();
-                        $('.inscription-connexion-container').css('opacity','0.5');
+                        $('#connecter').prop('disabled', true);
+                        $('#connecter').css('opacity','.8');
+                        $("#loader_create_publication_bottom_button").show();
                     },
                     success: function(response){
-                        // console.log(response);
                         if(response != 0){
                             window.location.href = 'utilisateur/'+response;
                         }
                         else{
-                            $('.alert-inscription-connexion p').text("Information incorrecte.");
-                            $('.alert-inscription-connexion').css('display','grid');
+                            $('.alert-messages p').text("Inforamtions incorrect, réessayer!");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
                         } 
                     },
                     complete: function(){
-                        $("#loader_load").hide();
-                        $('.inscription-connexion-container').css('opacity','');
+                        $('#connecter').prop('disabled', false);
+                        $('#connecter').css('opacity','');
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 }); 
             }
@@ -192,59 +250,116 @@ if (!empty($_SESSION['user'])) {
             return re.test(phone);
         }
 
+        function nomUserErr (type) {
+            if (type == 1) {
+                $('#nom_user').css("border","2px solid #bd2121");
+                $('#nom_user_err p').text("Entrez un nom d'utilisateur.");
+                $('#nom_user_err').show();
+            }
+            else{
+                $('#nom_user').css("border","");
+                $('#nom_user_err p').text("");
+                $('#nom_user_err').hide();
+            }
+        }
+
+        function emailUserErr (type) {
+            if (type == 1) {
+                $('#email_tlph_user').css("border","2px solid #bd2121");
+                $('#email_user_err p').text("Entrez un email ou numéro de téléphone");
+                $('#email_user_err').show();
+            }
+            else{
+                $('#email_tlph_user').css("border","");
+                $('#email_user_err p').text("");
+                $('#email_user_err').hide();
+            }
+        }
+
+        function mtpUserErr (type) {
+            if (type == 1) {
+                $('#mtp_user').css("border","2px solid #bd2121");
+                $('#mtp_user_err p').text("Entrez un mot de passe");
+                $('#mtp_user_err').show();
+            }
+            else{
+                $('#mtp_user').css("border","");
+                $('#mtp_user_err p').text("");
+                $('#mtp_user_err').hide();
+            }
+        }
+
+        function cnfrmMtpUserErr (type) {
+            if (type == 1) {
+                $('#cnfrm_mtp_user').css("border","2px solid #bd2121");
+                $('#cnfrm_mtp_user_err p').text("Confirmer le mot de passe");
+                $('#cnfrm_mtp_user_err').show();
+            }
+            else{
+                $('#cnfrm_mtp_user').css("border","");
+                $('#cnfrm_mtp_user_err p').text("");
+                $('#cnfrm_mtp_user_err').hide();
+            }
+        }
+
+        $('#nom_user').on('keypress',function(event){
+            nomUserErr (0);
+            emailUserErr (0);
+            mtpUserErr (0);
+            cnfrmMtpUserErr (0);
+        })
+
+        $('#email_tlph_user').on('keypress',function(event){
+            nomUserErr (0);
+            emailUserErr (0);
+            mtpUserErr (0);
+            cnfrmMtpUserErr (0);
+        })
+
+        $('#mtp_user').on('keypress',function(event){
+            nomUserErr (0);
+            emailUserErr (0);
+            mtpUserErr (0);
+            cnfrmMtpUserErr (0);
+        })
+
+        $('#cnfrm_mtp_user').on('keypress',function(event){
+            nomUserErr (0);
+            emailUserErr (0);
+            mtpUserErr (0);
+            cnfrmMtpUserErr (0);
+        })
 
         $('#inscrire').click(function(event){
             var nomUser = $('#nom_user').val();
             var emailTlphUser = $('#email_tlph_user').val();
             var mtpUser = $('#mtp_user').val();
             var cnfrmMtpUser = $('#cnfrm_mtp_user').val();
-
             if (nomUser == '') {
-                $('#nom_err').text("Entrez un nom d'utilisateur.");
-                $('#nom_user').css("border","2px solid red");
+                nomUserErr (1);
             }
             else if (emailTlphUser == '') {
-                $('#nom_err').text("");
-                $('#email_tlph_err').text("Entrez un numéro ou un email.");
-                $('#nom_user').css("border","");
-                $('#email_tlph_user').css("border","2px solid red");
+                emailUserErr (1);
             }
             else if(!validateEmail(emailTlphUser) && !validatePhone(emailTlphUser)){
-                $('#nom_err').text("");
-                $('#email_tlph_err').text("Entrez un numéro ou un email valide.");
-                $('#nom_user').css("border","");
-                $('#email_tlph_user').css("border","2px solid red");
+                emailUserErr (1);
+                $('#email_user_err p').text("Email ou numéro de téléphone invalide");
             }
             else if (mtpUser == '') {
-                $('#nom_err').text("");
-                $('#email_tlph_err').text("");
-                $('#mtp_err').text("Entrez un mot de passe.");
-                $('#nom_user').css("border","");
-                $('#email_tlph_user').css("border","");
-                $('#mtp_user').css("border","2px solid red");
+                mtpUserErr (1);
             }
             else if (cnfrmMtpUser == '') {
-                $('#nom_err').text("");
-                $('#email_tlph_err').text("");
-                $('#mtp_err').text("");
-                $('#cnfrm_mtp_err').text("Confirmez le mot de passe.");
-                $('#nom_user').css("border","");
-                $('#email_tlph_user').css("border","");
-                $('#mtp_user').css("border","");
-                $('#cnfrm_mtp_user').css("border","2px solid red");
+                cnfrmMtpUserErr (1);
             }
             else if (mtpUser != cnfrmMtpUser) {
-                $('#nom_err').text("");
-                $('#email_tlph_err').text("");
-                $('#mtp_err').text("");
-                $('#cnfrm_mtp_err').text("Erreur de confirmation du mot de passe.");
-                $('#nom_user').css("border","");
-                $('#email_tlph_user').css("border","");
-                $('#mtp_user').css("border","");
-                $('#cnfrm_mtp_user').css("border","2px solid red");
+                cnfrmMtpUserErr (1);
+                $('#cnfrm_mtp_user_err p').text("Confirmation de mot de passe incorrect");
             }
-            else if (mtpUser != '' && cnfrmMtpUser != '' && mtpUser == cnfrmMtpUser) {
-                $('#cnfrm_mtp_user').css("border","");
+            else {
+                nomUserErr (0);
+                emailUserErr (0);
+                mtpUserErr (0);
+                cnfrmMtpUserErr (0);
                 var fd = new FormData();
                 fd.append('nom_user',nomUser);
                 fd.append('email_tlph_user',emailTlphUser);
@@ -256,62 +371,69 @@ if (!empty($_SESSION['user'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $("#loader_load").show();
-                        $('.inscription-connexion-container').css('opacity','0.5');
+                        $('#inscrire').prop('disabled', true);
+                        $('#inscrire').css('opacity','.8');
+                        $("#loader_create_publication_bottom_button").show();
                     },
                     success: function(response){
-                        if(response != 0){
-                            if (response == 2) {
-                                $('#nom_err').text("");
-                                $('#email_tlph_err').text("");
-                                $('#mtp_err').text("");
-                                $('#cnfrm_mtp_err').text("");
-                                $('#nom_user').css('border','');
-                                $('#email_tlph_user').css('border','');
-                                $('#mtp_user').css('border','');
-                                $('#cnfrm_mtp_user').css('border','');
-                                $('.alert-inscription-connexion p').text("Vous avez déjà inscri, vous pouvez connecter");
-                                $('.alert-inscription-connexion').css('display','grid');
-                            }
-                            else if(response == 0){
-                                $('#nom_err').text("");
-                                $('#email_tlph_err').text("");
-                                $('#mtp_err').text("");
-                                $('#cnfrm_mtp_err').text("");
-                                $('#nom_user').css('border','');
-                                $('#email_tlph_user').css('border','');
-                                $('#mtp_user').css('border','');
-                                $('#cnfrm_mtp_user').css('border','');
-                                $('.alert-inscription-connexion p').text("Erreur d'inscription");
-                                $('.alert-inscription-connexion').css('display','grid');
-                            }
-                            else{
-                                $('.inscription-connexion-container').empty();
-                                $('.inscription-connexion-container').append(response);
-                                var windowWidth = window.innerWidth;
-                                if (windowWidth > 768) {
-                                    $('.email-confirmation input[type="text"]').focus();
-                                    $('.mobile-confirmation input[type="text"]').focus();
-                                }
-                            }
+                        console.log(response);
+                        if (response == 2) {
+                            $('.alert-messages p').text("Vous avez déjà inscri, vous pouvez connecter");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        else if(response == 0){
+                            $('.alert-messages p').text("Erreur d'inscription");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        else{
+                            $('.inscription-connexion-container').empty();
+                            $('.inscription-connexion-container').append(response);
                         }
                     },
                     complete: function(){
-                        $("#loader_load").hide();
-                        $('.inscription-connexion-container').css('opacity','');
+                        $('#inscrire').prop('disabled', false);
+                        $('#inscrire').css('opacity','');
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 });
             }
+        })
+
+        $(document).on('focus','#code_verification',function(){
+            $('.code-verification').addClass('active-cnx-connexion-span');
+        })
+
+        function cnfrmCoderErr (type) {
+            if (type == 1) {
+                $('#code_verification').css("border","2px solid #bd2121");
+                $('#cnfrm_code_err p').text("Entrez le code de vérification");
+                $('#cnfrm_code_err').show();
+            }
+            else{
+                $('#code_verification').css("border","");
+                $('#cnfrm_code_err p').text("");
+                $('#cnfrm_code_err').hide();
+            }
+        }
+
+        $('#code_verification').on('keypress',function(event){
+            cnfrmCoderErr (0);
         })
 
         $(document).on('click','#verify_email_button',function(event){
             var code = $('#code_verification').val();
             var idUser = $('#id_user').val();
             if (code == '') {
-                $('#code_verification').css("border","2px solid red");
+                cnfrmCoderErr (1);
             }
             else {
-                $('#code_verification').css("border","");
+                cnfrmCoderErr (0);
                 var fd = new FormData();
                 fd.append('code_verification',code);
                 fd.append('id_user',idUser);
@@ -322,23 +444,34 @@ if (!empty($_SESSION['user'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $("#loader_load").show();
-                        $('.inscription-connexion-container').css('opacity','0.5');
+                        $('#verify_email_button').prop('disabled', true);
+                        $('#verify_email_button').css('opacity','.8');
+                        $("#loader_create_publication_bottom_button").show();
                     },
                     success: function(response){
-                        if(response != 0){
+                        if(response == 0){
+                            $('.alert-messages p').text("Erreur d'inscription");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        if(response == 2){
+                            $('.alert-messages p').text("Code de vérification incorrect");
+                            $('.alert-messages').css({'visibility':'visible','transform':'translate(-50%,70px)'});
+                            setTimeout(() => {
+                                $('.alert-messages').css({'visibility':'','transform':''});
+                            }, 4000);
+                        }
+                        else{
                             $('.inscription-connexion-container').empty();
                             $('.inscription-connexion-container').append(response);
                         }
-                        else{
-                            $('#code_verification').val("");
-                            $('.alert-inscription-connexion p').text("Code de vérification invalide, réessayer.");
-                            $('.alert-inscription-connexion').css('display','grid');
-                        }
                     },
                     complete: function(){
-                        $("#loader_load").hide();
-                        $('.inscription-connexion-container').css('opacity','');
+                        $('#verify_email_button').prop('disabled', false);
+                        $('#verify_email_button').css('opacity','');
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 });
             }
@@ -348,7 +481,7 @@ if (!empty($_SESSION['user'])) {
             var code = $('#code_verification').val();
             var idUser = $('#id_user').val();
             if (code == '') {
-                $('#code_verification').css("border","2px solid red");
+                $('#code_verification').css("border","2px solid #bd2121");
             }
             else {
                 $('#code_verification').css("border","");
@@ -362,8 +495,9 @@ if (!empty($_SESSION['user'])) {
                     contentType: false,
                     processData: false,
                     beforeSend: function(){
-                        $("#loader_load").show();
-                        $('.inscription-connexion-container').css('opacity','0.5');
+                        $('#verify_mobile_button').prop('disabled', true);
+                        $('#verify_mobile_button').css('opacity','.8');
+                        $("#loader_create_publication_bottom_button").show();
                     },
                     success: function(response){
                         if(response != 0){
@@ -377,8 +511,9 @@ if (!empty($_SESSION['user'])) {
                         }
                     },
                     complete: function(){
-                        $("#loader_load").hide();
-                        $('.inscription-connexion-container').css('opacity','');
+                        $('#verify_mobile_button').prop('disabled', false);
+                        $('#verify_mobile_button').css('opacity','');
+                        $("#loader_create_publication_bottom_button").hide();
                     }
                 });
             }
@@ -432,8 +567,9 @@ if (!empty($_SESSION['user'])) {
                 contentType: false,
                 processData: false,
                 beforeSend: function(){
-                    $("#loader_load").show();
-                    $('.inscription-connexion-container').css('opacity','0.5');
+                    $('#valide_final_inscription').prop('disabled', true);
+                    $('#valide_final_inscription').css('opacity','.8');
+                    $("#loader_create_publication_bottom_button").show();
                 },
                 success: function(response){
                     console.log(response);
@@ -447,8 +583,9 @@ if (!empty($_SESSION['user'])) {
                     }
                 },
                 complete: function(){
-                    $("#loader_load").hide();
-                    $('.inscription-connexion-container').css('opacity','');
+                    $('#valide_final_inscription').prop('disabled', false);
+                    $('#valide_final_inscription').css('opacity','');
+                    $("#loader_create_publication_bottom_button").show();
                 }
             });
         })

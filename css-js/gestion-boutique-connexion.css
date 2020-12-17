@@ -26,8 +26,10 @@
     text-transform: uppercase;
 }
 .gb-connexion div{
-    margin-bottom: 10px;
+    width: 100%;
+    margin: 0 auto 10px;
     position: relative;
+    z-index: 1;
 }
 .gb-connexion div input{
     width: 100%;
@@ -36,7 +38,8 @@
     border: 2px solid #e0e0e0;
     border-radius: 5px;
     outline: none;
-    background: #ecedee;
+    z-index: 10;
+    background: rgba(209, 209, 209, 0.3);
 }
 .gb-connexion div span{
     position: absolute;
@@ -46,6 +49,7 @@
     font-weight: bold;
     left: 12px;
     opacity: .4;
+    z-index: -1;
 }
 .gb-connexion a{
     font-size: .9rem;
@@ -86,6 +90,9 @@
     height: 40px; 
     animation: spin 1s linear infinite; 
 } 
+.create-publication-bottom-button{
+    display: block;
+}
 @media only screen and (max-width: 768px) {
     .gb-connexion-container{
         width: 100%;

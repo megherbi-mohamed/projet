@@ -10,12 +10,18 @@
     border-radius: 50%;
     background: #ecedee;
     cursor: pointer;
+    position: relative;
+    margin-right: 15px;
 }
 .categorie-search-bar div:hover{
     background: #e0e0e0;
 }
 .categorie-search-bar div i{
     color: #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 .boutdechantier-recherche-responsive{
     display: none;
@@ -186,10 +192,10 @@
     justify-content: flex-end;
 }
 .user-bt-annonce-middle-right button{
-    padding: 5px 7px;
+    padding: 8px;
     box-sizing: border-box;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     background: #ecedee;
     margin-right: 5px;
     cursor: pointer;
@@ -391,8 +397,9 @@
     position: relative;
 }
 .boutdechantier-right-container{
-    width: 840px;
+    width: 95%;
     margin: auto;
+    min-height: calc(100vh - 60px);
 }
 .boutdechantier-right-top{
     width: 100%;
@@ -469,14 +476,14 @@
 }
 .boutdechantier-right-bottom{
     width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5,1fr);
-    grid-gap: 1%;
+    display: flex;
     margin: 20px auto;
+    flex-wrap: wrap;
 }
 .bt-product{
     height: 170px;
-    width: 100%;
+    width: 170px;
+    margin: 0 10px 10px 0;
     border-radius: 5px;
     background: #ffffff;
     overflow: hidden;
@@ -943,7 +950,159 @@
 #delete_prd_button:hover{
     background: #000000;
 }
-
+/* filtrer boutdechantier */
+.filter-boutdechantier-options{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.filter-boutdechantier-button{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 30% 20%;
+    align-items: center;
+    padding: 0 5px 5px 10px;
+    box-sizing: border-box;
+}
+.filter-boutdechantier-button h4{
+    margin: 0;
+}
+#reset_boutdechantier_button{
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    justify-self: end;
+    width: 100%;
+}
+#filter_boutdechantier_button{
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    justify-self: end;
+    width: 100%;
+}
+#filter_boutdechantier_button:hover{
+    background: #e0e0e0;
+}
+.quick-filter-button{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 30% 36% 30%;
+    grid-gap: 2%;
+    align-items: center;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.quick-filter-button button{
+    border: none;
+    padding: 10px 5px;
+    box-sizing: border-box;
+    background: #ecedee;
+    border-radius: 17.5px;
+    color: #000;
+    font-weight: bold;
+    outline: none;
+    cursor: pointer;
+    justify-self: end;
+    width: 100%;
+    font-size: .8rem;
+}
+.quick-filter-button button:hover{
+    background: #e0e0e0;
+}
+.filter-boutdechantier{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.filter-boutdechantier:hover{
+    background: #ecedee;
+}
+.filter-boutdechantier div{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #ecedee;
+    overflow: hidden;
+    position: relative;
+}
+.filter-boutdechantier div i{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+.filter-boutdechantier p{
+    margin: 0;
+}
+.filter-ptomotion-option{
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-in-out;
+}
+.filter-boutdechantier-input{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    align-items: center;
+    margin: 5px auto;
+}
+.filter-boutdechantier-input p{
+    margin: 0;
+    font-size: .85rem;
+    font-weight: bold;
+}
+.filter-boutdechantier-input input,
+.filter-boutdechantier-input select{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    outline: none;
+    background: rgba(209, 209, 209, 0.3);
+}
+@media only screen and (max-width: 1250px) {
+    .boutdechantier-right-after::after {
+        content: "";
+        background: #ecedee;
+        opacity: 0.7;
+        top: 60px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        position: fixed;
+        z-index: 60;
+    }
+    .boutdechantier-left{
+        width: 360px;
+        transform: translateX(-100%);
+        transition: transform 0.4s ease-in-out;
+        z-index: 70;
+    }
+    .boutdechantier-right{
+        width: 100%;
+        margin-left: 0;
+    }
+}
 @media only screen and (max-width: 768px) {
     .navbar{
         height: 50px;
@@ -1008,9 +1167,9 @@
     #display_categories,
     #display_filter,
     #back_menu,
-    #display_bt_search_bar{
-        width: 30px;
-        height: 30px;
+    #show_search_bar_rsp{
+        width: 35px;
+        height: 35px;
         border-radius: 50%;
         position: relative;
         background: #ecedee;
@@ -1019,14 +1178,14 @@
         display: none;
         justify-self: start;
     }
-    #display_bt_search_bar{
+    #show_search_bar_rsp{
         justify-self: end;
     }
     #back_history i,
     #display_categories i,
     #display_filter i,
     #back_menu i,
-    #display_bt_search_bar i{
+    #show_search_bar_rsp i{
         position: absolute;
         top: 50%;
         left: 50%;
@@ -1087,8 +1246,8 @@
         width: 100%;
         display: grid;
         grid-template-columns: repeat(2,1fr);
-        grid-gap: 5px;
-        margin: 10px auto 70px
+        grid-gap: 5px 5px;
+        margin: 10px auto 70px;
     }
     .bt-product{
         height: 150px;
@@ -1231,5 +1390,23 @@
     }
     .gb-message-alert{
         z-index: 70;
+    }
+    /* filtrer boutdechantier */
+    .filter-boutdechantier-button{
+        grid-template-columns: 40% 35% 25%;
+        padding: 5px 5px 5px 10px;
+    }
+    .quick-filter-button{
+        grid-template-columns: 32% 35% 30%;
+        grid-gap: 2%;
+    }
+    .quick-filter-button button{
+        font-size: .7rem;
+    }
+    .filter-boutdechantier-options{
+        padding: 5px;
+    }
+    .filter-boutdechantier p{
+        margin: 0 10px;
     }
 }

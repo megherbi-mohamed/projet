@@ -173,7 +173,8 @@ if (isset($_GET['user'])) {
                         if(response != 0){
                             // console.log(response);
                             $('.user-profile-publications').append(response);
-                        }else{
+                        }
+                        else{
                             // alert('err');
                         }
                     },
@@ -1023,12 +1024,13 @@ if (isset($_GET['user'])) {
             var id = $(this).attr('id').split('_')[2];
             var idBtq = $('#id_user_btq_'+id).val();
             window.location = 'boutique/'+idBtq;
-        });
+        }); 
     
         <?php if (isset($_SESSION['user'])) { ?>
         var idUser = <?php echo $id_user; ?>;
         var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
+        console.log(websocket_server);
         var websocket = false;
         var js_flood = 0;
         var status_websocket = 0;

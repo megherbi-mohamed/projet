@@ -6,7 +6,7 @@ $ville = htmlspecialchars($_GET['v']);
 <select id="commune_professionnel">
     <option value="">Commune</option>
     <?php 
-    $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville'");
+    $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville' ORDER BY commune ASC");
     $commune_query->execute();
     while ($commune_row = $commune_query->fetch(PDO::FETCH_ASSOC)) {
     ?>

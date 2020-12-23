@@ -3,10 +3,10 @@ include_once './bdd/connexion.php';
 $ville = htmlspecialchars($_GET['v']);
 ?>
 <p>Commune</p>
-<select id="commune_boutique">
+<select id="commune_professionnel">
     <option value="">Commune</option>
     <?php 
-    $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville' ORDER BY commune ASC");
+    $commune_query = $conn->prepare("SELECT * FROM communes WHERE ville = '$ville'");
     $commune_query->execute();
     while ($commune_row = $commune_query->fetch(PDO::FETCH_ASSOC)) {
     ?>

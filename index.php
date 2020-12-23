@@ -36,11 +36,23 @@ if (isset($_SESSION['user'])) {
     <?php include './navbar.php'; ?>
     <div class="clear"></div>
     <div class="acceuil-presentation">
-
+        <!-- <img src="https://www.pme-web.com/wp-content/uploads/bfi_thumb/Ecommerce-meilleurs-outils-CMS-n7020d26rjvityw3xhy5c1g9m0jjy2jx8ivumb6uxk.png" alt=""> -->
     </div>
     <div class="acceuil-categories">
         <div class="acceuil-categorie">
-
+            <img src="categoeis-images/services.jpg" alt="">
+        </div>
+        <div class="acceuil-categorie">
+            <img src="categoeis-images/artisant.jpg" alt="">
+        </div>
+        <div class="acceuil-categorie">
+            <img src="categoeis-images/transport.jpg" alt="">
+        </div>
+        <div class="acceuil-categorie">
+            <img src="categoeis-images/location.jpg" alt="">
+        </div>
+        <div class="acceuil-categorie">
+            <img src="categoeis-images/entreprise.jpg" alt="">
         </div>
         <div class="acceuil-categorie">
             
@@ -49,19 +61,7 @@ if (isset($_SESSION['user'])) {
             
         </div>
         <div class="acceuil-categorie">
-            
-        </div>
-        <div class="acceuil-categorie">
-            
-        </div>
-        <div class="acceuil-categorie">
-            
-        </div>
-        <div class="acceuil-categorie">
-            
-        </div>
-        <div class="acceuil-categorie">
-            
+            <img src="categoeis-images/fabriquant.jpg" alt="">
         </div>
         <div class="acceuil-categorie">
             
@@ -236,6 +236,7 @@ if (isset($_SESSION['user'])) {
         <?php if (isset($_SESSION['user'])) { ?>
         var uid = <?php echo $uid; ?>;
         var websocket_server = 'ws://<?php echo $_SERVER['HTTP_HOST']; ?>:3030?uid='+uid;
+        console.log(websocket_server);
         var websocket = false;
         var js_flood = 0;
         var status_websocket = 0;

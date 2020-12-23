@@ -94,6 +94,14 @@ if (isset($_SESSION['user'])) {
                 <p>Abonnes</p>
             </div>
         </div>
+        <div class="parametres-profile">
+            <div class="parametres-profile-button" id="display_user_followers">
+                <div>
+                    <i class="fas fa-users"></i>
+                </div>
+                <p>Abonnements</p>
+            </div>
+        </div>
     </div>
     <div class="parametres-profile-right">
         <div class="parametres-prfile-right-container">
@@ -330,6 +338,24 @@ if (isset($_SESSION['user'])) {
                     }
                 });
             }
+            if (history.state === 'abonnements') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_user_followers').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-user-followers.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        history.replaceState('abonnements','', '/projet/profile-parametres/abonnements');
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
         })
 
         $(window).on('popstate',function(){
@@ -406,6 +432,23 @@ if (isset($_SESSION['user'])) {
                 $('#display_all_followers').addClass('active-parametres-profile-button');
                 $.ajax({
                     url: 'load-all-followers.php',
+                    beforeSend: function(){
+                        $(".parametres-prfile-right-container").empty();
+                        $("#loader_load").show();
+                    },
+                    success: function(response){
+                        $('.parametres-prfile-right-container').append(response);
+                    },
+                    complete: function(response){
+                        $("#loader_load").hide();
+                    }
+                });
+            }
+            if (history.state === 'abonnements') {
+                $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+                $('#display_user_followers').addClass('active-parametres-profile-button');
+                $.ajax({
+                    url: 'load-user-followers.php',
                     beforeSend: function(){
                         $(".parametres-prfile-right-container").empty();
                         $("#loader_load").show();
@@ -533,7 +576,7 @@ if (isset($_SESSION['user'])) {
             });
         });
 
-        // display user hided publications
+        // display abonnees user
         $(document).on('click',"#display_all_followers",function() {
             $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
             $(this).addClass('active-parametres-profile-button');
@@ -545,6 +588,34 @@ if (isset($_SESSION['user'])) {
                 },
                 success: function(response){
                     history.pushState('abonne','', '/projet/profile-parametres/abonnes');
+                    if (windowWidth < 768) {
+                        $('.parametres-profile-left').css('transform','');
+                        setTimeout(() => {
+                            $('.parametres-prfile-right-container').append(response);
+                        }, 400);
+                    }
+                    else{
+                        $('.parametres-prfile-right-container').append(response);
+                    }
+                },
+                complete: function(response){
+                    $("#loader_load").hide();
+                }
+            });
+        });
+
+        // display user abonnements
+        $(document).on('click',"#display_user_followers",function() {
+            $('[class^="parametres-profile-button"]').removeClass('active-parametres-profile-button');
+            $(this).addClass('active-parametres-profile-button');
+            $.ajax({
+                url: 'load-user-followers.php',
+                beforeSend: function(){
+                    $(".parametres-prfile-right-container").empty();
+                    $("#loader_load").show();
+                },
+                success: function(response){
+                    history.pushState('abonnements','', '/projet/profile-parametres/abonnements');
                     if (windowWidth < 768) {
                         $('.parametres-profile-left').css('transform','');
                         setTimeout(() => {

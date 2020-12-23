@@ -65,7 +65,7 @@ $get_ville_query->execute();
                 <div>
                     <i class="fas fa-user"></i>
                 </div>
-                <p>Professionnel</p>
+                <p>Professionnels - entreprises</p>
             </div>
             <div class="filter-options" id="filter_professionnel_options">
                 <div class="filter-recherche-buttons">
@@ -99,7 +99,7 @@ $get_ville_query->execute();
                     <select id="ville_professionnel">
                         <option value="">Ville</option>
                         <?php 
-                        $ville_query = $conn->prepare("SELECT * FROM villes");
+                        $ville_query = $conn->prepare("SELECT * FROM villes ORDER BY ville ASC");
                         $ville_query->execute(); 
                         while ($ville_row = $ville_query->fetch(PDO::FETCH_ASSOC)) {
                         ?>
@@ -508,12 +508,14 @@ $get_ville_query->execute();
                 }
             });
         }
-
+        // console.log(typeRecherche);
         $(document).on('keypress',"#recherche_text",function() {
-            var rechercheText = $(this).val();
+            let typeRecherche = 'tout';
+            let rechercheText = $(this).val();
+            console.log(typeRecherche);
             if (rechercheText != '') {
                 if (event.which == 13) {
-                    rechercheToutText (rechercheText);
+                    rechercheToutText (rechercheText,typeRecherche);
                 }
             }
         });

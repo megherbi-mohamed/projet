@@ -169,7 +169,7 @@ else if ($type_recherche == 'professionnel') {
 ?>
 <div class="search-item">
     <div class="search-item-left">
-        <img src="<?php if($get_professionnel_row['couverture_user']==''){echo'./images/profile.png';}else{echo './'.$get_professionnel_row['img_user'];}?>" alt="">
+        <img src="<?php if($get_professionnel_row['couverture_user']==''){echo'./images/profile.png';}else{echo './'.$get_professionnel_row['couverture_user'];}?>" alt="">
     </div>
     <div class="search-item-right">
         <h4><?php echo $get_professionnel_row['nom_user'] ?></h4>
@@ -272,7 +272,7 @@ else if ($type_recherche == 'professionnel') {
 ?>
 <div class="search-item">
     <div class="search-item-left">
-        <img src="<?php if($get_professionnel_row['couverture_user']==''){echo'./images/profile.png';}else{echo './'.$get_professionnel_row['img_user'];}?>" alt="">
+        <img src="<?php if($get_professionnel_row['couverture_user']==''){echo'./images/profile.png';}else{echo './'.$get_professionnel_row['couverture_user'];}?>" alt="">
     </div>
     <div class="search-item-right">
         <h4><?php echo $get_professionnel_row['nom_user'] ?></h4>

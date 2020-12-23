@@ -6,7 +6,7 @@ $categorie = htmlspecialchars($_GET['c']);
 <select id="profession_professionnel">
     <option value="">Professions</option>
     <?php 
-    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = '$categorie' ORDER BY sous_categories ASC");
+    $categories_query = $conn->prepare("SELECT * FROM categories WHERE categories = '$categorie'");
     $categories_query->execute();
     while ($categories_row = $categories_query->fetch(PDO::FETCH_ASSOC)) {
     ?>

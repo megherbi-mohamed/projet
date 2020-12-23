@@ -17,7 +17,7 @@ $adresse_btq = htmlspecialchars($_POST['adresse_btq']);
 $email_btq = htmlspecialchars($_POST['email_btq']);
 $tlph_btq = htmlspecialchars($_POST['tlph_btq']);
 $date =  date("Y-m-d");
-$create_btq_query = $conn->prepare("UPDATE boutiques SET nom_btq = '$nom_btq', categorie = '$categorie', sous_categorie = '$sous_categorie',
+$create_btq_query = $conn->prepare("UPDATE boutiques SET nom_btq = '$nom_btq', categorie_btq = '$categorie', sous_categorie_btq = '$sous_categorie',
                     ville_btq = '$ville_btq', commune_btq = '$commune_btq', adresse_btq = '$adresse_btq', email_btq = '$email_btq',
                     tlph_btq = '$tlph_btq', etat = 0, date = '$date' WHERE id_btq = $id_btq AND id_createur = $id_user AND etat = 1");
 if($create_btq_query->execute()){

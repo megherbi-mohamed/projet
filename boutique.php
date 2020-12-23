@@ -152,7 +152,7 @@ $btq_crtr_row = $btq_crtr_query->fetch(PDO::FETCH_ASSOC);
                         <div>
                             <i class="fas fa-store-alt"></i>
                         </div>
-                        <p><?php echo $btq_inf_row['categorie'] ?>, <?php echo $btq_inf_row['sous_categorie'] ?></p>
+                        <p><?php echo $btq_inf_row['categorie_btq'] ?>, <?php echo $btq_inf_row['sous_categorie_btq'] ?></p>
                     </div>
                     <div class="boutique-information">
                         <div>
